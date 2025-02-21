@@ -1,2 +1,4 @@
-package com.cesar_brasfi.veros_brasfi.config;public class SecurityConfig {
+package com.cesar_brasfi.veros_brasfi.config;
+
+public class SecurityConfig {
 }
