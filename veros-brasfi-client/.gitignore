@@ -19,10 +19,12 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
 *.pem
+.idea/
 
 # debug
 npm-debug.log*
@@ -30,8 +32,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# local env files
+.env
+.env*.local
+.env.development
+.env.test
+.env.production
 
 # vercel
 .vercel
@@ -39,3 +45,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cache
+.cache/
+.next/cache/
+
+# ESLint
+.eslintcache
+
+# storybook
+storybook-static/
