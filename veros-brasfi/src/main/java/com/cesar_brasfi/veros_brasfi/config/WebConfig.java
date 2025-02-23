@@ -16,7 +16,7 @@ public class WebConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "http://localhost:3000", // Frontend Next.js local
-                                "http://brasfi.org/" // Produção
+                                "https://brasfi.org" // Produção
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
