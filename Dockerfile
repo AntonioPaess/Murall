@@ -5,7 +5,7 @@ RUN apt-get install openjdk-21-jdk -y
 RUN apt-get install maven -y
 
 WORKDIR /app
-COPY veros-brasfi/ /app/
+COPY Backend/ /app/
 
 RUN mvn clean install
 
