@@ -2,55 +2,44 @@
 
 ## Team:
 
-### CC:
+<h3>CC:</h3>
 <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;">
     <a href="https://github.com/AntonioPaess">
-        <img src="https://avatars.githubusercontent.com/u/123177984?v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-        <p>Antônio Paes</p>
+        <img src="https://avatars.githubusercontent.com/u/123177984?v=4" style="border-radius: 50%; width: 80px; height: 80px;">
     </a>
     <a href="https://github.com/oMarcoMaciel">
-        <img src="https://avatars.githubusercontent.com/u/126691818?v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-        <p>Marco Maciel</p>   
-</a>
+        <img src="https://avatars.githubusercontent.com/u/126691818?v=4" style="border-radius: 50%; width: 80px; height: 80px;">
+    </a>
     <a href="https://github.com/GalileuCMMoares">
-        <img src="https://avatars.githubusercontent.com/u/165906088?v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-<p>Galileu Calaça</p>
+        <img src="https://avatars.githubusercontent.com/u/165906088?v=4" style="border-radius: 50%; width: 80px; height: 80px;">
     </a>
-    <a href="https://github.com/vinivent">
-        <img src="https://avatars.githubusercontent.com/u/99739118?v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-<p>Vinicius Ventura</p>
+    <a href="https://github.com/vinivent" style="text-decoration: none;">
+            <img src="https://avatars.githubusercontent.com/u/99739118?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Vinicius Ventura">
+        </a>
+        <a href="https://github.com/Matheuslh" style="text-decoration: none; color: black; text-align: center;">
+        <img src="https://avatars.githubusercontent.com/u/168059030?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Matheus Lucena">
     </a>
-    <a href="https://github.com/Matheuslh">
-        <img src="https://avatars.githubusercontent.com/u/168059030?v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-<p>Matheus Lucena</p>
-    </a>
-  <a href="https://github.com/jhrvo0">
-        <img src="https://avatars.githubusercontent.com/u/167437961?s=64&v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-<p>João Henrique</p>
-    </a>
+    <a href="https://github.com/jhrvo0" style="text-decoration: none; color: black; text-align: center;">
+        <img src="https://avatars.githubusercontent.com/u/167437961?s=64&v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de João Henrique">
+    </a>      
 </div>
-
-### Design:
+<br>
+<h3>Design:</h3>
 <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;">
-    <a href="https://github.com/Belacv15">
-        <img src="https://avatars.githubusercontent.com/u/169161718?v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-<p>Isabela Vieira</p>
+     <a href="https://github.com/Belacv15" style="text-decoration: none; color: black; text-align: center;">
+        <img src="https://avatars.githubusercontent.com/u/169161718?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Isabela Vieira">
     </a>
-    <a href="https://github.com/fluskas43">
-        <img src="https://avatars.githubusercontent.com/u/116669790?v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-<p>Lucas Cortez</p>
+    <a href="https://github.com/fluskas43" style="text-decoration: none; color: black; text-align: center;">
+        <img src="https://avatars.githubusercontent.com/u/116669790?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Lucas Cortez">
     </a>
-    <a href="https://github.com/maduuu-ai">
-        <img src="https://avatars.githubusercontent.com/u/200122211?v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-<p>Maria Eduarda Lima</p>
+    <a href="https://github.com/maduuu-ai" style="text-decoration: none; color: black; text-align: center;">
+        <img src="https://avatars.githubusercontent.com/u/200122211?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Maria Eduarda Lima">
     </a>
-    <a href="https://github.com/tsmsXD">
-        <img src="https://avatars.githubusercontent.com/u/200014297?v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-<p>Thiago Soares</p>
+    <a href="https://github.com/tsmsXD" style="text-decoration: none; color: black; text-align: center;">
+        <img src="https://avatars.githubusercontent.com/u/200014297?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Thiago Soares">
     </a>
-    <a href="https://github.com/vesff0">
-        <img src="https://avatars.githubusercontent.com/u/49535009?v=4" style="border-radius: 50%; width: 100px; height: 100px;">
-<p>Vinicius Santana</p>
-    </a>
+    <a href="https://github.com/vesff0" style="text-decoration: none; color: black; text-align: center;">
+        <img src="https://avatars.githubusercontent.com/u/49535009?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Vinicius Santana">
+    </a>     
 </div>
-
+   
