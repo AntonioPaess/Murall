@@ -1,6 +1,6 @@
 # veros-brasfi
 
-## Time:
+## Team:
 
 ### CC:
 <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;">
