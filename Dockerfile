@@ -14,5 +14,5 @@ FROM openjdk:21-jdk-slim
 EXPOSE 8080
 
 WORKDIR /app
-COPY --from=build /app/target/veros-brasfi-0.0.1-SNAPSHOT.jar /app/appbrasfi.jar
-ENTRYPOINT ["java", "-jar","appbrasfi.jar"]
+COPY --from=build /app/target/murall-0.0.1-SNAPSHOT.jar /app/appmurall.jar
+ENTRYPOINT ["java", "-jar","appmurall.jar"]
