@@ -43,7 +43,7 @@
     </a>     
 </div>
 
-# Solution Made By Verus
+# Solution Made By VEROS
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/b2968265-463a-4d01-b765-cc4536241f65" width="17.9%"/>   
