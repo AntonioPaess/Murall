@@ -1,10 +1,10 @@
-package com.cesar_brasfi.veros_brasfi;
+package com.veros.murall;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class VerosBrasfiApplicationTests {
+class MurallApplicationTests {
 
 	@Test
 	void contextLoads() {
