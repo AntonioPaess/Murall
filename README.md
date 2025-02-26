@@ -42,4 +42,11 @@
         <img src="https://avatars.githubusercontent.com/u/49535009?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Vinicius Santana">
     </a>     
 </div>
+
+# Solution Made By Verus
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b2968265-463a-4d01-b765-cc4536241f65" width="17.9%"/>   
+  <img src="https://github.com/user-attachments/assets/52a1c971-fae9-4f95-9b5d-2768dfa6500d" width="18.8%"/>
+</p>
    
