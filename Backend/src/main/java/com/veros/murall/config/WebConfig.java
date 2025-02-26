@@ -1,4 +1,4 @@
-package com.cesar_brasfi.veros_brasfi.config;
+package com.veros.murall.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +15,7 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(
-                                "http://localhost:3000", // Frontend Next.js local
-                                "https://brasfi.org" // Produção
+                                "http://localhost:3000" // Frontend Next.js local
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")

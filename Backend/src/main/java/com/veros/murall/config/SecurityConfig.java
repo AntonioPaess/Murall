@@ -1,4 +1,4 @@
-package com.cesar_brasfi.veros_brasfi.config;
+package com.veros.murall.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
