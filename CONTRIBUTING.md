@@ -24,22 +24,22 @@ Se você tem uma ideia para melhorar o Murall ou adicionar uma nova funcionalida
 Se você deseja contribuir com código para o Murall, siga estas etapas:
 
 1. Faça um fork do repositório no GitHub.
-
 2. Clone seu fork para sua máquina local.
+3. Certifique-se de estar na branch **develop**, que é usada para desenvolvimento e deploy contínuo:
+   ```bash
+   git checkout develop
 
-3. Crie uma nova branch para sua alteração:
+4. Crie uma nova branch a partir da develop para sua alteração:
    ```bash
    git checkout -b minha-alteracao
-4. Faça suas alterações no código.
 
-5. Certifique-se de que seu código siga as diretrizes de estilo e passe nos testes.
+5. Faça suas alterações no código.
+6. Certifique-se de que seu código siga as diretrizes de estilo e passe nos testes.
+7. Commit suas alterações com uma mensagem clara e descritiva.
+8. Push sua branch para seu fork no GitHub:
 
-6. Commit suas alterações com uma mensagem clara e descritiva.
-
-7. Push sua branch para seu fork no GitHub:
-   ```bash
-   git push origin minha-alteracao
-8. Abra um pull request no repositório original, descrevendo suas alterações e referenciando qualquer issue relevante.
+9. Abra um pull request no repositório original, direcionando-o para a branch develop, e descreva suas alterações, referenciando qualquer issue relevante.
+    - Nota: Todas as contribuições devem ser baseadas na branch develop. A branch main é reservada para a versão estável e oficial do projeto, e merges para ela só          ocorrem após validação na develop.
 
 ## Diretrizes de Código
 
