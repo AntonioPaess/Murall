@@ -65,8 +65,13 @@ O Murall tem como objetivo capacitar donos de sites pequenos e independentes, of
 - A aplicação estará disponível em http://localhost:3000. 🎨
 
 
+## Fluxo de Trabalho 🌊
+
+Nosso time trabalha utilizando uma branch **`develop`** para desenvolvimento e deploy contínuo em um ambiente de testes. Todas as alterações e funcionalidades são inicialmente implementadas na branch **`develop`**. Após validação e garantia de que tudo está funcionando corretamente, realizamos o merge com a branch **`main`**, que reflete a versão estável e oficial do projeto. Certifique-se de basear suas contribuições na branch **`develop`** ao enviar pull requests.
+
+
 ## Contribuição 🤝
-Nós valorizamos contribuições para o Murall! Por favor, leia nosso arquivo CONTRIBUTING.md para diretrizes sobre como contribuir. Note que todas as contribuições devem estar de acordo com a Licença GPL 3.0. 💡
+Nós valorizamos contribuições para o Murall! Por favor, leia nosso arquivo [CONTRIBUTING.md](https://github.com/AntonioPaess/Murall/blob/main/CONTRIBUTING.md) para diretrizes sobre como contribuir. Note que todas as contribuições devem estar de acordo com a Licença GPL 3.0. 💡
 
 ## Licença 📜
 Este projeto é licenciado sob a GNU General Public License v3.0. Veja o arquivo LICENSE para mais detalhes ou visite https://www.gnu.org/licenses/gpl-3.0.en.html para a versão completa da licença. 🗳️
