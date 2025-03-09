@@ -1,3 +1,4 @@
+
 # Murall - Anúncios Comunitários 🌐
 
 Murall é uma rede de anúncios comunitária projetada para websites pequenos e independentes. A plataforma permite que donos de sites troquem espaços de anúncios entre si, promovendo um ecossistema de publicidade justo e inclusivo. 🚀
@@ -89,4 +90,11 @@ O projeto Murall é desenvolvido pela equipe VEROS, composta por profissionais t
 ### Design 🎨
 
 <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;"> <a href="https://github.com/Belacv15" style="text-decoration: none; color: black; text-align: center;"> <img src="https://avatars.githubusercontent.com/u/169161718?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Isabela Vieira">  </a> <a href="https://github.com/fluskas43" style="text-decoration: none; color: black; text-align: center;"> <img src="https://avatars.githubusercontent.com/u/116669790?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Lucas Cortez">  </a> <a href="https://github.com/maduuu-ai" style="text-decoration: none; color: black; text-align: center;"> <img src="https://avatars.githubusercontent.com/u/200122211?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Maria Eduarda Lima">  </a> <a href="https://github.com/tsmsXD" style="text-decoration: none; color: black; text-align: center;"> <img src="https://avatars.githubusercontent.com/u/200014297?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Thiago Soares">  </a> <a href="https://github.com/vesff0" style="text-decoration: none; color: black; text-align: center;"> <img src="https://avatars.githubusercontent.com/u/49535009?v=4" style="border-radius: 50%; width: 80px; height: 80px;" alt="Foto de Vinicius Santana">  </a> </div>
+
+
+# Solution Made By VEROS
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b2968265-463a-4d01-b765-cc4536241f65" width="18%"/>   
+</p>
    
