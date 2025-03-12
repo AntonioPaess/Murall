@@ -26,7 +26,7 @@ export default function Navbar() {
       </div>
 
       <div className="hidden md:flex items-center space-x-4">
-        <Link href={"/login"}>
+        <Link href={"/signin"}>
           <Button variant="ghost" className="text-white hover:text-purple-400">
             Login
           </Button>
