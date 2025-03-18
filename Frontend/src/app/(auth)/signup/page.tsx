@@ -8,7 +8,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import toast from "react-hot-toast";
+import { toast } from "sonner"
 import {
   Card,
   CardContent,
@@ -37,6 +37,7 @@ const Register = () => {
 
     if (username === "" || password === "") {
       toast.error("Ops... Você deixou algum campo vazio.");
+      setIsLoading(false);
       return;
     }
 

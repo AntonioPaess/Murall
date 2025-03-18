@@ -9,7 +9,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import toast from "react-hot-toast"
+import { toast } from "sonner"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import authService from "@/services/auth.service"
 import { useRouter } from "next/navigation"
@@ -29,6 +29,7 @@ const Login = () => {
 
     if (username === "" || password === "") {
       toast.error("Ops... Você deixou algum campo vazio.")
+      setIsLoading(false);
       return
     }
     try {

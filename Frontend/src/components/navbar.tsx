@@ -31,7 +31,7 @@ export default function Navbar() {
             Login
           </Button>
         </Link>
-        <Link href={"/register"}>
+        <Link href={"/signup"}>
           <Button className="bg-purple-600 hover:bg-purple-700 text-white">
             Cadastre-se
           </Button>

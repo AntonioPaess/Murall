@@ -4,6 +4,7 @@ package com.veros.murall.service;
 import com.veros.murall.model.user.User;
 import com.veros.murall.model.user.dto.RegisterRequest;
 import com.veros.murall.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,5 +42,9 @@ public class UserService implements UserDetailsService {
                 user.getPassword(),
                 new ArrayList<>()
         );
+    }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
     }
 }
