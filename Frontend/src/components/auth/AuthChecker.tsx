@@ -24,7 +24,7 @@ export default function AuthChecker({
         setTimeout(() => {
             toast.warning("Faça login para acessar a página");
             router.push("/signin");
-        }, 1000);
+        }, 500);
         return;
     }
 

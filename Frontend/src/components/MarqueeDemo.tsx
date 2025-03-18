@@ -1,32 +1,47 @@
 import {
-    Marquee,
-    MarqueeItem,
-    MarqueeFade,
-    MarqueeContent
-  } from "@/components/ui/marquee"
+  Marquee,
+  MarqueeItem,
+  MarqueeFade,
+  MarqueeContent,
+} from "@/components/ui/marquee";
 
-  import Image from "next/image"
+import Image from "next/image";
 
-  const Logos = {
-    cesar: {
-        href: "/logo-cesar-school-br.png",
-        alt: "CESAR School",
-    }
-    
-  }
-  
-  export const MarqueeDemo = () => {
-    return (
-      <Marquee>
-        <MarqueeFade side="left" />
-        <MarqueeFade side="right" />
-        <MarqueeContent>
-          {new Array(10).fill(null).map((_, index) => (
-            <MarqueeItem key={index} className="w-24 mr-6 h-24">
-                <Image src={Logos.cesar.href} alt={Logos.cesar.alt} width={128} height={128}/>
-            </MarqueeItem>
-          ))}
-        </MarqueeContent>
-      </Marquee>
-    )
-  }
+const Logos = {
+  cesar: {
+    href: "/Logo_CESAR.png",
+    alt: "CESAR School",
+    width: 270,
+    height: 246,
+  },
+  gec: {
+    href: "/lugo-gec2sl.png",
+    alt: "GEC",
+    width: 998,
+    height: 250,
+  },
+};
+
+export const MarqueeDemo = () => {
+  return (
+    <Marquee>
+      <MarqueeFade side="left" />
+      <MarqueeFade side="right" />
+      <MarqueeContent>
+        {Object.values(Logos).map((logo, index) => (
+          <MarqueeItem key={index} className="mx-6 flex items-center">
+            <div className="h-10 max-w-xs flex items-center">
+              <Image
+                src={logo.href}
+                alt={logo.alt}
+                width={logo.width}
+                height={logo.height}
+                className="h-full w-auto object-contain"
+              />
+            </div>
+          </MarqueeItem>
+        ))}
+      </MarqueeContent>
+    </Marquee>
+  );
+};
