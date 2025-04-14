@@ -22,9 +22,10 @@ export const authService = {
     async register(data: RegisterRequest): Promise<String> {
         try {
             const response = await httpClient.post("/api/auth/register", data);
-            return response.data();
+            const dataR = response.data;
+            return dataR;
         } catch (error: any) {
-            throw new Error("Erro ao fazer login: " + (error.response?.data | error.message));
+            throw new Error("Erro ao fazer cadastro: " + (error.response?.data || error.message));
         }
     },
     
