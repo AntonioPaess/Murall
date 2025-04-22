@@ -41,7 +41,7 @@ public class User implements UserDetails {
     private Date createdAt;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "varchar(255) default 'ATIVO'")
+    @Column(nullable = false)
     private UserSituation situation;
 
     @PrePersist
