@@ -1,14 +1,17 @@
 package com.veros.murall.service;
 
 
+import com.veros.murall.model.enums.UserSituation;
 import com.veros.murall.model.user.User;
 import com.veros.murall.model.user.dto.RegisterRequest;
 import com.veros.murall.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,18 +22,28 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private MailService mailService;
+
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User createUser(RegisterRequest request) {
+    public void createUser(RegisterRequest request) {
         User user = new User();
         user.setUsername(request.username());
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
+        user.setSituation(UserSituation.PENDENTE);
         user.setRole(request.role());
-        return userRepository.save(user);
+        userRepository.save(user);
+        
+        mailService.VerificacaoConta(request.email(), 
+        "Novo usuario cadastrado",
+        "Você está cadastrado no MurAll!");
+        
+        
     }
 
     @Override
