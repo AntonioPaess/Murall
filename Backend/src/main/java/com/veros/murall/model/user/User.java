@@ -1,6 +1,8 @@
 package com.veros.murall.model.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.veros.murall.model.enums.UserSituation;
+
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,6 +39,10 @@ public class User implements UserDetails {
     @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "dd/MM/yyyy", timezone = "America/Sao_Paulo")
     private Date createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserSituation situation;
 
     @PrePersist
     protected void onCreate() {
@@ -108,4 +114,14 @@ public class User implements UserDetails {
     public void setRole(UserRole role) {
         this.role = role;
     }
+
+    public UserSituation getSituation() {
+        return situation;
+    }
+    
+    public void setSituation(UserSituation situation) {
+        this.situation = situation;
+    }
+    
+   
 }
