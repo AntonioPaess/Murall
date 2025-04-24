@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { Outfit } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 })
 
 export const metadata: Metadata = {
   title: "Murall",
-  description: "Sua comunidade de propagandas.",
+  description: "Uma nova abordagem para anúncios.",
 };
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${outfit.variable} antialiased`}>
+      <body className={`${inter.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
           <Toaster position="top-right" />

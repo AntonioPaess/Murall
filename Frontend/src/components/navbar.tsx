@@ -21,7 +21,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { href: "/features", label: "Nossa Missão" },
+    { href: "/our-mission", label: "Nossa Missão" },
     { href: "/how-it-works", label: "Como Funciona" },
     { href: "/privacy", label: "Política de Privacidade" },
     { href: "/support", label: "Suporte" },
@@ -31,7 +31,7 @@ export default function Navbar() {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-sm border-b border-border bg-background/80">
+      className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b border-border bg-background/90 backdrop-blur-sm">
       <Link href="/" className="flex items-center space-x-2">
         <Image
           src={
@@ -49,7 +49,7 @@ export default function Navbar() {
           <Link
             key={link.href}
             href={link.href}
-            className="font-normal text-primary-foreground hover:text-primary transition-colors"
+            className="text-muted-foreground hover:text-primary transition-colors"
             onClick={() => setIsOpen(false)}>
             {link.label}
           </Link>

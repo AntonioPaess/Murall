@@ -97,11 +97,12 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-outfit), sans-serif; /* Aplicando a fonte Outfit */
+    font-family: var(--font-inter), sans-serif;
   }
 
   html {
-    font-family: var(--font-outfit), sans-serif; /* Garantindo que a fonte seja aplicada no HTML */
+    font-family: var(--font-inter), sans-serif;
+    scroll-behavior: smooth;
   }
 }
 

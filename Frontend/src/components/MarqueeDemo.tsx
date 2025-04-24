@@ -6,7 +6,6 @@ import {
   MarqueeFade,
   MarqueeContent,
 } from "@/components/ui/marquee";
-import { useTheme } from "next-themes";
 import Image from "next/image";
 
 const Logos = {
@@ -25,10 +24,8 @@ const Logos = {
 };
 
 export const MarqueeDemo = () => {
-  const { theme } = useTheme();
-
   return (
-    <Marquee>
+    <Marquee className="lg:w-[50%] sm:w-full">
       <MarqueeFade side="left" />
       <MarqueeFade side="right" />
       <MarqueeContent>

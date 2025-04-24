@@ -24,25 +24,45 @@ function Hero() {
   }, [titleNumber, titles]);
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
-      <div className="absolute inset-0 w-full min-h-screen bg-[radial-gradient(ellipse_at_top_right,_rgba(0,102,255,0.25),_rgba(38,38,128,0.15),_transparent)] pointer-events-none"></div>
+    <div className="relative w-full overflow-hidden pt-24 pb-24">
+      {/* Background elements */}
+      <div className="absolute top-0 left-0 w-96 h-96 rounded-full bg-primary/5 blur-3xl -translate-x-1/2"></div>
+      <div className="absolute top-40 right-0 w-80 h-80 rounded-full bg-accent/10 blur-3xl translate-x-1/3"></div>
 
-      <div className="container relative z-10 mx-auto">
-        <div className="flex gap-8 py-12 lg:py-12 items-center justify-center flex-col">
-          <div>
+      <div className="container relative z-10 mx-auto px-4">
+        <div className="flex items-center justify-center flex-col">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="mb-6"
+          >
             <Button
               variant="secondary"
               size="sm"
-              className="gap-4 backdrop-blur-sm bg-secondary/80">
+              className="gap-4 backdrop-blur-sm bg-secondary/80 hover:bg-secondary/90 transition-all"
+            >
               Veja sites que usam o Murall <MoveRight className="w-4 h-4" />
             </Button>
-          </div>
-          <div className="flex gap-4 flex-col">
-            <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
-              <span className="text-spektr-cyan-50 font-semibold text-primary-foreground relative">
-                Aumente o impacto do seu blog com Murall
+          </motion.div>
+
+          <div className="flex gap-6 flex-col">
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-5xl md:text-7xl max-w-3xl tracking-tighter text-center font-regular"
+            >
+              <span className="font-semibold text-primary-foreground block">
+                Aumente o impacto
+              </span>
+              <span className="font-semibold text-primary-foreground block">
+                do seu blog
+              </span>
+              <span className="text-primary font-semibold block relative">
+                com Murall
                 <motion.div
-                  className="absolute hidden md:flex md:-right-6 md:-top-6 text-primary"
+                  className="absolute -right-2 -top-32 text-primary"
                   animate={{
                     rotate: [0, 10, 0, -10, 0],
                     scale: [1, 1.1, 1, 1.1, 1],
@@ -51,8 +71,9 @@ function Hero() {
                     duration: 5,
                     repeat: Number.POSITIVE_INFINITY,
                     ease: "easeInOut",
-                  }}>
-                  <Sparkles className="h-6 w-6" />
+                  }}
+                >
+                  <Sparkles className="md:flex sm:hidden h-6 w-6" />
                 </motion.div>
               </span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
@@ -66,41 +87,51 @@ function Hero() {
                     animate={
                       titleNumber === index
                         ? {
-                            y: 0,
-                            opacity: 1,
-                          }
+                          y: 0,
+                          opacity: 1,
+                        }
                         : {
-                            y: titleNumber > index ? -150 : 150,
-                            opacity: 0,
-                          }
-                    }>
+                          y: titleNumber > index ? -150 : 150,
+                          opacity: 0,
+                        }
+                    }
+                  >
                     {title}
                   </motion.span>
                 ))}
               </span>
-            </h1>
+            </motion.h1>
 
-            <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center backdrop-blur-sm bg-background/30 p-4 rounded-lg shadow-sm">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center backdrop-blur-sm bg-background/30 p-5 rounded-xl shadow-sm border border-border/30"
+            >
               Crie, compartilhe e apoie iniciativas locais. Com o Murall, você
               pode divulgar sua página e ajudar outros a crescerem, promovendo
               um espaço de colaboração e visibilidade para todos.
-            </p>
+            </motion.p>
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex flex-col sm:flex-row items-center justify-center w-full gap-4 mt-4">
+              className="flex flex-col sm:flex-row items-center justify-center w-full gap-4 mt-2"
+            >
               <div className="flex sm:flex-row flex-col gap-3">
                 <Button
                   size="lg"
-                  className="bg-primary hover:brightness-110 text-primary-foreground px-8 w-full sm:w-auto">
+                  className="bg-primary hover:brightness-110 text-primary-foreground px-8 w-full sm:w-auto transition-all duration-300"
+                >
                   <FileText className="mr-2 h-5 w-5" />
                   Nossa Documentação
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="text-primary hover:text-primary-foreground border-primary hover:bg-primary/10 w-full sm:w-auto">
+                  className="text-primary hover:text-primary-foreground border-primary hover:bg-primary/10 w-full sm:w-auto transition-all duration-300"
+                >
                   <Sparkles className="mr-2 h-5 w-5" />
                   Veja Exemplos
                 </Button>
