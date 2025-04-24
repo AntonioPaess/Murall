@@ -145,10 +145,10 @@ const Register = () => {
                 <h2 className="text-primary-foreground text-2xl md:text-3xl font-bold mb-2">
                   Bem-vindo ao MurALL
                 </h2>
-                <p className="text-muted-foreground text-sm md:text-base">
+                <p className="text-white text-sm md:text-base">
                   Sua plataforma para criar e compartilhar conteúdo visual
                 </p>
-              </div>
+            </div>
             </motion.div>
           </div>
         </motion.div>
