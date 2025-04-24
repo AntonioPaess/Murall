@@ -1,4 +1,4 @@
-package com.veros.murall.model.enums;
+package com.veros.murall.model.user;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

@@ -44,12 +44,11 @@ public class AuthController {
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
         userService.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Usuário cadastrado com sucesso!");
+                .body("Um e-mail de verificação foi enviado para seu e-mail. Por favor, verifique sua caixa de entrada para ativar sua conta.");
     }
 
-    @GetMapping("/verifiedUser/{uuid}")
+    @GetMapping("/verifyUser/{uuid}")
     public String verifiedRegister(@PathVariable("uuid") String uuid){
         return userService.verifierUser(uuid);
-        
     }
 }

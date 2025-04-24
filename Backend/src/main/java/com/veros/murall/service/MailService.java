@@ -1,39 +1,40 @@
 package com.veros.murall.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MailService {
 
+    private final JavaMailSender mailSender;
 
-@Autowired
-    private JavaMailSender mailSender;
+    @Value("${GMAIL_APP_EMAIL}")
+    private String senderEmail;
 
-    @Value("${spring.mail.username}")
-    private String remetente;
+    public MailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
-    public String VerificacaoConta(String destinatario, String assunto, String mensagem){
+    public void sendAccountVerificationEmail(String recipientEmail, String subject, String htmlContent) {
         try {
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom(remetente);
-            simpleMailMessage.setTo(destinatario);
-            simpleMailMessage.setSubject(assunto);
-            simpleMailMessage.setText(mensagem);
-            
-            System.out.println("Tentando enviar email para: " + destinatario);
-            mailSender.send(simpleMailMessage);
-            System.out.println("Email enviado com sucesso para: " + destinatario);
-            
-            return "Email enviado";
-        } catch (Exception e) {
-            System.err.println("ERRO AO ENVIAR EMAIL: " + e.getMessage());
-            e.printStackTrace(); // Importante para ver o stack trace completo
-            return "Erro ao tentar enviar email: " + e.getMessage();
-        }
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-}
+            helper.setFrom(senderEmail);
+            helper.setTo(recipientEmail);
+            helper.setSubject(subject);
+            helper.setText(htmlContent, true);
+
+            System.out.println("Attempting to send HTML email to: " + recipientEmail);
+            mailSender.send(message);
+            System.out.println("E-mail successfully sent to: " + recipientEmail);
+        } catch (MessagingException e) {
+            System.err.println("ERROR SENDING EMAIL: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

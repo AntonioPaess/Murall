@@ -8,17 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MurallApplication {
 
     public static void main(String[] args) {
-        
-        Dotenv dotenv = Dotenv.configure()
-                            .directory(".") 
-                            .load();
-        
-        
-        dotenv.entries().forEach(entry -> {
-            System.setProperty(entry.getKey(), entry.getValue());
-        });
-        
-        // Inicia a aplicação Spring Boot
         SpringApplication.run(MurallApplication.class, args);
     }
 }

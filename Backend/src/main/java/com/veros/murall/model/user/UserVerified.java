@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "NPL_VERIFIED_USER")
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Table(name = "NPL_VERIFIED_USER")
 public class UserVerified {
 
     @Id
