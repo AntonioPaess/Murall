@@ -19,6 +19,7 @@ import {
 import authService from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,6 +28,7 @@ const Register = () => {
   const [email, setEmail] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const { theme } = useTheme();
 
   const router = useRouter();
 
@@ -109,14 +111,20 @@ const Register = () => {
         className="bg-card w-full md:w-[55%] border-b md:border-b-0 md:border-r border-border min-h-screen flex flex-col"
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+        transition={{ duration: 0.5 }}>
         <div className="p-8 md:p-12">
-          <Link href="/" className="flex items-center space-x-2">
-            <motion.div whileHover={{ rotate: 15 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Presentation className="rotate-180 w-8 h-8 md:w-11 md:h-11 text-primary" />
-            </motion.div>
-            <span className="text-primary-foreground text-xl font-bold">MurALL</span>
+          <Link href="/" className="">
+            <Image
+              src={
+                theme === "dark"
+                  ? "/LogoGrandeDark.png"
+                  : "/LogoGrandeLigth.png"
+              }
+              alt="Murall Logo"
+              width={110}
+              height={110}
+              priority
+            />
           </Link>
         </div>
 
@@ -124,15 +132,13 @@ const Register = () => {
           className="flex justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-        >
+          transition={{ delay: 0.3, duration: 0.5 }}>
           <div className="w-full max-w-2xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.5 }}
-              className="relative overflow-hidden rounded-[2.5rem] aspect-[4/3] w-full"
-            >
+              className="relative overflow-hidden rounded-[2.5rem] aspect-[4/3] w-full">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-primary/60 mix-blend-overlay z-10 rounded-[2.5rem]" />
               <Image
                 src="https://images.pexels.com/photos/1031700/pexels-photo-1031700.jpeg"
@@ -148,7 +154,7 @@ const Register = () => {
                 <p className="text-white text-sm md:text-base">
                   Sua plataforma para criar e compartilhar conteúdo visual
                 </p>
-            </div>
+              </div>
             </motion.div>
           </div>
         </motion.div>
@@ -158,8 +164,7 @@ const Register = () => {
         className="w-full md:w-[45%] min-h-screen flex items-center justify-center p-8 md:p-12"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+        transition={{ duration: 0.5 }}>
         <Card className="w-full max-w-md bg-card/80 backdrop-blur-sm border-border shadow-xl">
           <CardHeader>
             <CardTitle className="text-primary-foreground text-2xl">
@@ -173,10 +178,14 @@ const Register = () => {
             <form>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground" htmlFor="email">
+                  <label
+                    className="text-sm font-medium text-muted-foreground"
+                    htmlFor="email">
                     Email
                   </label>
-                  <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                  <motion.div
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}>
                     <Input
                       id="email"
                       placeholder="email@email.com"
@@ -188,10 +197,14 @@ const Register = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground" htmlFor="user">
+                  <label
+                    className="text-sm font-medium text-muted-foreground"
+                    htmlFor="user">
                     Usuário
                   </label>
-                  <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                  <motion.div
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}>
                     <Input
                       id="user"
                       placeholder="Seu usuário"
@@ -203,10 +216,15 @@ const Register = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground" htmlFor="password">
+                  <label
+                    className="text-sm font-medium text-muted-foreground"
+                    htmlFor="password">
                     Senha
                   </label>
-                  <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="relative">
+                  <motion.div
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="relative">
                     <Input
                       id="password"
                       placeholder="••••••••"
@@ -216,18 +234,26 @@ const Register = () => {
                     />
                     <div
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                    >
-                      {showPassword ? <Eye className="text-primary-foreground" /> : <EyeOff className="text-primary-foreground" />}
+                      onClick={() => setShowPassword((prev) => !prev)}>
+                      {showPassword ? (
+                        <Eye className="text-primary-foreground" />
+                      ) : (
+                        <EyeOff className="text-primary-foreground" />
+                      )}
                     </div>
                   </motion.div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground" htmlFor="confirm-password">
+                  <label
+                    className="text-sm font-medium text-muted-foreground"
+                    htmlFor="confirm-password">
                     Confirmar Senha
                   </label>
-                  <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="relative">
+                  <motion.div
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="relative">
                     <Input
                       id="confirm-password"
                       placeholder="••••••••"
@@ -238,14 +264,17 @@ const Register = () => {
                   </motion.div>
                 </div>
 
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="pt-2">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="pt-2">
                   <Button
                     onClick={handleRegister}
-                    className="w-full bg-primary text-primary-foreground hover:brightness-110 font-medium py-6"
-                  >
+                    className="w-full bg-primary text-primary-foreground hover:brightness-110 font-medium py-6">
                     {isLoading ? (
                       <div className="flex flex-row gap-2 items-center">
-                        <LoaderCircle className="w-6 h-6 animate-spin" /> Carregando...
+                        <LoaderCircle className="w-6 h-6 animate-spin" />{" "}
+                        Carregando...
                       </div>
                     ) : (
                       "Cadastrar"
@@ -258,7 +287,9 @@ const Register = () => {
           <CardFooter className="flex flex-col space-y-4 border-t border-border pt-4">
             <p className="text-center text-sm text-muted-foreground">
               Já possui uma conta?{" "}
-              <Link href="/signin" className="text-primary hover:underline font-medium">
+              <Link
+                href="/signin"
+                className="text-primary hover:underline font-medium">
                 Entrar
               </Link>
             </p>

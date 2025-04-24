@@ -1,10 +1,12 @@
+"use client";
+
 import {
   Marquee,
   MarqueeItem,
   MarqueeFade,
   MarqueeContent,
 } from "@/components/ui/marquee";
-
+import { useTheme } from "next-themes";
 import Image from "next/image";
 
 const Logos = {
@@ -23,6 +25,8 @@ const Logos = {
 };
 
 export const MarqueeDemo = () => {
+  const { theme } = useTheme();
+
   return (
     <Marquee>
       <MarqueeFade side="left" />
@@ -32,11 +36,11 @@ export const MarqueeDemo = () => {
           <MarqueeItem key={index} className="mx-6 flex items-center">
             <div className="h-10 max-w-xs flex items-center">
               <Image
-                src={logo.href}
+                src={logo.href || "/placeholder.svg"}
                 alt={logo.alt}
                 width={logo.width}
                 height={logo.height}
-                className="h-full w-auto object-contain"
+                className="h-full w-auto object-contain transition-all duration-200"
               />
             </div>
           </MarqueeItem>

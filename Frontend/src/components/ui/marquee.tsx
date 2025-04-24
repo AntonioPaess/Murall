@@ -41,7 +41,7 @@ export const MarqueeFade = ({
 }: MarqueeFadeProps) => (
   <div
     className={cn(
-      'absolute top-0 bottom-0 z-10 h-full w-24 from-[#083d6d] to-transparent',
+      'absolute top-0 bottom-0 z-10 h-full w-24 from-[var(--gradient-color)] to-transparent',
       side === 'left' ? 'left-0 bg-gradient-to-r' : 'right-0 bg-gradient-to-l',
       className
     )}

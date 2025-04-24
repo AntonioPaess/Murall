@@ -2,100 +2,117 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   :root {
-    --background: 202 31% 71%; 
+    --background: 202 31% 71%;
     --foreground: 220 86% 23%;
-  
-    --card: 202 31% 61%;        
+
+    --card: 202 31% 61%;
     --card-foreground: 202 80% 92%;
-  
+
     --popover: 220 13% 81%;
     --popover-foreground: 209 86% 23%;
-  
-    --primary: 227 61% 48%;     
+
+    --primary: 227 61% 48%;
     --primary-foreground: 0 0% 100%;
-  
+
     --secondary: 206 13% 81%;
     --secondary-foreground: 209 86% 23%;
-  
+
     --muted: 200 31% 71%;
     --muted-foreground: 209 86% 23%;
-  
-    --accent: 198 50% 55%;
+
+    --accent: 198 50% 75%;
     --accent-foreground: 220 86% 23%;
-  
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-  
-    --border: 220 13% 70%;
+
+    --border: 220 13% 60%;
     --input: 220 13% 70%;
     --ring: 207 61% 48%;
-  
+
     --chart-1: 207 61% 48%;
     --chart-2: 210 55% 65%;
     --chart-3: 210 35% 35%;
     --chart-4: 213 60% 70%;
     --chart-5: 215 55% 55%;
-  
+
     --radius: 0.5rem;
-    --gradient-color: #2f86c8;
-    --sparkles-color: #2f86c8;
+    /* Gradientes usando variáveis HSL em vez de hex */
+    --gradient-from: hsl(215, 70%, 45%);
+    --gradient-to: transparent;
+    --sparkles-color: hsl(215, 70%, 45%);
+
+    /* Definindo a variável de fonte Outfit */
+    --font-outfit: "Outfit", sans-serif;
   }
-  
-  
-  
-  
 
   .dark {
     --background: 217 45% 9%;
     --foreground: 220 17% 81%;
-  
+
     --card: 217 50% 6%;
     --card-foreground: 220 17% 81%;
-  
+
     --popover: 217 45% 13%;
     --popover-foreground: 220 17% 81%;
-  
+
     --primary: 207 60% 48%;
     --primary-foreground: 0 0% 100%;
-  
+
     --secondary: 210 86% 23%;
     --secondary-foreground: 0 0% 100%;
-  
+
     --muted: 217 30% 20%;
     --muted-foreground: 220 17% 60%;
-  
-    --accent: 250 40% 15%;
+
+    --accent: 210 40% 20%;
     --accent-foreground: 0 0% 15%;
-  
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
-  
+
     --border: 217 30% 25%;
     --input: 217 30% 25%;
     --ring: 207 60% 48%;
-  
+
     --chart-1: 207 60% 48%;
     --chart-2: 200 31% 72%;
     --chart-3: 210 86% 23%;
     --chart-4: 220 17% 81%;
     --chart-5: 217 30% 50%;
-  
-    --gradient-color: #083d6d;
-    --sparkles-color: #ffffff;
+
+    /* Gradientes usando variáveis HSL em vez de hex */
+    --gradient-from: hsl(207, 60%, 25%);
+    --gradient-to: transparent;
+    --sparkles-color: hsl(0, 0%, 100%);
   }
-  
 }
-
-
 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-outfit), sans-serif; /* Aplicando a fonte Outfit */
   }
+
+  html {
+    font-family: var(--font-outfit), sans-serif; /* Garantindo que a fonte seja aplicada no HTML */
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
