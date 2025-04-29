@@ -56,6 +56,12 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
+
+    @Override
+    public boolean isEnabled() {
+        return this.situation == UserSituation.ATIVO;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
