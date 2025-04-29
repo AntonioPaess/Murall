@@ -2,8 +2,8 @@ import PublicRouteChecker from "@/components/auth/PublicRouteChecker";
 import CTASection from "@/components/CTASection";
 import Features from "@/components/Features";
 import Footer from "@/components/Footer";
-import { Hero } from "@/components/Hero";
-import Navbar from "@/components/Navbar";
+import { Hero } from "@/components/hero";
+import Navbar from "@/components/navbar";
 
 
 export default function Home() {

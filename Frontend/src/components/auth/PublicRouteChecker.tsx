@@ -44,7 +44,7 @@ export default function PublicRouteChecker({
     return (
       <div className="min-h-screen flex flex-col md:flex-row bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
         <div className="flex-1 flex flex-col justify-center items-center">
-          <div className="w-12 h-12 border-4 border-purple-700/30 border-t-purple-700 rounded-full animate-spin"></div>
+          <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
         </div>
       </div>
     );

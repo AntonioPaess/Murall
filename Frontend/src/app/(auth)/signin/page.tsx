@@ -46,7 +46,21 @@ const Login = () => {
       router.push("/dashboard");
     } catch (error: any) {
       console.error(error);
-      toast.error(error.message);
+      toast.error(
+        error.message ===
+          "Erro ao fazer login: Usuário inativo. Verifique sua conta." ? (
+          <div>
+            {error.message}{" "}
+            <Link
+              href="/verify/resend"
+              className="text-primary hover:underline font-medium">
+              Reenviar email de verificação
+            </Link>
+          </div>
+        ) : (
+          error.message
+        )
+      );
     } finally {
       setIsLoading(false);
     }
