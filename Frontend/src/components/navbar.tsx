@@ -9,6 +9,7 @@ import type React from "react";
 import { ThemeToggle } from "./ThemeToggle";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+
 import {
   Sheet,
   SheetContent,
@@ -16,7 +17,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-export default function Navbar() {
+interface NavbarProps {
+  pageRefProp?: string;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ pageRefProp }) => {
   const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,7 +31,7 @@ export default function Navbar() {
     { href: "/privacy", label: "Política de Privacidade" },
     { href: "/support", label: "Suporte" },
   ];
-
+  
   return (
     <motion.nav
       initial={{ y: -100 }}
@@ -49,7 +54,9 @@ export default function Navbar() {
           <Link
             key={link.href}
             href={link.href}
-            className="text-muted-foreground hover:text-primary transition-colors"
+            className={pageRefProp === link.label
+              ? "text-primary text-[17.5px]"
+              : "text-[17.5px] text-muted-foreground hover:text-primary transition-colors"}
             onClick={() => setIsOpen(false)}>
             {link.label}
           </Link>
@@ -105,7 +112,9 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-lg text-primary-foreground hover:text-primary transition-colors"
+                    className={pageRefProp === link.label
+                      ? "text-primary text-[17.5px]"
+                      : "text-[17.5px] text-muted-foreground hover:text-primary transition-colors"}
                     onClick={() => setIsOpen(false)}>
                     {link.label}
                   </Link>
@@ -136,3 +145,5 @@ export default function Navbar() {
     </motion.nav>
   );
 }
+
+export default Navbar;
