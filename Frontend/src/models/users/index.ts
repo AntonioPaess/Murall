@@ -5,4 +5,6 @@ export interface User {
     role?: string;
     createdAt?: string;
     situation?: string;
+    notifications?: number;
+    avatar?: string
 }

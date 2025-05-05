@@ -1,22 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import authService from "@/services/auth.service";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-
 const Dashbooard = () => {
-  const router = useRouter();
-  const handleLogout = async () => {
-    authService.logout();
-    router.push("/")
-    toast.success("Volte sempre!");
-  };
-
   return (
-    <div className="min-h-screen bg-black">
-      <h1 className="text-3xl text-white">usuario autenticado kkkkk</h1>
-      <Button onClick={handleLogout}>Logout</Button>
+    <div className="min-h-screen bg-background p-16 mt-4">
+      <h1 className="text-3xl text-white bg-red-900 w-full">usuario autenticado kkkkk</h1>
     </div>
   );
 };
