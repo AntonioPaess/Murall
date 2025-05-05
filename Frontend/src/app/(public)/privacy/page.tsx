@@ -1,33 +1,36 @@
 "use client";
 
-import React, { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { LockKeyhole, FileText, UserCheck } from 'lucide-react';
-import Link from 'next/link';
+import React, { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/Footer";
+import { LockKeyhole, FileText, UserCheck } from "lucide-react";
+import Link from "next/link";
 
 const PrivacyPolicyPage = () => {
   const sectionsRef = useRef(null);
-  
+
   const sectionsInView = useInView(sectionsRef, { once: true, amount: 0.1 });
 
   const privacySections = [
     {
       icon: <FileText className="h-8 w-8" />,
       title: "Coleta de Dados",
-      content: "Coletamos apenas informações necessárias para o funcionamento da plataforma. Isso inclui dados fornecidos durante o cadastro (nome, email, URL do blog) e dados de uso para melhorar a experiência. Não vendemos ou compartilhamos seus dados com terceiros para fins de marketing."
+      content:
+        "Coletamos apenas informações necessárias para o funcionamento da plataforma. Isso inclui dados fornecidos durante o cadastro (nome, email, URL do blog) e dados de uso para melhorar a experiência. Não vendemos ou compartilhamos seus dados com terceiros para fins de marketing.",
     },
     {
       icon: <LockKeyhole className="h-8 w-8" />,
       title: "Segurança dos Dados",
-      content: "Implementamos medidas técnicas e organizacionais para proteger seus dados pessoais contra acesso não autorizado, perda ou alteração. Utilizamos criptografia de ponta a ponta para todas as informações sensíveis e realizamos auditorias de segurança regulares em nossos sistemas."
+      content:
+        "Implementamos medidas técnicas e organizacionais para proteger seus dados pessoais contra acesso não autorizado, perda ou alteração. Utilizamos criptografia de ponta a ponta para todas as informações sensíveis e realizamos auditorias de segurança regulares em nossos sistemas.",
     },
     {
       icon: <UserCheck className="h-8 w-8" />,
       title: "Seus Direitos",
-      content: "Você tem o direito de acessar, corrigir ou excluir seus dados pessoais a qualquer momento. Também pode solicitar uma cópia de todas as informações que mantemos sobre você. Entre em contato conosco através de contato@murall.com.br para exercer qualquer um desses direitos."
-    }
+      content:
+        "Você tem o direito de acessar, corrigir ou excluir seus dados pessoais a qualquer momento. Também pode solicitar uma cópia de todas as informações que mantemos sobre você. Entre em contato conosco através de contato@murall.com.br para exercer qualquer um desses direitos.",
+    },
   ];
 
   return (
@@ -45,17 +48,17 @@ const PrivacyPolicyPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl md:text-6xl font-bold mb-6 text-primary-foreground tracking-tight"
-            >
+              className="text-4xl md:text-6xl font-bold mb-6 text-primary-foreground tracking-tight">
               Política de <span className="text-primary">Privacidade</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl text-muted-foreground leading-relaxed"
-            >
-              Sua segurança para nós é importante, portanto, somos sempre transparentes com tudo que nossa plataforma provê aos nossos usuários, respeitando sempre suas informações sensíveis.
+              className="text-xl text-muted-foreground leading-relaxed">
+              Sua segurança para nós é importante, portanto, somos sempre
+              transparentes com tudo que nossa plataforma provê aos nossos
+              usuários, respeitando sempre suas informações sensíveis.
             </motion.p>
           </div>
         </div>
@@ -69,10 +72,13 @@ const PrivacyPolicyPage = () => {
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 30 }}
-                  animate={sectionsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  animate={
+                    sectionsInView
+                      ? { opacity: 1, y: 0 }
+                      : { opacity: 0, y: 30 }
+                  }
                   transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
-                  className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-md hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
-                >
+                  className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-md hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
                   <div className="flex flex-col md:flex-row md:items-start gap-4">
                     <div className="bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl p-3 flex-shrink-0">
                       <div className="text-primary">{section.icon}</div>
@@ -81,9 +87,7 @@ const PrivacyPolicyPage = () => {
                       <h3 className="text-xl font-semibold mb-3 text-primary-foreground">
                         {section.title}
                       </h3>
-                      <p className="text-muted-foreground">
-                        {section.content}
-                      </p>
+                      <p className="text-muted-foreground">{section.content}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -92,12 +96,15 @@ const PrivacyPolicyPage = () => {
 
             <motion.div
               initial={{ opacity: 0, y: 30 }}
-              animate={sectionsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              animate={
+                sectionsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+              }
               transition={{ duration: 0.5, delay: 0.6 }}
-              className="mt-12 space-y-8"
-            >
+              className="mt-12 space-y-8">
               <div className="pt-6">
-                <Link href="/support" className="text-primary hover:text-primary/80 transition-colors font-medium">
+                <Link
+                  href="/support"
+                  className="text-primary hover:text-primary/80 transition-colors font-medium">
                   Precisa de ajuda? Visite nossa página de Suporte →
                 </Link>
               </div>
@@ -107,6 +114,6 @@ const PrivacyPolicyPage = () => {
       </section>
       <Footer />
     </div>
-  )
-}
+  );
+};
 export default PrivacyPolicyPage;

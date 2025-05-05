@@ -1,7 +1,6 @@
 "use client";
 
-
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
   Card,

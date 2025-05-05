@@ -1,7 +1,6 @@
 "use client";
 
-
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,14 +28,14 @@ const VerifyResend = () => {
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        >
+        transition={{ duration: 0.8 }}>
         <div className="mt-32 flex items-center justify-center">
           <Card>
             <CardHeader>
               Reenviar email de verificação
               <CardDescription>
-                Insira seu email e reenviaremos o email de verificação caso<br />
+                Insira seu email e reenviaremos o email de verificação caso
+                <br />
                 tenha uma conta na nossa base de dados
               </CardDescription>
             </CardHeader>

@@ -1,43 +1,49 @@
 "use client";
 
-import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { motion } from "framer-motion";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/Footer";
 import {
-  Settings, Lock,
-  MessagesSquare, MousePointerClick
-} from 'lucide-react';
-import CTASection from '@/components/CTASection';
-import Features from '@/components/Features';
-import FAQSection from '@/components/FAQSection';
-import StepsSection from '@/components/StepsSection';
+  Settings,
+  Lock,
+  MessagesSquare,
+  MousePointerClick,
+} from "lucide-react";
+import CTASection from "@/components/CTASection";
+import Features from "@/components/Features";
+import FAQSection from "@/components/FAQSection";
+import StepsSection from "@/components/StepsSection";
 
 const HowItWorksPage = () => {
   const featuresList = [
     {
       icon: <MousePointerClick className="h-10 w-10" />,
       title: "Alcance Direcionado",
-      description: "Nossa tecnologia conecta seu conteúdo aos leitores que realmente têm interesse no seu nicho.",
-      hover: false
+      description:
+        "Nossa tecnologia conecta seu conteúdo aos leitores que realmente têm interesse no seu nicho.",
+      hover: false,
     },
     {
       icon: <MessagesSquare className="h-10 w-10" />,
       title: "Comentários Integrados",
-      description: "Sistema de comentários que facilita o engajamento e o feedback dos leitores de forma centralizada.",
-      hover: false
+      description:
+        "Sistema de comentários que facilita o engajamento e o feedback dos leitores de forma centralizada.",
+      hover: false,
     },
     {
       icon: <Settings className="h-10 w-10" />,
       title: "Personalização Completa",
-      description: "Adapte sua presença na plataforma conforme sua identidade visual e preferências.",
-      hover: false
+      description:
+        "Adapte sua presença na plataforma conforme sua identidade visual e preferências.",
+      hover: false,
     },
     {
       icon: <Lock className="h-10 w-10" />,
       title: "Segurança Garantida",
-      description: "Proteção de dados e conteúdo, assegurando que seu trabalho permaneça sempre seu.",
-      hover: false
-    }
+      description:
+        "Proteção de dados e conteúdo, assegurando que seu trabalho permaneça sempre seu.",
+      hover: false,
+    },
   ];
 
   return (
@@ -55,17 +61,16 @@ const HowItWorksPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl md:text-6xl font-bold mb-6 text-primary-foreground tracking-tight"
-            >
+              className="text-4xl md:text-6xl font-bold mb-6 text-primary-foreground tracking-tight">
               Como <span className="text-primary">Funciona</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl text-muted-foreground leading-relaxed"
-            >
-              Descubra como o Murall pode transformar seu blog e conectar você a uma comunidade vibrante de criadores de conteúdo.
+              className="text-xl text-muted-foreground leading-relaxed">
+              Descubra como o Murall pode transformar seu blog e conectar você a
+              uma comunidade vibrante de criadores de conteúdo.
             </motion.p>
           </div>
         </div>

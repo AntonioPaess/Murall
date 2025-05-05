@@ -47,7 +47,7 @@ const SidebarContent = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "flex-1 overflow-auto px-3 py-6 scrollbar-none",
+        "flex-1 overflow-auto px-3 py-6 scrollbar-hide",
         className
       )}
       {...props}
