@@ -143,7 +143,7 @@ export function AppSidebar({
       bg-gradient-to-b from-background/90 via-background/85 to-background/80
       border-r backdrop-blur-md ${className}`}>
         {/* CONTEÚDO */}
-        <SidebarContent className={`py-4 px-${collapsed ? "2" : "3"}`}>
+        <SidebarContent className={`mt-[105px] py-4 px-${collapsed ? "2" : "3"}`}>
           <SidebarGroup>
             <h3
               className={`text-xs uppercase text-primary font-semibold mb-3 ${
@@ -184,7 +184,7 @@ export function AppSidebar({
                               className={`absolute -top-1 -right-1 h-5 w-5 p-0 rounded-full flex justify-center items-center
                               ${
                                 typeof item.badge === "string"
-                                  ? "bg-secondary"
+                                  ? "bg-primary"
                                   : "bg-primary"
                               } text-white`}>
                               {typeof item.badge === "string"

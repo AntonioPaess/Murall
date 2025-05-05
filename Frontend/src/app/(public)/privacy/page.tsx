@@ -65,6 +65,7 @@ const PrivacyPolicyPage = () => {
       </section>
 
       <section ref={sectionsRef} className="py-16 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background z-0 pointer-events-none" />
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="space-y-10">
@@ -104,7 +105,7 @@ const PrivacyPolicyPage = () => {
               <div className="pt-6">
                 <Link
                   href="/support"
-                  className="text-primary hover:text-primary/80 transition-colors font-medium">
+                  className="text-primary hover:text-primary/80 transition-colors font-medium relative z-10">
                   Precisa de ajuda? Visite nossa página de Suporte →
                 </Link>
               </div>

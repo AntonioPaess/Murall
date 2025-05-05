@@ -23,9 +23,10 @@ const faqs = [
 const FAQSection = () => {
     const faqRef = useRef(null);
     const faqInView = useInView(faqRef, { once: true, amount: 0.3 });
-    
+
     return (
-        <section ref={faqRef} className="py-16 relative overflow-hidden bg-muted/30">
+        <section ref={faqRef} className="py-16 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-muted/30 z-0 pointer-events-none" />
             <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-primary/5 blur-3xl"></div>
             <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-accent/10 blur-3xl"></div>
 
@@ -36,7 +37,7 @@ const FAQSection = () => {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-12"
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary-foreground tracking-tight">
+                    <h2 className="text-3xl md:text-5xl font-bold mb-4 text-primary-foreground tracking-tight">
                         Perguntas <span className="text-primary">Frequentes</span>
                     </h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -64,6 +65,7 @@ const FAQSection = () => {
                     </div>
                 </div>
             </div>
+            <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent via-muted/10 to-muted/30 z-0 pointer-events-none" />
         </section>
     )
 }

@@ -90,6 +90,7 @@ const StepsSection = () => {
       ref={stepsRef}
       className="py-16 md:py-24 lg:py-28 relative overflow-hidden bg-gradient-to-b from-background to-background/80"
     >
+      <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background z-0 pointer-events-none" />
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

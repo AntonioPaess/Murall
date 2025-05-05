@@ -101,8 +101,8 @@ const OurMissionPage = () => {
 
       {/* Timeline */}
       <section ref={timelineRef} className="py-16 relative overflow-hidden">
-        <div className="absolute bottom-20 left-10 w-64 h-64 rounded-full bg-primary/5 blur-3xl"></div>
-        <div className="container mx-auto px-4">
+        <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background z-0 pointer-events-none"></div>
+        <div className="container relative z-10 mx-auto px-4">
           <div className="text-center mb-12">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -110,8 +110,8 @@ const OurMissionPage = () => {
                 timelineInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
               }
               transition={{ duration: 0.6 }}
-              className="text-3xl md:text-4xl font-bold mb-4 text-primary-foreground tracking-tight">
-              Nossa <span className="text-primary">Jornada</span>
+              className="text-3xl md:text-5xl font-bold mb-4 text-primary-foreground tracking-tight">
+              Nossa <span className="text-primary ">Jornada</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -140,9 +140,8 @@ const OurMissionPage = () => {
                     : { opacity: 0, x: index % 2 === 0 ? -30 : 30 }
                 }
                 transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
-                className={`relative mb-12 flex ${
-                  index % 2 === 0 ? "md:flex-row-reverse" : "md:flex-row"
-                }`}>
+                className={`relative mb-12 flex ${index % 2 === 0 ? "md:flex-row-reverse" : "md:flex-row"
+                  }`}>
                 <div className="md:w-1/2"></div>
                 <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-4">
                   <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
@@ -162,6 +161,7 @@ const OurMissionPage = () => {
             ))}
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent via-muted/40 to-muted/50 z-0 pointer-events-none" />
       </section>
 
       <CTASection />

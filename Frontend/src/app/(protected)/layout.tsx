@@ -11,12 +11,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthChecker>
       <ProtectedNav />
-      <div className="flex h-[calc(100vh-80px)] overflow-hidden">
+      <div className="flex h-screen overflow-hidden">
         <AppSidebar
           defaultCollapsed={collapsed}
           onCollapsedChange={setCollapsed}
         />
-        <main className="flex-1 overflow-auto transition-all duration-300 ease-in-out">
+        <main
+          className={`flex-1 overflow-auto transition-all duration-300 ease-in-out ${collapsed ? "ml-[5rem]" : ""
+            }`}
+        >
           {children}
         </main>
       </div>

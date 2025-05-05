@@ -3,11 +3,6 @@
 @tailwind utilities;
 
 
-html, body {
-  height: 100%;
-  overflow: hidden;
-}
-
 @layer base {
   :root {
     --background: 202 31% 71%;
@@ -52,14 +47,22 @@ html, body {
 
     /* Definindo a variável de fonte Outfit */
     --font-outfit: "Outfit", sans-serif;
-    --sidebar-background: 0 0% 98%; /* Azul acinzentado claro */
-    --sidebar-foreground: 240 5.3% 26.1%; /* Cinza escuro azulado para boa legibilidade */
-    --sidebar-primary: 240 5.9% 10%; /* Azul saturado, ideal para botões e links */
-    --sidebar-primary-foreground: 0 0% 98%; /* Branco puro para contraste */
-    --sidebar-accent: 240 4.8% 95.9%; /* Um tom mais claro que o background */
-    --sidebar-accent-foreground: 240 5.9% 10%; /* Escuro o suficiente para texto em acentos */
-    --sidebar-border: 220 13% 91%; /* Suave, mas ainda visível */
-    --sidebar-ring: 217.2 91.2% 59.8%; /* Destaque vívido, coerente com a versão escura */
+    --sidebar-background: 0 0% 98%;
+    /* Azul acinzentado claro */
+    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Cinza escuro azulado para boa legibilidade */
+    --sidebar-primary: 240 5.9% 10%;
+    /* Azul saturado, ideal para botões e links */
+    --sidebar-primary-foreground: 0 0% 98%;
+    /* Branco puro para contraste */
+    --sidebar-accent: 240 4.8% 95.9%;
+    /* Um tom mais claro que o background */
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    /* Escuro o suficiente para texto em acentos */
+    --sidebar-border: 220 13% 91%;
+    /* Suave, mas ainda visível */
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Destaque vívido, coerente com a versão escura */
   }
 
   .dark {
@@ -101,14 +104,22 @@ html, body {
     --gradient-from: hsl(207, 60%, 25%);
     --gradient-to: transparent;
     --sparkles-color: hsl(0, 0%, 100%);
-    --sidebar-background: 240 5.9% 10%; /* Azul escuro profundo */
-    --sidebar-foreground: 240 4.8% 95.9%; /* Quase branco, levemente azulado */
-    --sidebar-primary: 224.3 76.3% 48%; /* Azul vívido para botões ou destaques */
-    --sidebar-primary-foreground: 0 0% 100%; /* Branco puro para contraste */
-    --sidebar-accent: 240 3.7% 15.9%; /* Azul um pouco mais claro que o fundo */
-    --sidebar-accent-foreground: 240 4.8% 95.9%; /* Igual ao foreground para consistência */
-    --sidebar-border: 240 3.7% 15.9%; /* Discreto, mas visível */
-    --sidebar-ring: 217.2 91.2% 59.8%; /* Anel de foco com alto contraste */
+    --sidebar-background: 240 5.9% 10%;
+    /* Azul escuro profundo */
+    --sidebar-foreground: 240 4.8% 95.9%;
+    /* Quase branco, levemente azulado */
+    --sidebar-primary: 224.3 76.3% 48%;
+    /* Azul vívido para botões ou destaques */
+    --sidebar-primary-foreground: 0 0% 100%;
+    /* Branco puro para contraste */
+    --sidebar-accent: 240 3.7% 15.9%;
+    /* Azul um pouco mais claro que o fundo */
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    /* Igual ao foreground para consistência */
+    --sidebar-border: 240 3.7% 15.9%;
+    /* Discreto, mas visível */
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Anel de foco com alto contraste */
   }
 }
 
@@ -141,44 +152,60 @@ html, body {
 }
 
 ::-webkit-scrollbar {
-  width: 2px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #3182C4; 
-  border-radius: 10px; 
+  background-color: #3182C4;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #297abc; 
+  background-color: #297abc;
 }
 
 ::-webkit-scrollbar-track {
   background-color: #2d3b53;
-  border-radius: 10px;
+  border-radius: 20px;
+  margin: 4px 0;
 }
 
 ::-webkit-scrollbar:horizontal {
-  height: 2px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-thumb:horizontal {
   background-color: #3182C4;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:horizontal:hover {
   background-color: #297abc;
-}
 
-::-webkit-scrollbar-track:horizontal {
-  background-color: #f3f3f3;
-}
+  ::-webkit-scrollbar-track:horizontal {
+    background-color: #f3f3f3;
+    border-radius: 20px;
+    margin: 0 4px;
+  }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+  ::-webkit-scrollbar-corner {
+    background-color: #2d3b53;
+  }
 
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
