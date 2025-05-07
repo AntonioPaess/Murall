@@ -1,4 +1,4 @@
-package com.veros.murall.model.user;
+package com.veros.murall.enums;
 
 public enum UserRole {
     ROLE_ADMIN,

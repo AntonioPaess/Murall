@@ -1,6 +1,6 @@
 package com.veros.murall.repository;
 
-import com.veros.murall.model.user.User;
+import com.veros.murall.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

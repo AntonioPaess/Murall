@@ -1,10 +1,10 @@
 package com.veros.murall.service;
 
 
-import com.veros.murall.model.user.UserSituation;
-import com.veros.murall.model.user.User;
-import com.veros.murall.model.user.UserVerified;
-import com.veros.murall.model.user.dto.RegisterRequest;
+import com.veros.murall.enums.UserSituation;
+import com.veros.murall.model.User;
+import com.veros.murall.model.UserVerified;
+import com.veros.murall.dto.RegisterRequest;
 import com.veros.murall.repository.UserRepository;
 import com.veros.murall.repository.UserVerifiedRepository;
 
@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 

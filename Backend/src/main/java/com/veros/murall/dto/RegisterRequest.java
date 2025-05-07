@@ -1,6 +1,6 @@
-package com.veros.murall.model.user.dto;
+package com.veros.murall.dto;
 
-import com.veros.murall.model.user.UserRole;
+import com.veros.murall.enums.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

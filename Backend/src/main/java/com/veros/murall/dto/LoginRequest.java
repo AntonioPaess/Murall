@@ -1,4 +1,4 @@
-package com.veros.murall.model.user.dto;
+package com.veros.murall.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

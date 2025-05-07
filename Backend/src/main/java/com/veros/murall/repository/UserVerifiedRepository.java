@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-import com.veros.murall.model.user.UserVerified;
+import com.veros.murall.model.UserVerified;
 
 public interface UserVerifiedRepository extends JpaRepository<UserVerified, Long> {
 

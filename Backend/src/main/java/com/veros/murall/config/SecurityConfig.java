@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -54,7 +55,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtRequestFilter jwtRequestFilter(JwtUtil jwtUtil) {
-        return new JwtRequestFilter(jwtUtil);
+    public JwtRequestFilter jwtRequestFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
+        return new JwtRequestFilter(jwtUtil, userDetailsService);
     }
 }

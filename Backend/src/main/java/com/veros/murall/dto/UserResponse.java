@@ -1,6 +1,6 @@
-package com.veros.murall.model.user.dto;
+package com.veros.murall.dto;
 
-import com.veros.murall.model.user.UserRole;
+import com.veros.murall.enums.UserRole;
 
 public record UserResponse(Long id, String username, String email, UserRole role) {
 }

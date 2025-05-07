@@ -27,8 +27,26 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        String message = ex.getRootCause() != null ? ex.getRootCause().getMessage() : ex.getMessage();
+
+        if (message != null) {
+            if (message.contains("blog_url")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Erro: URL do blog já está em uso.");
+            } else if (message.contains("blog_name")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Erro: Nome do blog já está em uso.");
+            } else if (message.contains("email")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Erro: Email já está em uso.");
+            } else if (message.contains("username")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Erro: Nome de usuário já está em uso.");
+            }
+        }
+
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("Erro: Nome de usuário ou email já está em uso.");
+                .body("Erro: Violação de integridade de dados.");
     }
 
     @ExceptionHandler(Exception.class)

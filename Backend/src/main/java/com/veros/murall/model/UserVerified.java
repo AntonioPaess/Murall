@@ -1,4 +1,4 @@
-package com.veros.murall.model.user;
+package com.veros.murall.model;
 
 import java.time.Instant;
 import java.util.UUID;

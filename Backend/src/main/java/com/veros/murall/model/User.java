@@ -1,7 +1,9 @@
-package com.veros.murall.model.user;
+package com.veros.murall.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import com.veros.murall.enums.UserRole;
+import com.veros.murall.enums.UserSituation;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +15,7 @@ import jakarta.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -46,6 +49,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserSituation situation;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Blog> blogs;
 
     @PrePersist
     protected void onCreate() {
