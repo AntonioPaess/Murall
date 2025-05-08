@@ -1,9 +1,10 @@
 package com.veros.murall.controller;
 
 import com.veros.murall.dto.BlogRegisterRequest;
-import com.veros.murall.dto.BlogRegisterResponse;
+import com.veros.murall.exception.DomainAlreadyExistsException;
 import com.veros.murall.model.User;
 import com.veros.murall.service.BlogService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,14 +23,22 @@ public class BlogController {
     }
 
     @PostMapping
-    public ResponseEntity<BlogRegisterResponse> createBlog(@RequestBody BlogRegisterRequest blogToBeCreated, @AuthenticationPrincipal User user) {
+    public ResponseEntity<String> createBlog(
+            @RequestBody BlogRegisterRequest blogToBeCreated,
+            @AuthenticationPrincipal User user) {
+
         try {
             blogService.createBlog(blogToBeCreated, user);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
+            return ResponseEntity.ok("Blog criado com sucesso!");
+        } catch (DomainAlreadyExistsException e) {
             return ResponseEntity
                     .badRequest()
-                    .body(null);
+                    .body("Houve um problema ao criar o blog, domínio já registrado.");
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+
         }
     }
 }

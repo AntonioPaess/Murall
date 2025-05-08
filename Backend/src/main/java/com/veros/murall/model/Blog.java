@@ -18,11 +18,14 @@ public class Blog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String blogName;
 
     @Column(nullable = false, unique = true)
-    private String blogUrl;
+    private String blogDomain;
+
+    @Column(nullable = false)
+    private String blogDescription;
 
     @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogImage> blogImagesUrl = new ArrayList<>();
