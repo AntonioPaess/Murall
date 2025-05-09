@@ -2,15 +2,16 @@ package com.veros.murall.controller;
 
 import com.veros.murall.dto.BlogRegisterRequest;
 import com.veros.murall.exception.DomainAlreadyExistsException;
+import com.veros.murall.model.Blog;
 import com.veros.murall.model.User;
 import com.veros.murall.service.BlogService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/blog")
@@ -39,6 +40,45 @@ public class BlogController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ocorreu um erro inesperado. Tente novamente mais tarde.");
 
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Blog>> readAllBlogs() {
+        List<Blog> blogList = blogService.readBlogs();
+        return ResponseEntity.ok(blogList);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateBlog (@RequestBody BlogRegisterRequest request, @PathVariable Long id) {
+        try {
+            blogService.updateBlog(request, id);
+            return ResponseEntity.ok("Blog com ID: " + id + " foi alterado com sucesso");
+        }
+        catch (EntityNotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBlog(@PathVariable Long id) {
+        try {
+            blogService.deleteBlog(id);
+            return ResponseEntity.ok("Blog deletado com sucesso.");
+        }   catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ocorreu um erro inesperado. Tente novamente mais tarde.");
         }
     }
 }

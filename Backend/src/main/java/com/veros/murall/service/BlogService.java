@@ -6,6 +6,7 @@ import com.veros.murall.model.Blog;
 import com.veros.murall.model.BlogImage;
 import com.veros.murall.model.User;
 import com.veros.murall.repository.BlogRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,5 +49,35 @@ public class BlogService {
 
     public boolean existsByDomain(String domain) {
         return blogRepository.existsByBlogDomain(domain);
+    }
+
+    public List<Blog> readBlogs() {
+        return blogRepository.findAll();
+    }
+
+    public void updateBlog(BlogRegisterRequest blogRequest, Long id) {
+        if (blogRepository.existsById(id)) {
+            Blog existingBlog = blogRepository.findById(id).orElseThrow(() ->
+                    new EntityNotFoundException("Blog não encontrado com ID: " + id));
+            existingBlog.setBlogName(blogRequest.blogName());
+            existingBlog.setBlogDomain(blogRequest.blogDomain());
+            existingBlog.setBlogDescription(blogRequest.blogDescription());
+            existingBlog.setBlogImagesUrl(mapUrlsToImages(blogRequest.blogImagesUrl(), existingBlog));
+
+             blogRepository.save(existingBlog);
+        } else {
+            throw new EntityNotFoundException("Blog não encontrado com ID: " + id);
+        }
+    }
+
+    public void deleteBlog(Long id) {
+       Blog blogToBeDeleted = blogRepository.findById(id).orElseThrow(()
+               -> new EntityNotFoundException("Blog não encontrado com ID: " + id));
+
+       blogRepository.delete(blogToBeDeleted);
+    }
+
+    public List<Blog> getBlogsByUser(Long userId) {
+        return blogRepository.findByUserId(userId);
     }
 }
