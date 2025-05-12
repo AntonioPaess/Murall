@@ -32,9 +32,11 @@ export const authService = {
     async login(data: LoginRequest): Promise<String> {
         try {
             const response = await httpClient.post("/api/auth/login", data);
-            const token = response.data
+            const token = response.data;
 
-            localStorage.setItem('token', token);
+            if (typeof window !== "undefined") {
+                localStorage.setItem('token', token);
+            }
             return token;
         } catch (error: any) {
             throw new Error('Erro ao fazer login: ' + (error.response?.data || error.message));
@@ -42,11 +44,16 @@ export const authService = {
     },
 
     getToken(): string | null {
-        return localStorage.getItem('token');
+        if (typeof window !== "undefined") {
+            return localStorage.getItem('token');
+        }
+        return null;
       },
 
       logout(): void {
-        localStorage.removeItem('token');
+        if (typeof window !== "undefined") {
+            localStorage.removeItem('token');
+        }
       },
 }
 
