@@ -2,15 +2,10 @@ package com.veros.murall.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
 @Entity
 public class Blog {
 
@@ -43,4 +38,60 @@ public class Blog {
         createdAt = new Date();
     }
 
+    // Getters e Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getBlogName() {
+        return blogName;
+    }
+
+    public void setBlogName(String blogName) {
+        this.blogName = blogName;
+    }
+
+    public String getBlogDomain() {
+        return blogDomain;
+    }
+
+    public void setBlogDomain(String blogDomain) {
+        this.blogDomain = blogDomain;
+    }
+
+    public String getBlogDescription() {
+        return blogDescription;
+    }
+
+    public void setBlogDescription(String blogDescription) {
+        this.blogDescription = blogDescription;
+    }
+
+    public List<BlogImage> getBlogImagesUrl() {
+        return blogImagesUrl;
+    }
+
+    public void setBlogImagesUrl(List<BlogImage> blogImagesUrl) {
+        this.blogImagesUrl = blogImagesUrl;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 }
