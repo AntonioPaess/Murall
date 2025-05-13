@@ -73,7 +73,7 @@ function Hero() {
                     ease: "easeInOut",
                   }}
                 >
-                  <Sparkles className="md:flex sm:hidden h-6 w-6" />
+                  <Sparkles className="md:flex hidden sm:hidden h-6 w-6" />
                 </motion.div>
               </span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
