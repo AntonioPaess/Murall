@@ -123,7 +123,7 @@ public class UserService implements UserDetailsService {
         Obrigado por se registrar no <strong>Murall</strong>.<br>
         Para confirmar sua conta e começar a usar a plataforma, clique no botão abaixo:
         <br><br>
-        <a href="http://localhost:8080/api/auth/verifyUser/%s"
+        <a href="https://teste-murall-veros.onrender.com/api/auth/verifyUser/%s"
            style="display:inline-block;padding:12px 24px;background-color:#2f86c8;color:#fcfcfc;text-decoration:none;border-radius:5px;font-weight:bold;">
            Verificar Conta
         </a>
