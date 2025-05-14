@@ -263,24 +263,18 @@ const Register = () => {
                     />
                   </motion.div>
                 </div>
-
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="pt-2">
-                  <Button
-                    onClick={handleRegister}
-                    className="w-full bg-primary text-primary-foreground hover:brightness-110 font-medium py-6">
-                    {isLoading ? (
-                      <div className="flex flex-row gap-2 items-center">
-                        <LoaderCircle className="w-6 h-6 animate-spin" />{" "}
-                        Carregando...
-                      </div>
-                    ) : (
-                      "Cadastrar"
-                    )}
-                  </Button>
-                </motion.div>
+                <Button
+                  onClick={handleRegister}
+                  className="w-full bg-primary text-primary-foreground hover:brightness-110 hover:scale-[1.02] duration-200 ransition-transform py-6 font-medium">
+                  {isLoading ? (
+                    <div className="flex flex-row gap-2 items-center">
+                      <LoaderCircle className="w-6 h-6 animate-spin" />{" "}
+                      Carregando...
+                    </div>
+                  ) : (
+                    "Cadastrar"
+                  )}
+                </Button>
               </div>
             </form>
           </CardContent>

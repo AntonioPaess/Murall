@@ -230,23 +230,18 @@ const Login = () => {
                     Lembrar de mim
                   </label>
                 </div>
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="pt-2">
-                  <Button
-                    onClick={handleLogin}
-                    className="w-full bg-primary text-primary-foreground hover:brightness-110 py-6 font-medium">
-                    {isLoading ? (
-                      <div className="flex flex-row gap-2 items-center">
-                        <LoaderCircle className="w-6 h-6 animate-spin" />{" "}
-                        Carregando...
-                      </div>
-                    ) : (
-                      "Entrar"
-                    )}
-                  </Button>
-                </motion.div>
+                <Button
+                  onClick={handleLogin}
+                  className="w-full bg-primary text-primary-foreground hover:brightness-110 hover:scale-[1.02] duration-200 ransition-transform py-6 font-medium">
+                  {isLoading ? (
+                    <div className="flex flex-row gap-2 items-center">
+                      <LoaderCircle className="w-6 h-6 animate-spin" />{" "}
+                      Carregando...
+                    </div>
+                  ) : (
+                    "Entrar"
+                  )}
+                </Button>
               </div>
             </form>
           </CardContent>
