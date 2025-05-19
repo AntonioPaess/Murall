@@ -1,13 +1,16 @@
 package com.veros.murall.service;
 
-
+import com.veros.murall.dto.UpdateUserRequest;
 import com.veros.murall.enums.UserSituation;
+import com.veros.murall.model.PasswordResetToken;
 import com.veros.murall.model.User;
 import com.veros.murall.model.UserVerified;
 import com.veros.murall.dto.RegisterRequest;
+import com.veros.murall.repository.PasswordResetTokenRepository;
 import com.veros.murall.repository.UserRepository;
 import com.veros.murall.repository.UserVerifiedRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,12 +30,19 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final UserVerifiedRepository verifiedRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MailService mailService, UserVerifiedRepository verifiedRepository) {
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            MailService mailService, UserService userService,
+            UserVerifiedRepository verifiedRepository,
+            PasswordResetTokenRepository passwordResetTokenRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailService = mailService;
         this.verifiedRepository = verifiedRepository;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
     public void createUser(RegisterRequest request) {
@@ -172,6 +182,160 @@ public class UserService implements UserDetailsService {
             System.err.println("Erro ao verificar usuário: " + e.getMessage());
             return "Erro ao processar verificação: " + e.getMessage();
         }
+    }
+
+    @Transactional
+    public void updateUser(Long id, UpdateUserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
+
+        if (request.username() != null) {
+            user.setUsername(request.username());
+        }
+        if (request.email() != null) {
+            user.setEmail(request.email());
+        }
+        if (request.password() != null) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUserById(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new EntityNotFoundException("Usuário não encontrado com ID: " + id);
+        }
+        userRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void sendResetPasswordEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado para o e-mail informado."));
+
+        passwordResetTokenRepository.deleteByUser(user); // Limpa tokens antigos
+
+        PasswordResetToken token = new PasswordResetToken();
+        token.setUser(user);
+        token.setToken(UUID.randomUUID().toString());
+        token.setExpiration(Instant.now().plusSeconds(900)); // 15 minutos
+        passwordResetTokenRepository.save(token);
+
+        String link = "http://localhost:8080/api/users/reset-password/" + token.getToken(); // ou https://murall.com/reset-password/{token}
+
+        String html = """
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #0d1522;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #083d6d;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .header img {
+        max-width: 180px;
+        height: auto;
+      }
+      .title {
+        font-size: 22px;
+        font-weight: bold;
+        color: #083d6d;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .content {
+        font-size: 16px;
+        color: #0d1522;
+        line-height: 1.5;
+        text-align: center;
+      }
+      .button {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 24px;
+        background-color: #2f86c8;
+        color: #fcfcfc;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+      .footer {
+        margin-top: 40px;
+        font-size: 13px;
+        color: #6c757d;
+        text-align: center;
+      }
+      .footer a {
+        color: #2f86c8;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="https://i.imgur.com/Nc5lxv0.png" alt="Murall Logo">
+      </div>
+      <div class="title">Redefinição de Senha - Murall</div>
+      <div class="content">
+        Olá, <strong>%s</strong> 👋<br><br>
+        Recebemos uma solicitação para redefinir sua senha.<br>
+        Se foi você, clique no botão abaixo para criar uma nova senha:
+        <br><br>
+        <a href="%s"
+           class="button">
+           Redefinir Senha
+        </a>
+        <br><br>
+        Este link expira em 15 minutos.
+        <br><br>
+        Se você não solicitou essa redefinição, apenas ignore este e-mail.
+      </div>
+      <div class="footer">
+        © 2025 Murall • <a href="https://murall.com/politica-de-privacidade">Política de Privacidade</a>
+      </div>
+    </div>
+  </body>
+</html>
+""".formatted(user.getUsername(), link);
+
+        mailService.sendPasswordResetEmail(
+                user.getEmail(),
+                "🔒 Redefinição de Senha - Murall",
+                html
+        );
+    }
+
+    @Transactional
+    public void resetPassword(String tokenValue, String newPassword) {
+        PasswordResetToken token = passwordResetTokenRepository.findByToken(tokenValue)
+                .orElseThrow(() -> new IllegalArgumentException("Token inválido."));
+
+        if (token.getExpiration().isBefore(Instant.now())) {
+            passwordResetTokenRepository.delete(token);
+            throw new IllegalArgumentException("Token expirado.");
+        }
+
+        User user = token.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        passwordResetTokenRepository.delete(token); // Token usado, deletar
     }
     
     @Override
