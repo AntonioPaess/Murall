@@ -41,6 +41,7 @@ public class UserController {
         UserResponse userResponse = new UserResponse(
                 user.getId(),
                 user.getUsername(),
+                user.getBiografia(),
                 user.getEmail(),
                 user.getRole(),
                 user.getCreatedAt(),

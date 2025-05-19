@@ -199,6 +199,10 @@ public class UserService implements UserDetailsService {
             user.setPassword(passwordEncoder.encode(request.password()));
         }
 
+        if (request.password() != null) {
+            user.setBiografia(request.biografia());
+        }
+
         userRepository.save(user);
     }
 

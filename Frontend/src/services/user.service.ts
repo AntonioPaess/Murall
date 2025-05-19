@@ -4,8 +4,9 @@ import { User } from "@/models/users";
 
 interface UserUpdateRequest {
     username: string;
-    email: string;
-    password: string;
+    biografia?: string;
+    email?: string;
+    password?: string;
 }
 
 interface ForgotPasswordRequest {
@@ -29,11 +30,17 @@ export const userService = {
     },
 
     async editUser(data: UserUpdateRequest, userId: number): Promise<string> {
+        const isOnlyBio = !!data.biografia &&
+            !data.username &&
+            !data.email &&
+            !data.password;
+
         try {
             const response = await httpClient.put(`/api/user/${userId}`, data);
             return response.data;
         } catch (error: any) {
-            handleError(error, "Erro ao editar usuário");
+            const message = isOnlyBio ? "Erro ao editar biografia" : "Erro ao editar usuário";
+            handleError(error, message);
         }
     },
 

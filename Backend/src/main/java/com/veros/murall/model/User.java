@@ -32,6 +32,10 @@ public class User implements UserDetails {
     private String username;
 
     @Column(nullable = false)
+    @Size(min = 10, message = "A biografia deve ter no mínimo 10 caracteres.")
+    private String biografia;
+
+    @Column(nullable = false)
     @Size(min = 6, message = "A senha deve ter pelo menos 6 caracteres.")
     private String password;
 
