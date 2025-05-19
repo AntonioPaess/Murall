@@ -1,3 +1,5 @@
+import { Blogs } from "../blogs";
+
 export interface User {
     id?: number;
     username?: string;
@@ -7,4 +9,5 @@ export interface User {
     situation?: string;
     notifications?: number;
     avatar?: string
+    blogs?: Blogs[]
 }
