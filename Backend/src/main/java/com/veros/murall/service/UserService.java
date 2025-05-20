@@ -35,7 +35,7 @@ public class UserService implements UserDetailsService {
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            MailService mailService, UserService userService,
+            MailService mailService,
             UserVerifiedRepository verifiedRepository,
             PasswordResetTokenRepository passwordResetTokenRepository) {
         this.userRepository = userRepository;
