@@ -17,4 +17,15 @@ httpClient.interceptors.request.use((config) => {
     return Promise.reject(error);
   });
 
+  httpClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 403) {
+        localStorage.removeItem('token');
+        window.location.href = '/signin';
+      }
+      return Promise.reject(error);
+    }
+  );
+
 export default httpClient;  
