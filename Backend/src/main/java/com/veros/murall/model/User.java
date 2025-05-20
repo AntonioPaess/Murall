@@ -31,7 +31,6 @@ public class User implements UserDetails {
     @Size(min = 3, max = 20, message = "O nome de usuário deve ter entre 3 e 20 caracteres.")
     private String username;
 
-    @Column(nullable = false)
     @Size(min = 10, message = "A biografia deve ter no mínimo 10 caracteres.")
     private String biografia;
 
