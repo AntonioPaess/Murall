@@ -26,7 +26,7 @@ export const userService = {
             const dataResponse = response.data;
             return dataResponse;
         } catch (error: any) {
-            throw new Error("Erro ao pegar dados do usuário: " + (error?.response?.data?.message || error.message));
+            throw new Error("Erro ao pegar dados do usuário: " + (error?.response?.data || error.message));
         }
     },
 
@@ -43,8 +43,7 @@ export const userService = {
         } catch (error: any) {
             const message = isOnlyBio
                 ? "Erro ao editar biografia. Tente novamente em breve."
-                : error?.response?.data?.message
-
+                : error?.response?.data
             throw new Error("Erro ao editar usuário: " + (message || error.message));
         }
     },
@@ -55,7 +54,7 @@ export const userService = {
             const dataResponse = response.data;
             return dataResponse;
         } catch (error: any) {
-            throw new Error("Erro ao deletar usuário: " + (error?.response?.data?.message || error.message));
+            throw new Error("Erro ao deletar usuário: " + (error?.response?.data || error.message));
         }
     },
 
@@ -65,7 +64,7 @@ export const userService = {
             const dataResponse = response.data;
             return dataResponse;
         } catch (error: any) {
-            throw new Error("Erro ao enviar e-mail de troca de senha: " + (error?.response?.data?.message || error.message));
+            throw new Error("Erro ao enviar e-mail de troca de senha: " + (error.response?.data || error.message));
         }
     },
 
@@ -75,7 +74,7 @@ export const userService = {
             const dataResponse = response.data;
             return dataResponse;
         } catch (error: any) {
-            throw new Error("Erro ao trocar senha: " + (error?.response?.data?.message || error.message));
+            throw new Error("Erro ao trocar senha: " + (error?.response?.data || error.message));
         }
     }
 }

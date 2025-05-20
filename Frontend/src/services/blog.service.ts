@@ -16,7 +16,7 @@ export const blogService = {
             const dataResponse = response.data;
             return dataResponse;
         } catch (error: any) {
-            throw new Error("Erro ao criar blog: " + (error?.response?.data.message || error.message));
+            throw new Error("Erro ao criar blog: " + (error?.response?.data || error.message));
         }
     },
 
@@ -26,7 +26,7 @@ export const blogService = {
             const dataResponse = response.data;
             return dataResponse;
         } catch (error: any) {
-            throw new Error("Erro ao listar blogs: " + (error?.response?.data.message || error.message));
+            throw new Error("Erro ao listar blogs: " + (error?.response?.data || error.message));
         }
     },
 
@@ -36,7 +36,7 @@ export const blogService = {
             const dataResponse = response.data;
             return dataResponse;
         } catch (error: any) {
-            throw new Error("Erro ao editar blog: " + (error?.response?.data.message || error.message));
+            throw new Error("Erro ao editar blog: " + (error?.response?.data || error.message));
         }
     },
 
@@ -46,7 +46,7 @@ export const blogService = {
             const dataResponse = response.data;
             return dataResponse;
         } catch (error: any) {
-            throw new Error("Erro ao deletar blog: " + (error?.response?.data.message || error.message));
+            throw new Error("Erro ao deletar blog: " + (error?.response?.data || error.message));
         }
     }
 }

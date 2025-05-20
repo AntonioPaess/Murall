@@ -1,4 +1,5 @@
 import httpClient from "@/lib/api";
+import { User } from "@/models/users";
 
 interface RegisterRequest {
     username: string;
@@ -24,11 +25,11 @@ export const authService = {
             const dataR = response.data;
             return dataR;
         } catch (error: any) {
-            throw new Error("Erro ao fazer cadastro: " + (error?.response?.data.message || error.message));
+            throw new Error("Erro ao fazer cadastro: " + (error?.response?.data || error.message));
         }
     },
     
-    async login(data: LoginRequest): Promise<LoginResponse> {
+    async login(data: LoginRequest): Promise<String> {
         try {
             const response = await httpClient.post("/api/auth/login", data);
             const token = response.data
@@ -36,7 +37,7 @@ export const authService = {
             localStorage.setItem('token', token);
             return token;
         } catch (error: any) {
-            throw new Error('Erro ao fazer login: ' + (error?.response?.data.message || error.message));
+            throw new Error('Erro ao fazer login: ' + (error?.response?.data || error.message));
         }
     },
 
