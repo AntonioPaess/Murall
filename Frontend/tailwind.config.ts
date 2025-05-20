@@ -75,7 +75,11 @@ export default {
   					transform: 'translateX(-50%)'
   				}
   			}
-  		}
+  		},
+		screens: {
+			midlg: '1000px',
+			midlg2: '1200px'
+		},
   	}
   },
   plugins: [require("tailwindcss-animate")],
