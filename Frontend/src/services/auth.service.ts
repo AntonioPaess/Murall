@@ -1,6 +1,4 @@
 import httpClient from "@/lib/api";
-import { User } from "@/models/users";
-import { handleError } from "./lib/error";
 
 interface RegisterRequest {
     username: string;
@@ -20,34 +18,35 @@ interface LoginResponse {
 
 export const authService = {
 
-    async register(data: RegisterRequest): Promise<string> {
+    async register(data: RegisterRequest): Promise<String> {
         try {
             const response = await httpClient.post("/api/auth/register", data);
-            return response.data;
+            const dataR = response.data;
+            return dataR;
         } catch (error: any) {
-            handleError(error, "Erro ao fazer cadastro");
+            throw new Error("Erro ao fazer cadastro: " + (error?.response?.data.message || error.message));
         }
     },
     
     async login(data: LoginRequest): Promise<LoginResponse> {
         try {
-            const response = await httpClient.post<LoginResponse>("/api/auth/login", data);
-            const loginResponse = response.data;
+            const response = await httpClient.post("/api/auth/login", data);
+            const token = response.data
 
-            localStorage.setItem('token', loginResponse.token);
-            return loginResponse;
+            localStorage.setItem('token', token);
+            return token;
         } catch (error: any) {
-            handleError(error, "Erro ao fazer login");
+            throw new Error('Erro ao fazer login: ' + (error?.response?.data.message || error.message));
         }
     },
 
     getToken(): string | null {
         return localStorage.getItem('token');
-    },
+      },
 
-    logout(): void {
+      logout(): void {
         localStorage.removeItem('token');
-    },
-};
+      },
+}
 
 export default authService;

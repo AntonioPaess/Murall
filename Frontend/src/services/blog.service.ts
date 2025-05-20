@@ -1,51 +1,52 @@
 import httpClient from "@/lib/api";
-import { handleError } from "./lib/error";
 import { Blogs } from "@/models/blogs";
 
 interface BlogRegisterRequest {
-    blogName: string;
-    blogDomain: string;
-    blogDescription: string;
-    blogImagesUrl: string[];
+    blogName: string,
+    blogDomain: string, 
+    blogDescription: string, 
+    blogImagesUrl: string[]
 }
 
 export const blogService = {
 
-    async createBlog(data: BlogRegisterRequest): Promise<string> {
+    async createBlog(data: BlogRegisterRequest): Promise<String> {
         try {
             const response = await httpClient.post("/api/blog", data);
-            return response.data;
+            const dataResponse = response.data;
+            return dataResponse;
         } catch (error: any) {
-            handleError(error, "Erro ao criar blog");
+            throw new Error("Erro ao criar blog: " + (error?.response?.data.message || error.message));
         }
     },
 
-    async listAllBlogs(): Promise<Blogs[]> {
+    async listAllBlogs(): Promise<Array<Blogs>> {
         try {
             const response = await httpClient.get("/api/blog");
-            return response.data;
+            const dataResponse = response.data;
+            return dataResponse;
         } catch (error: any) {
-            handleError(error, "Erro ao listar blogs");
+            throw new Error("Erro ao listar blogs: " + (error?.response?.data.message || error.message));
         }
     },
 
-    async updateBlog(data: BlogRegisterRequest, id: number): Promise<string> {
+    async updateBlog(data: BlogRegisterRequest, id: number): Promise<String> {
         try {
             const response = await httpClient.put(`/api/blog/${id}`, data);
-            return response.data;
+            const dataResponse = response.data;
+            return dataResponse;
         } catch (error: any) {
-            handleError(error, "Erro ao editar blog");
+            throw new Error("Erro ao editar blog: " + (error?.response?.data.message || error.message));
         }
     },
 
-    async deleteBlog(blogId: number): Promise<string> {
+    async deleteBlog(blogId: number): Promise<String> {
         try {
             const response = await httpClient.delete(`/api/blog/${blogId}`);
-            return response.data;
+            const dataResponse = response.data;
+            return dataResponse;
         } catch (error: any) {
-            handleError(error, "Erro ao deletar blog");
+            throw new Error("Erro ao deletar blog: " + (error?.response?.data.message || error.message));
         }
     }
-};
-
-export default blogService;
+}
