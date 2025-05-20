@@ -312,7 +312,7 @@ public class UserService implements UserDetailsService {
         Se você não solicitou essa redefinição, apenas ignore este e-mail.
       </div>
       <div class="footer">
-        © 2025 Murall • <a href="https://murall.com/politica-de-privacidade">Política de Privacidade</a>
+        © 2025 Murall • <a href="https://murall-xi.vercel.app/privacy">Política de Privacidade</a>
       </div>
     </div>
   </body>
