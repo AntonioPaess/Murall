@@ -33,9 +33,9 @@ export default function AuthChecker({
       const currentTime = Date.now() / 1000;
 
       if (decoded.exp < currentTime) {
-        toast.warning("Sessão expirada, faça login novamente");
         localStorage.removeItem("token");
         router.push("/login");
+        toast.warning("Sessão expirada, faça login novamente.");
       } else {
         setIsLoading(false);
       }

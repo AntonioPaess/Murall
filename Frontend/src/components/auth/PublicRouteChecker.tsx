@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
-import { toast } from "sonner";
 
 interface DecodedToken {
   exp: number;
@@ -27,8 +26,7 @@ export default function PublicRouteChecker({
 
         if (decoded.exp > currentTime) {
           setTimeout(() => {
-            toast.warning("Você já está logado");
-            router.push("/dashboard");
+            router.push("/explore");
           }, 500);
           return;
         }

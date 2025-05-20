@@ -12,6 +12,7 @@ import {
   TooltipContent,
 } from "@radix-ui/react-tooltip";
 import Link from "next/link";
+import { Bell } from "lucide-react";
 
 interface ProtectedNavProps {
   className?: string;
@@ -25,7 +26,7 @@ const ProtectedNav = (className: ProtectedNavProps) => {
   return (
     <nav
       className={`${className} sticky top-0 z-[99] flex items-center justify-between px-6 py-4 border-b border-border bg-background/90 backdrop-blur-sm`}>
-      <Link className="cursor-pointer" href={"/dashboard"}>
+      <Link className="cursor-pointer" href={"/explore"}>
         <Image
           src={theme === "dark" ? "/LogoGrandeDark.png" : "/LogoGrandeLigth.png"}
           width={110}
@@ -33,7 +34,9 @@ const ProtectedNav = (className: ProtectedNavProps) => {
           alt="Murall"
         />
       </Link>
-      <div className="flex flex-row gap-3 items-center justify-center">
+      <div className="flex flex-row gap-5 items-center justify-center">
+        <ThemeToggle />
+        <Bell size={23} className="cursor-pointer"/>
         <TooltipProvider delayDuration={300}>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -54,7 +57,6 @@ const ProtectedNav = (className: ProtectedNavProps) => {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <ThemeToggle />
       </div>
     </nav>
   );

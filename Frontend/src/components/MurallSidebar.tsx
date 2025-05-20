@@ -4,13 +4,11 @@ import React, { useState, useEffect } from "react";
 import {
   UserRoundCog,
   LogOut,
-  LayoutDashboard,
   Compass,
   Handshake,
   Presentation,
   MessageCircle,
   ChevronRight,
-  Bell,
   Settings,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -23,7 +21,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "./ui/sidebar";
-import Image from "next/image";
 import { Badge } from "./ui/badge";
 import {
   Tooltip,
@@ -88,11 +85,6 @@ export function AppSidebar({
 
   const mainLinks: NavLink[] = [
     {
-      label: "Dashboard",
-      href: "/dashboard",
-      icon: <LayoutDashboard size={20} />,
-    },
-    {
       label: "Explorar",
       href: "/explore",
       icon: <Compass size={20} />,
@@ -118,14 +110,8 @@ export function AppSidebar({
 
   const settingsLinks: NavLink[] = [
     {
-      label: "Notificações",
-      href: "/notifications",
-      icon: <Bell size={20} />,
-      badge: user.notifications,
-    },
-    {
       label: "Meu Perfil",
-      href: "/account",
+      href: "/my-account",
       icon: <UserRoundCog size={20} />,
     },
     {

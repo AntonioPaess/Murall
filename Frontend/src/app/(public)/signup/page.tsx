@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { Eye, EyeOff, LoaderCircle, Presentation } from "lucide-react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -78,7 +78,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-background antialiased bg-grid-white/[0.02] relative overflow-hidden">
+    <div className="min-h-screen flex flex-col midlg:flex-row bg-background antialiased bg-grid-white/[0.02] relative overflow-hidden">
       <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-background/5 to-transparent pointer-events-none" />
       <motion.div
         className="absolute -z-10 h-[300px] w-[300px] rounded-full bg-primary/20 blur-3xl"
@@ -108,11 +108,11 @@ const Register = () => {
       />
 
       <motion.div
-        className="bg-card w-full md:w-[55%] border-b md:border-b-0 md:border-r border-border min-h-screen flex flex-col"
+        className="bg-card w-full midlg:w-[55%] border-b midlg:border-b-0 midlg:border-r border-border min-h-screen flex flex-col"
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}>
-        <div className="p-8 md:p-12">
+        <div className="p-2 midlg:p-12 z-[99]">
           <Link href="/" className="">
             <Image
               src={
@@ -129,31 +129,46 @@ const Register = () => {
         </div>
 
         <motion.div
-          className="flex justify-center"
+          className="flex flex-1 justify-center items-center relative z-10 -mt-8 midlg:-mt-16"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}>
-          <div className="w-full max-w-2xl">
+          <div className="relative w-full max-w-2xl h-[600px] midlg:h-[711px]">
+            {/* Gradiente circular de fundo */}
+            <div
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <div>
+                <div
+                  className="w-full h-full midlg:w-[800px] midlg:h-[1000px] rounded-full blur-[140px]"
+                  style={{
+                    background: "radial-gradient(circle, #083D6D 0%, #0D1522 91%)",
+                  }}
+                />
+              </div>
+            </div>
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.5 }}
-              className="relative overflow-hidden rounded-[2.5rem] aspect-[4/3] w-full">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-primary/60 mix-blend-overlay z-10 rounded-[2.5rem]" />
-              <Image
-                src="https://images.pexels.com/photos/1031700/pexels-photo-1031700.jpeg"
-                alt="Register visual"
-                fill
-                priority
-                className="object-cover rounded-[2.5rem] transform hover:scale-105 transition-transform duration-700 ease-in-out"
-              />
-              <div className="absolute bottom-0 left-0 right-0 p-8 z-20 bg-gradient-to-t from-background/80 to-transparent rounded-b-[2.5rem]">
-                <h2 className="text-primary-foreground text-2xl md:text-3xl font-bold mb-2">
-                  Bem-vindo ao MurALL
-                </h2>
-                <p className="text-white text-sm md:text-base">
-                  Sua plataforma para criar e compartilhar conteúdo visual
-                </p>
+              className="relative overflow-hidden rounded-[2.5rem] w-full h-full flex items-stretch p-6 midlg2:p-0">
+              <div className="w-full midlg:w-[642px] h-full relative mx-auto p-8">
+                <Image
+                  src="/authAsset.png"
+                  alt="Register visual"
+                  fill
+                  priority
+                  className="object-cover rounded-[25px]"
+                />
+                <div className="text-[#C5CCD6] absolute bottom-0 left-0 right-0 p-6 midlg:p-8 z-20 bg-gradient-to-t from-background/80 to-transparent rounded-b-[2.5rem]">
+                  <h2 className="text-xl midlg:text-3xl font-semibold mb-2">
+                    Bem-vindo ao Murall
+                  </h2>
+                  <p className="text-xs midlg:text-base">
+                    Sua plataforma para compartilhar em uma rede colaborativa
+                  </p>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -161,11 +176,14 @@ const Register = () => {
       </motion.div>
 
       <motion.div
-        className="w-full md:w-[45%] min-h-screen flex items-center justify-center p-8 md:p-12"
+        className="w-full midlg:w-[45%] min-h-screen flex items-center justify-center p-6 midlg:p-12"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}>
-        <Card className="w-full max-w-md bg-card/80 backdrop-blur-sm border-border shadow-xl">
+        <Card className="w-full max-w-md backdrop-blur-sm border border-border shadow-xl z-[99] text-white"
+          style={{
+            background: 'linear-gradient(180deg, #0A2A45 0%, #0D1522 100%)'
+          }}>
           <CardHeader>
             <CardTitle className="text-primary-foreground text-2xl">
               Faça seu cadastro
@@ -183,17 +201,13 @@ const Register = () => {
                     htmlFor="email">
                     Email
                   </label>
-                  <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}>
-                    <Input
-                      id="email"
-                      placeholder="email@email.com"
-                      type="email"
-                      className="bg-background/80 border-border text-primary-foreground focus:border-primary/50 focus:ring-primary/30"
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </motion.div>
+                  <Input
+                    id="email"
+                    placeholder="email@email.com"
+                    type="email"
+                    className="bg-background/80 border-border text-primary-foreground focus:border-primary/50 focus:ring-primary/30"
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -202,17 +216,13 @@ const Register = () => {
                     htmlFor="user">
                     Usuário
                   </label>
-                  <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}>
-                    <Input
-                      id="user"
-                      placeholder="Seu usuário"
-                      type="text"
-                      className="bg-background/80 border-border text-primary-foreground focus:border-primary/50 focus:ring-primary/30"
-                      onChange={(e) => setUsername(e.target.value)}
-                    />
-                  </motion.div>
+                  <Input
+                    id="user"
+                    placeholder="Seu usuário"
+                    type="text"
+                    className="bg-background/80 border-border text-primary-foreground focus:border-primary/50 focus:ring-primary/30"
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -221,9 +231,7 @@ const Register = () => {
                     htmlFor="password">
                     Senha
                   </label>
-                  <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
+                  <div
                     className="relative">
                     <Input
                       id="password"
@@ -241,7 +249,7 @@ const Register = () => {
                         <EyeOff className="text-primary-foreground" />
                       )}
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -250,18 +258,13 @@ const Register = () => {
                     htmlFor="confirm-password">
                     Confirmar Senha
                   </label>
-                  <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    className="relative">
-                    <Input
-                      id="confirm-password"
-                      placeholder="••••••••"
-                      type={showPassword ? "text" : "password"}
-                      className="bg-background/80 border-border text-primary-foreground focus:border-primary/50 focus:ring-primary/30"
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                  </motion.div>
+                  <Input
+                    id="confirm-password"
+                    placeholder="••••••••"
+                    type={showPassword ? "text" : "password"}
+                    className="bg-background/80 border-border text-primary-foreground focus:border-primary/50 focus:ring-primary/30"
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
                 </div>
 
                 <motion.div
