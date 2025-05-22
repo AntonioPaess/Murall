@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { LoaderCircle, CheckCircle2, XCircle } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState, useRef  } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import userService from '@/services/user.service';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -125,7 +125,16 @@ const ErrorState = ({ message }: { message: string }) => (
         className="flex flex-col items-center"
     >
         <XCircle className="h-16 w-16 text-destructive mb-4" />
-        <p className="text-destructive text-lg font-semibold">{message}</p>
+        <p className="text-white text-lg font-semibold">{message}</p>
+        <p className="pt-4 text-muted-foreground text-sm text-center">
+            Caso não tenha confirmado a conta ainda, clique{" "}
+            <Link
+                className="text-primary hover:text-primary/80 font-medium underline underline-offset-2 transition-colors"
+                href="/verify/resend"
+            >
+                aqui
+            </Link>.
+        </p>
     </motion.div>
 );
 
@@ -136,7 +145,7 @@ const InvalidState = () => (
         className="flex flex-col items-center"
     >
         <XCircle className="h-16 w-16 text-destructive mb-4" />
-        <p className="text-destructive text-lg font-semibold">Token de verificação inválido</p>
+        <p className="text-white text-lg font-semibold">Token de verificação inválido</p>
         <p className="text-muted-foreground text-sm mt-2">
             O token deve estar no formato UUID válido
         </p>
