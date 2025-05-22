@@ -13,13 +13,9 @@ interface LoginRequest {
     password: string;
 }
 
-interface LoginResponse {
-    token: string;
-}
-
 export const authService = {
 
-    async register(data: RegisterRequest): Promise<String> {
+    async register(data: RegisterRequest): Promise<string> {
         try {
             const response = await httpClient.post("/api/auth/register", data);
             const dataR = response.data;
@@ -29,7 +25,7 @@ export const authService = {
         }
     },
     
-    async login(data: LoginRequest): Promise<String> {
+    async login(data: LoginRequest): Promise<string> {
         try {
             const response = await httpClient.post("/api/auth/login", data);
             const token = response.data

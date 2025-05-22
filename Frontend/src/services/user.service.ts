@@ -30,7 +30,7 @@ export const userService = {
         }
     },
 
-    async editUser(data: UserUpdateRequest, userId: number): Promise<String> {
+    async editUser(data: UserUpdateRequest, userId: number): Promise<string> {
         const isOnlyBio = !!data.biografia &&
             !data.username &&
             !data.email &&
@@ -48,7 +48,7 @@ export const userService = {
         }
     },
 
-    async deleteUser(userId: number): Promise<String> {
+    async deleteUser(userId: number): Promise<string> {
         try {
             const response = await httpClient.delete(`/api/user/${userId}`);
             const dataResponse = response.data;
@@ -58,7 +58,7 @@ export const userService = {
         }
     },
 
-    async userForgotPassword(data: ForgotPasswordRequest): Promise<String> {
+    async userForgotPassword(data: ForgotPasswordRequest): Promise<string> {
         try {
             const response = await httpClient.post("/api/user/forgot-password", data);
             const dataResponse = response.data;
@@ -68,13 +68,35 @@ export const userService = {
         }
     },
 
-    async userResetPassword(data: ResetPasswordRequest): Promise<String> {
+    async userResetPassword(data: ResetPasswordRequest): Promise<string> {
         try {
             const response = await httpClient.post("/api/user/reset-password", data);
             const dataResponse = response.data;
             return dataResponse;
         } catch (error: any) {
             throw new Error("Erro ao trocar senha: " + (error?.response?.data || error.message));
+        }
+    },
+
+    async verifyUser(token: string): Promise<string> {
+        try {
+            const response = await httpClient.get(`/api/auth/verifyUser/${token}`);
+            const dataResponse = response.data;
+            return dataResponse;
+        } catch (error: any) {
+            const status = error.response?.status;
+            const message = error.response?.data || "Erro ao confirmar conta";
+            throw { message, status }; // Propagamos o status 
+        }
+    },
+
+    async validateResetToken(token: string): Promise<string> {
+        try {
+            const response = await httpClient.get(`/api/user/reset-password/validate?token=${token}`)
+            const dataResponse = response.data;
+            return dataResponse;
+        } catch (error: any) {
+            throw new Error("Erro ao validar token: " + (error?.response?.data || error.message));
         }
     }
 }

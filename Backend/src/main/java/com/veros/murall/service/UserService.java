@@ -61,92 +61,51 @@ public class UserService implements UserDetailsService {
         verifiedRepository.save(verified);
 
         String html = """
-<html>
-  <head>
-    <style>
-      body {
-        background-color: #0d1522;
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        color: #083d6d;
-      }
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-        background-color: #ffffff;
-        border-radius: 8px;
-        padding: 30px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-      }
-      .header {
-        text-align: center;
-        margin-bottom: 30px;
-      }
-      .header img {
-        max-width: 180px;
-        height: auto;
-      }
-      .title {
-        font-size: 22px;
-        font-weight: bold;
-        color: #083d6d;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .content {
-        font-size: 16px;
-        color: #0d1522;
-        line-height: 1.5;
-        text-align: center;
-      }
-      .button {
-        display: inline-block;
-        margin-top: 25px;
-        padding: 12px 24px;
-        background-color: #2f86c8;
-        color: #fcfcfc;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: bold;
-      }
-      .footer {
-        margin-top: 40px;
-        font-size: 13px;
-        color: #6c757d;
-        text-align: center;
-      }
-      .footer a {
-        color: #2f86c8;
-        text-decoration: none;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <img src="https://i.imgur.com/Nc5lxv0.png" alt="Murall Logo">
-      </div>
-      <div class="title">Verifique sua conta no Murall</div>
-      <div class="content">
-        Olá! 👋<br><br>
-        Obrigado por se registrar no <strong>Murall</strong>.<br>
-        Para confirmar sua conta e começar a usar a plataforma, clique no botão abaixo:
-        <br><br>
-        <a href="http://localhost:8080/api/auth/verifyUser/%s"
-           style="display:inline-block;padding:12px 24px;background-color:#2f86c8;color:#fcfcfc;text-decoration:none;border-radius:5px;font-weight:bold;">
-           Verificar Conta
-        </a>
-        <br><br>
-        Este link expira em 15 minutos.
-        <br><br>
-        Se você não solicitou este cadastro, ignore este e-mail.
-      </div>
-      <div class="footer">
-        © 2025 Murall • <a href="https://murall.com/politica-de-privacidade">Política de Privacidade</a>
-      </div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verifique sua conta no Murall</title>
+</head>
+<body style="margin:0;padding:0;background-color:#0d1522;font-family:Arial,sans-serif;">
+    <!--[if mso]>
+    <center>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600"><tr><td>
+    <![endif]-->
+    <div style="max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:8px;padding:30px;box-shadow:0 4px 10px rgba(0,0,0,0.15);">
+        <!-- Header -->
+        <div style="text-align:center;margin-bottom:30px;">
+            <img src="https://i.imgur.com/Nc5lxv0.png" alt="Murall Logo" width="180" style="max-width:180px;height:auto;border:0;" />
+        </div>
+
+        <!-- Title -->
+        <div style="font-size:22px;font-weight:bold;color:#083d6d;text-align:center;margin-bottom:20px;">
+            Verifique sua conta no Murall
+        </div>
+
+        <!-- Content -->
+        <div style="font-size:16px;color:#0d1522;line-height:1.5;text-align:center;">
+            Olá! 👋<br/><br/>
+            Obrigado por se registrar no <strong>Murall</strong>.<br/>
+            Para confirmar sua conta e começar a usar a plataforma, clique no botão abaixo:
+            <br/><br/>
+            <a href="http://localhost:3000/verify/%s"
+               style="display:inline-block;margin-top:25px;padding:12px 24px;background-color:#2f86c8;color:#ffffff;text-decoration:none;border-radius:5px;font-weight:bold;font-family:Arial,sans-serif;">
+               Verificar Conta
+            </a>
+            <br/><br/>
+            Este link expira em 15 minutos.
+            <br/><br/>
+            Se você não solicitou este cadastro, ignore este e-mail.
+        </div>
+
+        <!-- Footer -->
+        <div style="margin-top:40px;font-size:13px;color:#6c757d;text-align:center;">
+            © 2025 Murall • <a href="https://murall.com/politica-de-privacidade" style="color:#2f86c8;text-decoration:none;">Política de Privacidade</a>
+        </div>
     </div>
-  </body>
+</body>
 </html>
 """.formatted(verified.getUuid());
 
@@ -176,7 +135,7 @@ public class UserService implements UserDetailsService {
                     return "Tempo de verificação expirado!";
                 }
             } else {
-                return "Código de verificação inválido ou não encontrado!";
+                return "Este código já foi utilizado ou sua conta já está confirmada.";
             }
         } catch (Exception e) {
             System.err.println("Erro ao verificar usuário: " + e.getMessage());
@@ -227,92 +186,58 @@ public class UserService implements UserDetailsService {
         token.setExpiration(Instant.now().plusSeconds(900)); // 15 minutos
         passwordResetTokenRepository.save(token);
 
-        String link = "http://localhost:8080/api/users/reset-password/" + token.getToken(); // ou https://murall.com/reset-password/{token}
+        String link = "http://localhost:3000/reset-password/" + token.getToken();
 
         String html = """
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redefinição de Senha - Murall</title>
+    <style type="text/css">
+      /* Estilos base (para clients que suportam <style>) */
       body {
-        background-color: #0d1522;
-        font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
+        background-color: #0d1522;
+        font-family: Arial, sans-serif;
         color: #083d6d;
-      }
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-        background-color: #ffffff;
-        border-radius: 8px;
-        padding: 30px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-      }
-      .header {
-        text-align: center;
-        margin-bottom: 30px;
-      }
-      .header img {
-        max-width: 180px;
-        height: auto;
-      }
-      .title {
-        font-size: 22px;
-        font-weight: bold;
-        color: #083d6d;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .content {
-        font-size: 16px;
-        color: #0d1522;
-        line-height: 1.5;
-        text-align: center;
-      }
-      .button {
-        display: inline-block;
-        margin-top: 25px;
-        padding: 12px 24px;
-        background-color: #2f86c8;
-        color: #fcfcfc;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: bold;
-      }
-      .footer {
-        margin-top: 40px;
-        font-size: 13px;
-        color: #6c757d;
-        text-align: center;
-      }
-      .footer a {
-        color: #2f86c8;
-        text-decoration: none;
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <img src="https://i.imgur.com/Nc5lxv0.png" alt="Murall Logo">
+    <!-- Container principal com CSS inline -->
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
+      <!-- Header -->
+      <div style="text-align: center; margin-bottom: 30px;">
+        <img src="https://i.imgur.com/Nc5lxv0.png" alt="Murall Logo" style="max-width: 180px; height: auto;" />
       </div>
-      <div class="title">Redefinição de Senha - Murall</div>
-      <div class="content">
-        Olá, <strong>%s</strong> 👋<br><br>
-        Recebemos uma solicitação para redefinir sua senha.<br>
+
+      <!-- Título -->
+      <div style="font-size: 22px; font-weight: bold; color: #083d6d; text-align: center; margin-bottom: 20px;">
+        Redefinição de Senha - Murall
+      </div>
+
+      <!-- Conteúdo -->
+      <div style="font-size: 16px; color: #0d1522; line-height: 1.5; text-align: center;">
+        Olá, <strong>%s</strong> 👋<br /><br />
+        Recebemos uma solicitação para redefinir sua senha.<br />
         Se foi você, clique no botão abaixo para criar uma nova senha:
-        <br><br>
+        <br /><br />
         <a href="%s"
-           class="button">
+           style="display: inline-block; margin-top: 25px; padding: 12px 24px; background-color: #2f86c8; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">
            Redefinir Senha
         </a>
-        <br><br>
+        <br /><br />
         Este link expira em 15 minutos.
-        <br><br>
+        <br /><br />
         Se você não solicitou essa redefinição, apenas ignore este e-mail.
       </div>
-      <div class="footer">
-        © 2025 Murall • <a href="https://murall-xi.vercel.app/privacy">Política de Privacidade</a>
+
+      <!-- Footer -->
+      <div style="margin-top: 40px; font-size: 13px; color: #6c757d; text-align: center;">
+        © 2025 Murall • <a href="https://murall-xi.vercel.app/privacy" style="color: #2f86c8; text-decoration: none;">Política de Privacidade</a>
       </div>
     </div>
   </body>
@@ -326,20 +251,29 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    @Transactional
     public void resetPassword(String tokenValue, String newPassword) {
         PasswordResetToken token = passwordResetTokenRepository.findByToken(tokenValue)
                 .orElseThrow(() -> new IllegalArgumentException("Token inválido."));
 
         if (token.getExpiration().isBefore(Instant.now())) {
-            passwordResetTokenRepository.delete(token);
-            throw new IllegalArgumentException("Token expirado.");
+            deleteExpiredToken(token);
+            throw new IllegalArgumentException("Tempo limite atingido, tente novamente.");
         }
 
         User user = token.getUser();
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
-        passwordResetTokenRepository.delete(token); // Token usado, deletar
+        passwordResetTokenRepository.delete(token);
+    }
+
+    @Transactional
+    public void deleteExpiredToken(PasswordResetToken token) {
+        passwordResetTokenRepository.delete(token);
+    }
+
+    public boolean validateResetToken (String token) {
+        Optional<PasswordResetToken> optionalToken = passwordResetTokenRepository.findByToken(token);
+        return optionalToken.isPresent() && !optionalToken.get().getExpiration().isBefore(Instant.now());
     }
     
     @Override

@@ -10,7 +10,7 @@ interface BlogRegisterRequest {
 
 export const blogService = {
 
-    async createBlog(data: BlogRegisterRequest): Promise<String> {
+    async createBlog(data: BlogRegisterRequest): Promise<string> {
         try {
             const response = await httpClient.post("/api/blog", data);
             const dataResponse = response.data;
@@ -30,7 +30,7 @@ export const blogService = {
         }
     },
 
-    async updateBlog(data: BlogRegisterRequest, id: number): Promise<String> {
+    async updateBlog(data: BlogRegisterRequest, id: number): Promise<string> {
         try {
             const response = await httpClient.put(`/api/blog/${id}`, data);
             const dataResponse = response.data;
@@ -40,7 +40,7 @@ export const blogService = {
         }
     },
 
-    async deleteBlog(blogId: number): Promise<String> {
+    async deleteBlog(blogId: number): Promise<string> {
         try {
             const response = await httpClient.delete(`/api/blog/${blogId}`);
             const dataResponse = response.data;

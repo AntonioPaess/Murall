@@ -101,4 +101,22 @@ public class UserController {
                     .body("Erro ao redefinir a senha. Tente novamente.");
         }
     }
+
+    @GetMapping("/reset-password/validate")
+    public ResponseEntity<String> validateResetToken(@RequestParam String token) {
+        try {
+            boolean isValid = userService.validateResetToken(token);
+
+            if (isValid) {
+                return ResponseEntity.ok("Token válido.");
+            } else {
+                return ResponseEntity.status(HttpStatus.GONE).body("Token expirado ou inválido.");
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao validar token.");
+        }
+    }
+
+
 }

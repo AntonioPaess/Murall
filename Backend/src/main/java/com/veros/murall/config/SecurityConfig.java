@@ -26,7 +26,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/images/**").permitAll()
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/user/forgot-password",
+                                "api/user/reset-password",
+                                "/api/user/reset-password/validate").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
