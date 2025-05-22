@@ -16,8 +16,5 @@ public record RegisterRequest(
 
         @NotNull(message = "Senha é obrigatória")
         @Size(min = 6, message = "A senha deve ter pelo menos 6 caracteres")
-        String password,
-
-        @NotNull(message = "Papel é obrigatório")
-        UserRole role
+        String password
 ) {}

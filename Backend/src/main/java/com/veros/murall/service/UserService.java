@@ -1,6 +1,6 @@
 package com.veros.murall.service;
 
-import com.veros.murall.dto.ResendVerificationRequest;
+import com.veros.murall.dto.SetUserRoleRequest;
 import com.veros.murall.dto.UpdateUserRequest;
 import com.veros.murall.enums.UserSituation;
 import com.veros.murall.model.PasswordResetToken;
@@ -52,7 +52,6 @@ public class UserService implements UserDetailsService {
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setSituation(UserSituation.PENDENTE);
-        user.setRole(request.role());
         userRepository.save(user);
 
         UserVerified verified = new UserVerified();
@@ -189,7 +188,7 @@ public class UserService implements UserDetailsService {
                     
                     verifiedRepository.delete(userVerifier);
                     
-                    return "Usuário Verificado com Sucesso! Pode fechar essa aba.";
+                    return "Usuário Verificado com Sucesso!";
                 } else {
                     return "Tempo de verificação expirado!";
                 }
@@ -200,6 +199,19 @@ public class UserService implements UserDetailsService {
             System.err.println("Erro ao verificar usuário: " + e.getMessage());
             return "Erro ao processar verificação: " + e.getMessage();
         }
+    }
+
+    public void updateUserRole(Long id, SetUserRoleRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
+
+        if (request.role() != null) {
+            user.setRole(request.role());
+        } else {
+            throw new IllegalArgumentException("Informe um cargo válido para o usuário.");
+        }
+
+        userRepository.save(user);
     }
 
     @Transactional
@@ -217,10 +229,10 @@ public class UserService implements UserDetailsService {
             user.setPassword(passwordEncoder.encode(request.password()));
         }
 
-        if (request.password() != null) {
-            user.setBiografia(request.biografia());
+        if (request.biography() != null) {
+            user.setBiography(request.biography());
         }
-
+        
         userRepository.save(user);
     }
 

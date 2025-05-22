@@ -32,7 +32,7 @@ public class User implements UserDetails {
     private String username;
 
     @Size(min = 10, message = "A biografia deve ter no mínimo 10 caracteres.")
-    private String biografia;
+    private String biography;
 
     @Column(nullable = false)
     @Size(min = 6, message = "A senha deve ter pelo menos 6 caracteres.")
@@ -42,7 +42,6 @@ public class User implements UserDetails {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private UserRole role;
 
     @Temporal(TemporalType.DATE)
@@ -63,6 +62,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role == null) {
+            return Collections.emptyList();
+        }
         return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
 

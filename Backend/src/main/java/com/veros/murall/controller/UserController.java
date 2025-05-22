@@ -38,7 +38,7 @@ public class UserController {
         UserResponse userResponse = new UserResponse(
                 user.getId(),
                 user.getUsername(),
-                user.getBiografia(),
+                user.getBiography(),
                 user.getEmail(),
                 user.getRole(),
                 user.getCreatedAt(),
@@ -57,6 +57,19 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro ao atualizar usuário.");
+        }
+    }
+
+    @PutMapping("/{id}/set-role")
+    public ResponseEntity<String> editUserRole(@PathVariable Long id, @RequestBody SetUserRoleRequest request) {
+        try {
+            userService.updateUserRole(id, request);
+            return ResponseEntity.ok("Cargo atualizado com sucesso.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro interno ao atualizar cargo do usuário.");
         }
     }
 

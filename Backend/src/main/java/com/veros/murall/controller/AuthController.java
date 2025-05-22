@@ -45,8 +45,7 @@ public class AuthController {
         RegisterRequest lowerCaseRequest = new RegisterRequest(
                 request.username(),
                 request.email().toLowerCase(),
-                request.password(),
-                request.role()
+                request.password()
         );
 
         userService.createUser(lowerCaseRequest);
