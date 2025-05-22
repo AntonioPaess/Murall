@@ -253,6 +253,7 @@ const Login = () => {
                   className="pt-2">
                   <Button
                     onClick={handleLogin}
+                    disabled={isLoading}
                     className="w-full bg-primary text-primary-foreground hover:brightness-110 font-medium py-6">
                     {isLoading ? (
                       <div className="flex flex-row gap-2 items-center">

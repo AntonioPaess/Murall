@@ -64,7 +64,7 @@ const PrivacyPolicyPage = () => {
         </div>
       </section>
 
-      <section ref={sectionsRef} className="py-16 relative overflow-hidden">
+      <section ref={sectionsRef} className="py-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background z-0 pointer-events-none" />
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -102,7 +102,7 @@ const PrivacyPolicyPage = () => {
               }
               transition={{ duration: 0.5, delay: 0.6 }}
               className="mt-12 space-y-8">
-              <div className="pt-6">
+              <div className="pt-6 mb-20">
                 <Link
                   href="/support"
                   className="text-primary hover:text-primary/80 transition-colors font-medium relative z-10">

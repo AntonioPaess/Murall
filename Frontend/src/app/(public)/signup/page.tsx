@@ -32,6 +32,13 @@ const Register = () => {
 
   const router = useRouter();
 
+  const clearInputs = () => {
+    setUsername("");
+    setPassword("");
+    setEmail("");
+    setConfirmPassword("");
+  };
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -49,13 +56,6 @@ const Register = () => {
       toast.error("As senhas não coincidem.");
       return;
     }
-
-    const clearInputs = () => {
-      setUsername("");
-      setPassword("");
-      setEmail("");
-      setConfirmPassword("");
-    };
 
     try {
       await authService.register({
@@ -273,6 +273,7 @@ const Register = () => {
                   className="pt-2">
                   <Button
                     onClick={handleRegister}
+                    disabled={isLoading}
                     className="w-full bg-primary text-primary-foreground hover:brightness-110 font-medium py-6">
                     {isLoading ? (
                       <div className="flex flex-row gap-2 items-center">
