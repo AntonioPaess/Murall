@@ -1,11 +1,8 @@
 package com.veros.murall.controller;
 
-import com.veros.murall.dto.ForgotPasswordRequest;
-import com.veros.murall.dto.ResetPasswordRequest;
-import com.veros.murall.dto.UpdateUserRequest;
+import com.veros.murall.dto.*;
 import com.veros.murall.model.Blog;
 import com.veros.murall.model.User;
-import com.veros.murall.dto.UserResponse;
 import com.veros.murall.service.BlogService;
 import com.veros.murall.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -99,6 +96,19 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro ao redefinir a senha. Tente novamente.");
+        }
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<String> resendVerificationEmail(@RequestBody ResendVerificationRequest request) {
+        try {
+            userService.resendVerification(request.email());
+            return ResponseEntity.ok("Um e-mail de verificação foi enviado para seu e-mail. Por favor, verifique sua caixa de entrada para ativar sua conta.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro interno no servidor. Tente novamente mais tarde.");
         }
     }
 

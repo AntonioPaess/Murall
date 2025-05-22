@@ -12,6 +12,10 @@ interface ForgotPasswordRequest {
     email: string
 }
 
+interface ResendVerificationRequest {
+    email: string
+}
+
 interface ResetPasswordRequest {
     token: string,
     newPassword: string
@@ -55,6 +59,16 @@ export const userService = {
             return dataResponse;
         } catch (error: any) {
             throw new Error("Erro ao deletar usuário: " + (error?.response?.data || error.message));
+        }
+    },
+
+    async resendVerificationEmail(data: ResendVerificationRequest): Promise<string> {
+        try {
+            const response = await httpClient.post("/api/user/resend-verification", data);
+            const dataResponse = response.data;
+            return dataResponse;
+        } catch (error: any) {
+            throw new Error("Erro ao reenviar email de verificação: " + (error?.response?.data || error.message));
         }
     },
 

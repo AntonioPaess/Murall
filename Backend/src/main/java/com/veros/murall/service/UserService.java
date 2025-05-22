@@ -1,5 +1,6 @@
 package com.veros.murall.service;
 
+import com.veros.murall.dto.ResendVerificationRequest;
 import com.veros.murall.dto.UpdateUserRequest;
 import com.veros.murall.enums.UserSituation;
 import com.veros.murall.model.PasswordResetToken;
@@ -111,6 +112,76 @@ public class UserService implements UserDetailsService {
 
         mailService.sendAccountVerificationEmail(request.email(),
         "\uD83D\uDE80 Bem-vindo ao Murall! Só falta verificar seu email", html);
+    }
+
+    public void resendVerification(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("O email não pode estar vazio.");
+        }
+
+        String cleanEmail = email.trim().toLowerCase();
+
+        User user = userRepository.findByEmail(cleanEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+
+        UserVerified existingVerification = verifiedRepository.findByEntityId(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Sua conta já foi verificada. Não é possível reenviar o email de verificação."));
+
+        if (!existingVerification.getExpInstant().isBefore(Instant.now())) {
+            throw new IllegalArgumentException("Você já possui um link de verificação válido. Verifique seu e-mail.");
+        }
+
+        verifiedRepository.delete(existingVerification);
+
+        UserVerified verified = new UserVerified();
+        verified.setEntity(user);
+        verified.setUuid(UUID.randomUUID());
+        verified.setExpInstant(Instant.now().plusMillis(900_000)); // 15 minutos
+        verifiedRepository.save(verified);
+
+        String html = """
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verifique sua conta no Murall</title>
+</head>
+<body style="margin:0;padding:0;background-color:#0d1522;font-family:Arial,sans-serif;">
+    <div style="max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:8px;padding:30px;box-shadow:0 4px 10px rgba(0,0,0,0.15);">
+        <div style="text-align:center;margin-bottom:30px;">
+            <img src="https://i.imgur.com/Nc5lxv0.png" alt="Murall Logo" width="180" style="max-width:180px;height:auto;border:0;" />
+        </div>
+        <div style="font-size:22px;font-weight:bold;color:#083d6d;text-align:center;margin-bottom:20px;">
+            Verifique sua conta no Murall
+        </div>
+        <div style="font-size:16px;color:#0d1522;line-height:1.5;text-align:center;">
+            Olá! 👋<br/><br/>
+            Obrigado por se registrar no <strong>Murall</strong>.<br/>
+            Para confirmar sua conta e começar a usar a plataforma, clique no botão abaixo:
+            <br/><br/>
+            <a href="http://localhost:3000/verify/%s"
+               style="display:inline-block;margin-top:25px;padding:12px 24px;background-color:#2f86c8;color:#ffffff;text-decoration:none;border-radius:5px;font-weight:bold;font-family:Arial,sans-serif;">
+               Verificar Conta
+            </a>
+            <br/><br/>
+            Este link expira em 15 minutos.
+            <br/><br/>
+            Se você não solicitou este cadastro, ignore este e-mail.
+        </div>
+        <div style="margin-top:40px;font-size:13px;color:#6c757d;text-align:center;">
+            © 2025 Murall • <a href="https://murall.com/politica-de-privacidade" style="color:#2f86c8;text-decoration:none;">Política de Privacidade</a>
+        </div>
+    </div>
+</body>
+</html>
+""".formatted(verified.getUuid());
+
+        mailService.sendAccountVerificationEmail(
+                cleanEmail,
+                "🚀 Bem-vindo ao Murall! Só falta verificar seu email",
+                html
+        );
     }
 
     @Transactional

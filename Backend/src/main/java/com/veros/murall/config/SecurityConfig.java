@@ -30,7 +30,8 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/api/user/forgot-password",
                                 "api/user/reset-password",
-                                "/api/user/reset-password/validate").permitAll()
+                                "/api/user/reset-password/validate",
+                                "/api/user/resend-verification").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
