@@ -122,7 +122,7 @@ public class UserService implements UserDetailsService {
         String cleanEmail = email.trim().toLowerCase();
 
         User user = userRepository.findByEmail(cleanEmail)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com este email."));
 
         UserVerified existingVerification = verifiedRepository.findByEntityId(user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Sua conta já foi verificada. Não é possível reenviar o email de verificação."));
