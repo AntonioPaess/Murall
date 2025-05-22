@@ -69,23 +69,14 @@ public class UserService implements UserDetailsService {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Verifique sua conta no Murall</title>
 </head>
-<body style="margin:0;padding:0;background-color:#0d1522;font-family:Arial,sans-serif;">
-    <!--[if mso]>
-    <center>
-    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600"><tr><td>
-    <![endif]-->
+<body style="margin:10;padding:0;font-family:Arial,sans-serif;">
     <div style="max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:8px;padding:30px;box-shadow:0 4px 10px rgba(0,0,0,0.15);">
-        <!-- Header -->
         <div style="text-align:center;margin-bottom:30px;">
             <img src="https://i.imgur.com/Nc5lxv0.png" alt="Murall Logo" width="180" style="max-width:180px;height:auto;border:0;" />
         </div>
-
-        <!-- Title -->
         <div style="font-size:22px;font-weight:bold;color:#083d6d;text-align:center;margin-bottom:20px;">
             Verifique sua conta no Murall
         </div>
-
-        <!-- Content -->
         <div style="font-size:16px;color:#0d1522;line-height:1.5;text-align:center;">
             Olá! 👋<br/><br/>
             Obrigado por se registrar no <strong>Murall</strong>.<br/>
@@ -100,10 +91,8 @@ public class UserService implements UserDetailsService {
             <br/><br/>
             Se você não solicitou este cadastro, ignore este e-mail.
         </div>
-
-        <!-- Footer -->
         <div style="margin-top:40px;font-size:13px;color:#6c757d;text-align:center;">
-            © 2025 Murall • <a href="https://murall.com/politica-de-privacidade" style="color:#2f86c8;text-decoration:none;">Política de Privacidade</a>
+            © 2025 Murall • <a href="https://murall-xi.vercel.app/privacy" style="color:#2f86c8;text-decoration:none;">Política de Privacidade</a>
         </div>
     </div>
 </body>
@@ -147,7 +136,7 @@ public class UserService implements UserDetailsService {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Verifique sua conta no Murall</title>
 </head>
-<body style="margin:0;padding:0;background-color:#0d1522;font-family:Arial,sans-serif;">
+<body style="margin:10;padding:0;font-family:Arial,sans-serif;">
     <div style="max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:8px;padding:30px;box-shadow:0 4px 10px rgba(0,0,0,0.15);">
         <div style="text-align:center;margin-bottom:30px;">
             <img src="https://i.imgur.com/Nc5lxv0.png" alt="Murall Logo" width="180" style="max-width:180px;height:auto;border:0;" />
@@ -170,7 +159,7 @@ public class UserService implements UserDetailsService {
             Se você não solicitou este cadastro, ignore este e-mail.
         </div>
         <div style="margin-top:40px;font-size:13px;color:#6c757d;text-align:center;">
-            © 2025 Murall • <a href="https://murall.com/politica-de-privacidade" style="color:#2f86c8;text-decoration:none;">Política de Privacidade</a>
+            © 2025 Murall • <a href="https://murall-xi.vercel.app/privacy" style="color:#2f86c8;text-decoration:none;">Política de Privacidade</a>
         </div>
     </div>
 </body>
@@ -202,7 +191,6 @@ public class UserService implements UserDetailsService {
                     
                     return "Usuário Verificado com Sucesso! Pode fechar essa aba.";
                 } else {
-                    verifiedRepository.delete(userVerifier);
                     return "Tempo de verificação expirado!";
                 }
             } else {
@@ -269,9 +257,8 @@ public class UserService implements UserDetailsService {
     <style type="text/css">
       /* Estilos base (para clients que suportam <style>) */
       body {
-        margin: 0;
+        margin: 10;
         padding: 0;
-        background-color: #0d1522;
         font-family: Arial, sans-serif;
         color: #083d6d;
       }
