@@ -32,13 +32,6 @@ const Register = () => {
 
   const router = useRouter();
 
-  const clearInputs = () => {
-    setUsername("");
-    setPassword("");
-    setEmail("");
-    setConfirmPassword("");
-  };
-
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -72,7 +65,6 @@ const Register = () => {
       console.error(error);
       toast.error(error.message);
     } finally {
-      clearInputs();
       setIsLoading(false);
     }
   };
