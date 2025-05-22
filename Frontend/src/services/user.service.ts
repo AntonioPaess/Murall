@@ -3,7 +3,7 @@ import { User } from "@/models/users";
 
 interface UserUpdateRequest {
     username?: string,
-    biografia?: string,
+    biography?: string,
     email?: string,
     password?: string
 }
@@ -21,6 +21,10 @@ interface ResetPasswordRequest {
     newPassword: string
 }
 
+interface SetUserRoleRequest {
+    role: string;
+}
+
 export const userService = {
 
 
@@ -35,7 +39,7 @@ export const userService = {
     },
 
     async editUser(data: UserUpdateRequest, userId: number): Promise<string> {
-        const isOnlyBio = !!data.biografia &&
+        const isOnlyBio = !!data.biography &&
             !data.username &&
             !data.email &&
             !data.password;
@@ -49,6 +53,16 @@ export const userService = {
                 ? "Erro ao editar biografia. Tente novamente em breve."
                 : error?.response?.data
             throw new Error("Erro ao editar usuário: " + (message || error.message));
+        }
+    },
+
+    async setUserRole(data: SetUserRoleRequest, userId: number): Promise<String> {
+        try {
+            const response = await httpClient.put(`/api/user/${userId}/set-role`, data);
+            const dataResponse = response.data;
+            return dataResponse;
+        } catch (error: any) {
+            throw new Error("Erro ao definir cargo do usuário: " + (error?.response?.data || error.message));
         }
     },
 

@@ -13,5 +13,6 @@ export interface Blogs {
     blogDomain?: string
     user?: User
     blogImagesUrl?: BlogImage[];
+    categories?: string[];
     createdAt?: string;
 }

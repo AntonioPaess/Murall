@@ -54,8 +54,7 @@ const Register = () => {
       await authService.register({
         username,
         password,
-        email,
-        role: "ROLE_USER",
+        email
       });
       toast.success("Cadastro realizado com sucesso!");
       setTimeout(() => {

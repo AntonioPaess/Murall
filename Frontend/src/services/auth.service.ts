@@ -5,7 +5,6 @@ interface RegisterRequest {
     username: string;
     password: string;
     email: string;
-    role: "ROLE_USER" | "ROLE_ADMIN";
 }
 
 interface LoginRequest {

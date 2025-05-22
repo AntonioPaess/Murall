@@ -1,11 +1,16 @@
 import { Blogs } from "../blogs";
 
+export enum UserRole {
+    ROLE_MURALL_ADMIN = 'MURALL_ADMIN',
+    ROLE_BLOG_USER = 'BLOG_USER',
+    ROLE_VISITOR_USER = 'VISITOR_USER'
+}
 export interface User {
     id?: number;
     username?: string;
-    biografia?: string;
+    biography?: string;
     email?: string;
-    role?: string;
+    role?: UserRole;
     createdAt?: string;
     situation?: string;
     notifications?: number;
