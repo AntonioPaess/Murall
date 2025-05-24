@@ -110,8 +110,8 @@ const UserSetupFlow = ({ user: initialUser, onComplete }: UserSetupFlowProps) =>
                 : "/LogoGrandeLigth.png"
             }
             alt="Murall Logo"
-            width={90}
-            height={90}
+            width={110}
+            height={110}
             priority
             className='cursor-pointer'
           />
