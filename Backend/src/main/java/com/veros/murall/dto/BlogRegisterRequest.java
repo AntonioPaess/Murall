@@ -18,5 +18,7 @@ public record BlogRegisterRequest(
 
         @NotNull(message = "A url do blog é obrigatória")
         @Size(min = 1, message = "A lista de imagens deve ter pelo menos uma imagem.")
-        List<String> blogImagesUrl
+        List<String> blogImagesUrl,
+
+        List<String> categoryNames
 ) {}

@@ -1,3 +1,4 @@
+import { Category } from "../categories";
 import { User } from "../users"
 
 export interface BlogImage {
@@ -13,6 +14,6 @@ export interface Blogs {
     blogDomain?: string
     user?: User
     blogImagesUrl?: BlogImage[];
-    categories?: string[];
+    categories?: Category[];
     createdAt?: string;
 }

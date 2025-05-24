@@ -7,6 +7,7 @@ import { Plus, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface BlogProfileStepProps {
     user: User;
@@ -27,24 +28,29 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
 
     const [blogName, setBlogName] = useState(initialBlog.blogName || '');
     const [blogDescription, setBlogDescription] = useState(initialBlog.blogDescription || '');
-    const [selectedCategories, setSelectedCategories] = useState<string[]>(initialBlog.categories || []);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-    // Sincroniza o estado local quando o objeto user muda
     useEffect(() => {
         const blog = user.blogs?.[0] || {};
         setBlogName(blog.blogName || '');
         setBlogDescription(blog.blogDescription || '');
-        setSelectedCategories(blog.categories || []);
+        setSelectedCategories(blog.categories?.map(c => c.name) || []);
     }, [user]);
 
     const handleSubmit = (e: React.FormEvent) => {
+
         e.preventDefault();
+        if (blogName === "" || blogDescription === "") {
+            toast.warning("Você deixou algum campo vazio");
+            return;
+        }
+
         onNext({
             blogs: [{
                 ...initialBlog,
                 blogName,
                 blogDescription,
-                categories: selectedCategories,
+                categories: selectedCategories.map(name => ({ name }))
             }]
         });
     };

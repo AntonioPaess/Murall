@@ -30,7 +30,7 @@ const BannerUploadStep = ({ user, onNext, onBack, isLastStep }: BannerUploadStep
             url: img.imageUrl || '',
             dimensions: { width: 0, height: 0 }
         })) || [];
-        
+
         setBanners(newBanners);
     }, [user]);
 

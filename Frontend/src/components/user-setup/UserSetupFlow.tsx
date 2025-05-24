@@ -5,23 +5,28 @@ import BlogRegisterStep from './steps/BlogRegisterStep';
 import BlogProfileStep from './steps/BlogProfileStep';
 import BannerUploadStep from './steps/BannerUploadStep';
 import BackgroundWaves from './BackgroundWaves';
-import { CircleArrowLeft, Clock } from 'lucide-react';
+import { CircleArrowLeft } from 'lucide-react';
 import UsageTypeStep from './steps/UsageTypeStep';
 import { userService } from '@/services/user.service';
 import { blogService } from '@/services/blog.service';
 import { Card } from '../ui/card';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-
+import { toast } from 'sonner';
+import LoaderMurall from '../Loader';
 
 interface UserSetupFlowProps {
   user: User | null;
   onComplete: (user: User) => void;
 }
 
+const normalizeDomain = (domain: string) =>
+  domain.toLowerCase().replace(/^https?:\/\//, '').split('/')[0];
+
 const UserSetupFlow = ({ user: initialUser, onComplete }: UserSetupFlowProps) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [user, setUser] = useState<User>(initialUser || {});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { theme } = useTheme();
 
   const steps = [
@@ -33,17 +38,20 @@ const UserSetupFlow = ({ user: initialUser, onComplete }: UserSetupFlowProps) =>
   ];
 
   const handleNext = async (data: Partial<User>) => {
-    const updatedUser = {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    const updatedUser: User = {
       ...user,
       ...data,
       blogs: data.blogs ?? user.blogs,
     };
-    setUser(updatedUser);
 
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      try {
+    try {
+      if (currentStep < steps.length - 1) {
+        setUser(updatedUser);
+        setCurrentStep(currentStep + 1);
+      } else {
         if (updatedUser.role && updatedUser.id) {
           await userService.setUserRole({ role: updatedUser.role }, updatedUser.id);
         }
@@ -57,18 +65,25 @@ const UserSetupFlow = ({ user: initialUser, onComplete }: UserSetupFlowProps) =>
 
         const blog = updatedUser.blogs?.[0];
         if (blog?.blogName && blog.blogDomain) {
+          const normalizedDomain = normalizeDomain(blog.blogDomain);
           await blogService.createBlog({
             blogName: blog.blogName,
-            blogDomain: blog.blogDomain,
+            blogDomain: normalizedDomain,
             blogDescription: blog.blogDescription || '',
+            categoryNames: blog.categories?.map(category => category.name || "") || [],
             blogImagesUrl: blog.blogImagesUrl?.map(img => img.imageUrl || '') || [],
           });
         }
 
+        setUser(updatedUser);
+        toast.success("Cadastro concluído com sucesso!");
         onComplete(updatedUser);
-      } catch (error) {
-        console.error("Erro ao finalizar setup:", error);
       }
+    } catch (error: any) {
+      console.error("Erro ao finalizar setup:", error);
+      toast.error("Erro ao finalizar cadastro. Tente novamente.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -79,13 +94,15 @@ const UserSetupFlow = ({ user: initialUser, onComplete }: UserSetupFlowProps) =>
   };
 
   const CurrentStepComponent = steps[currentStep].component;
-
+  if (isSubmitting) {
+    return <LoaderMurall />;
+  }
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[hsl(202,31%,13%)] overflow-hidden relative">
       <BackgroundWaves />
 
       <div className="w-full max-w-2xl z-10 px-4">
-        <div className='absolute left-8 top-8'>
+        <div className="absolute left-4 top-4 sm:left-6 sm:top-6">
           <Image
             src={
               theme === "dark"
@@ -93,25 +110,34 @@ const UserSetupFlow = ({ user: initialUser, onComplete }: UserSetupFlowProps) =>
                 : "/LogoGrandeLigth.png"
             }
             alt="Murall Logo"
-            width={110}
-            height={110}
+            width={90}
+            height={90}
             priority
             className='cursor-pointer'
           />
         </div>
 
         <div className="bg-opacity-90 rounded-lg shadow-lg overflow-hidden backdrop-blur-sm border border-[hsl(220,13%,30%)]">
-          <Card className="p-12 w-full"
+          <Card
+            className="w-full p-4 sm:p-6 md:p-12 max-w-full"
             style={{
               background: 'linear-gradient(180deg, #0A2A45 0%, #0D1522 100%)'
-            }}>
-            <div className="flex items-center gap-2 mb-4">
-              {currentStep === 0 ? "" :
-               <CircleArrowLeft className="text-[#C5CCD6] cursor-pointer" size={28} onClick={handleBack}/>
-               }
-              <h2 className="text-2xl font-semibold text-[#C5CCD6]]">
-                {steps[currentStep].title}
-              </h2>
+            }}
+          >
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-4">
+              <div className='flex flex-row items-center gap-3'>
+                {currentStep > 0 && (
+                  <CircleArrowLeft
+                    className="text-[#C5CCD6] cursor-pointer"
+                    size={32}
+                    onClick={handleBack}
+                  />
+                )}
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#C5CCD6]">
+                  {steps[currentStep].title}
+                </h2>
+
+              </div>
             </div>
 
             <CurrentStepComponent

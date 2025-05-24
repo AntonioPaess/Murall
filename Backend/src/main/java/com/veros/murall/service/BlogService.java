@@ -4,8 +4,10 @@ import com.veros.murall.dto.BlogRegisterRequest;
 import com.veros.murall.exception.DomainAlreadyExistsException;
 import com.veros.murall.model.Blog;
 import com.veros.murall.model.BlogImage;
+import com.veros.murall.model.Category;
 import com.veros.murall.model.User;
 import com.veros.murall.repository.BlogRepository;
+import com.veros.murall.repository.CategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -16,24 +18,42 @@ import java.util.stream.Collectors;
 public class BlogService {
 
     private final BlogRepository blogRepository;
+    private final CategoryRepository categoryRepository;
 
-    public BlogService(BlogRepository blogRepository) {
+    public BlogService(BlogRepository blogRepository, CategoryRepository categoryRepository) {
         this.blogRepository = blogRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public void createBlog(BlogRegisterRequest request, User user) throws DomainAlreadyExistsException {
-        if (existsByDomain(request.blogDomain())) {
-            throw new DomainAlreadyExistsException("O domínio " + request.blogDomain() + " já está registrado.");
+        String normalizedDomain = request.blogDomain().toLowerCase().replaceAll("^https?://", "").split("/")[0];
+
+        if (existsByDomain(normalizedDomain)) {
+            throw new DomainAlreadyExistsException("O domínio " + normalizedDomain + " já está registrado.");
         }
 
         Blog blog = new Blog();
         blog.setBlogName(request.blogName());
-        blog.setBlogDomain(request.blogDomain());
+        blog.setBlogDomain(normalizedDomain);
         blog.setBlogDescription(request.blogDescription());
         blog.setUser(user);
         blog.setBlogImagesUrl(mapUrlsToImages(request.blogImagesUrl(), blog));
+        blog.setCategories(mapStringsToCategory(request.categoryNames(), blog));
 
         blogRepository.save(blog);
+    }
+
+    private List<Category> mapStringsToCategory(List<String> categoryNames, Blog blog) {
+        return categoryNames.stream()
+                .map(name -> {
+                    return categoryRepository.findByName(name)
+                            .orElseGet(() -> {
+                                Category newCategory = new Category();
+                                newCategory.setName(name);
+                                return categoryRepository.save(newCategory);
+                            });
+                })
+                .toList();
     }
 
     private List<BlogImage> mapUrlsToImages(List<String> urls, Blog blog) {
@@ -63,6 +83,7 @@ public class BlogService {
             existingBlog.setBlogDomain(blogRequest.blogDomain());
             existingBlog.setBlogDescription(blogRequest.blogDescription());
             existingBlog.setBlogImagesUrl(mapUrlsToImages(blogRequest.blogImagesUrl(), existingBlog));
+            existingBlog.setCategories(mapStringsToCategory(blogRequest.categoryNames(), existingBlog));
 
              blogRepository.save(existingBlog);
         } else {

@@ -3,9 +3,14 @@ import { Blogs } from "@/models/blogs";
 
 interface BlogRegisterRequest {
     blogName: string,
-    blogDomain: string, 
-    blogDescription: string, 
+    blogDomain: string,
+    blogDescription: string,
+    categoryNames: string[],
     blogImagesUrl: string[]
+}
+
+interface BlogDomainRequest {
+    blogDomain: string
 }
 
 export const blogService = {
@@ -47,6 +52,16 @@ export const blogService = {
             return dataResponse;
         } catch (error: any) {
             throw new Error("Erro ao deletar blog: " + (error?.response?.data || error.message));
+        }
+    },
+
+    async isUniqueBlogDomain(data: BlogDomainRequest): Promise<string> {
+        try {
+            const response = await httpClient.post(`/api/blog/check-unique`, data);
+            const dataResponse = response.data;
+            return dataResponse;
+        } catch (error: any) {
+            throw new Error("Erro ao checar se dominio é único: " + (error?.response?.data || error.message));
         }
     }
 }

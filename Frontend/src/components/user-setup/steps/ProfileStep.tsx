@@ -4,6 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface ProfileStepProps {
     user: User;
@@ -17,14 +18,26 @@ const ProfileStep = ({ user, onNext, onBack }: ProfileStepProps) => {
     const [biography, setBiography] = useState(user.biography || '');
     const [avatar, setAvatar] = useState<string | undefined>(user.avatar);
 
-    // Sincroniza o estado local quando o objeto user muda
     useEffect(() => {
         setBiography(user.biography || '');
         setAvatar(user.avatar);
     }, [user]);
 
+    const validateBiography = (): boolean => {
+        if (biography.trim().length < 10) {
+            toast.warning("A biografia deve ter pelo menos 10 caracteres.");
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!validateBiography()) {
+            return;
+        }
+
         onNext({
             biography,
             avatar,
@@ -44,6 +57,8 @@ const ProfileStep = ({ user, onNext, onBack }: ProfileStepProps) => {
         }
     };
 
+    const isBiographyValid = biography.trim().length >= 10;
+
     return (
         <div>
             <p className="text-sm text-[#C5CCD6] mb-6">
@@ -52,7 +67,7 @@ const ProfileStep = ({ user, onNext, onBack }: ProfileStepProps) => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="flex flex-col items-start mb-6">
-                    <Label htmlFor="avatar" className="text-[#C5CCD6] mb-6">
+                    <Label htmlFor="avatar" className="text-muted-foreground mb-6">
                         Foto de perfil
                     </Label>
                     <label htmlFor="avatar" className="relative group w-32 h-32 cursor-pointer rounded-full overflow-hidden block">
@@ -87,10 +102,17 @@ const ProfileStep = ({ user, onNext, onBack }: ProfileStepProps) => {
                         placeholder="Conte um pouco sobre você..."
                         className="bg-background/80 border-border text-primary-foreground focus:border-primary/50 focus:ring-primary/30 h-24 resize-none"
                     />
+                    {!isBiographyValid && (
+                        <p className="text-xs text-red-600">A biografia deve ter no mínimo 10 caracteres.</p>
+                    )}
                 </div>
 
                 <div className="flex justify-end pt-4">
-                    <Button className="bg-primary hover:brightness-110 w-[150px] text-primary-foreground">
+                    <Button
+                        type="submit"
+                        disabled={!isBiographyValid}
+                        className="bg-primary hover:brightness-110 w-[150px] text-primary-foreground"
+                    >
                         Próximo
                     </Button>
                 </div>

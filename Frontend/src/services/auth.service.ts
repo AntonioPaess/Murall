@@ -23,7 +23,7 @@ export const authService = {
             throw new Error("Erro ao fazer cadastro: " + (error?.response?.data || error.message));
         }
     },
-    
+
     async login(data: LoginRequest): Promise<string> {
         try {
             const response = await httpClient.post("/api/auth/login", data);
@@ -38,11 +38,11 @@ export const authService = {
 
     getToken(): string | null {
         return localStorage.getItem('token');
-      },
+    },
 
-      logout(): void {
+    logout(): void {
         localStorage.removeItem('token');
-      },
+    },
 }
 
 export default authService;

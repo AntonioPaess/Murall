@@ -51,9 +51,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           onCollapsedChange={setCollapsed}
         />
         <main
-          className={`flex-1 overflow-auto transition-all duration-300 ease-in-out ${
-            collapsed ? "ml-[5rem]" : "ml-[8rem]"
-          }`}
+          className={`flex-1 overflow-auto transition-all duration-300 ease-in-out ${collapsed ? "ml-[5rem]" : "ml-[8rem]"
+            }`}
         >
           {children}
         </main>

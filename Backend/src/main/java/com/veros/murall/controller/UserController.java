@@ -34,17 +34,36 @@ public class UserController {
         }
 
         List<Blog> blogs = blogService.getBlogsByUser(user.getId());
-        user.setBlogs(blogs);
-        UserResponse userResponse = new UserResponse(
+
+        List<BlogRegisterResponse> blogDtos = blogs.stream()
+                .map(blog -> new BlogRegisterResponse(
+                        blog.getId(),
+                        blog.getBlogName(),
+                        blog.getBlogDomain(),
+                        blog.getBlogDescription(),
+                        blog.getBlogImagesUrl(),
+                        blog.getCategories().stream()
+                                .map(category -> new CategoryResponse(category.getId(), category.getName()))
+                                .toList(),
+                        new UserSimpleResponse(
+                                user.getId(),
+                                user.getUsername(),
+                                user.getBiography(),
+                                user.getEmail(),
+                                user.getRole()
+                        ),
+                        blog.getCreatedAt()
+                )).toList();
+
+        return ResponseEntity.ok(new UserResponse(
                 user.getId(),
                 user.getUsername(),
                 user.getBiography(),
                 user.getEmail(),
                 user.getRole(),
                 user.getCreatedAt(),
-                user.getBlogs());
-
-        return ResponseEntity.ok(userResponse);
+                blogDtos
+        ));
     }
 
     @PutMapping("/{id}")

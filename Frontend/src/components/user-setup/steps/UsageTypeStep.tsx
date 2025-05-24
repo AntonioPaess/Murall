@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import userService from '@/services/user.service';
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 interface UsageTypeStepProps {
@@ -20,28 +20,34 @@ const UsageTypeStep = ({ user, onNext }: UsageTypeStepProps) => {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState<UserRole>();
 
-  // Sincroniza o estado local quando o objeto user muda
   useEffect(() => {
     if (user.role) {
       setSelectedRole(user.role);
     }
   }, [user]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (selectedRole === UserRole.ROLE_VISITOR_USER) {
-      if (user.id !== undefined) {
-        userService.setUserRole({ role: selectedRole }, user.id);
-      }
-      router.push("/")
+    if (!selectedRole) {
+      toast.error("Selecione um perfil de usuário");
       return;
     }
 
-    if (selectedRole) {
+    try {
+      if (user.id) {
+        await userService.setUserRole({ role: selectedRole }, user.id);
+      }
+
       onNext({ role: selectedRole });
-    } else {
-      toast.error("Selecione um perfil de usuário");
+
+      if (selectedRole === UserRole.ROLE_VISITOR_USER) {
+        router.push('/');
+      }
+
+    } catch (err) {
+      console.error('Erro ao definir perfil do usuário:', err);
+      toast.error("Erro ao salvar o perfil. Tente novamente.");
     }
   };
 
