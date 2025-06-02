@@ -3,7 +3,7 @@ import { User } from '@/models/users';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, X } from 'lucide-react';
+import { Plus, Upload, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,7 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
     const [blogName, setBlogName] = useState(initialBlog.blogName || '');
     const [blogDescription, setBlogDescription] = useState(initialBlog.blogDescription || '');
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [blogAvatar, setBlogAvatar] = useState<string | undefined>();
 
     useEffect(() => {
         const blog = user.blogs?.[0] || {};
@@ -61,6 +62,19 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
         }
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (event.target?.result) {
+                    setBlogAvatar(event.target.result as string);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const removeCategory = (tag: string) => {
         setSelectedCategories(selectedCategories.filter(t => t !== tag));
     };
@@ -73,6 +87,30 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
+                    <div className="flex flex-col items-start mb-6">
+                        <Label htmlFor="avatar" className="text-muted-foreground mb-6">
+                            Foto de perfil
+                        </Label>
+                        <label htmlFor="avatar" className="relative group w-32 h-32 cursor-pointer rounded-full overflow-hidden block">
+                            <div className="w-32 h-32 rounded-full bg-background border-2 border-[hsl(220,13%,40%)] flex items-center justify-center overflow-hidden">
+                                {blogAvatar ? (
+                                    <img src={blogAvatar} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <Upload className="text-white" size={64} />
+                                )}
+                            </div>
+                            <input
+                                type="file"
+                                id="avatar"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                <Upload className="text-[#C5CCD6]" size={64} />
+                            </div>
+                        </label>
+                    </div>
                     <Label htmlFor="blogName" className="text-sm font-medium text-muted-foreground">
                         Nome do blog
                     </Label>

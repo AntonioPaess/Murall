@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User } from '@/models/users';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Upload } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface BannerUploadStepProps {
@@ -21,38 +18,50 @@ const BannerUploadStep = ({ user, onNext, onBack, isLastStep }: BannerUploadStep
     })) || [];
 
     const [banners, setBanners] = useState<{ url: string; dimensions: { width: number; height: number } }[]>(initialBanners);
-    const [width, setWidth] = useState<number>(0);
-    const [height, setHeight] = useState<number>(0);
+    const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
-    // Sincroniza o estado local quando o objeto user muda
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+
     useEffect(() => {
         const newBanners = user.blogs?.[0]?.blogImagesUrl?.map(img => ({
             url: img.imageUrl || '',
             dimensions: { width: 0, height: 0 }
         })) || [];
-
         setBanners(newBanners);
     }, [user]);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (event) => {
                 if (event.target?.result) {
                     const newBanners = [...banners];
-                    if (newBanners[index]) {
-                        newBanners[index].url = event.target.result as string;
-                    } else {
-                        newBanners[index] = {
-                            url: event.target.result as string,
-                            dimensions: { width, height },
-                        };
-                    }
+                    newBanners[selectedIndex] = {
+                        url: event.target.result as string,
+                        dimensions: { width: 0, height: 0 },
+                    };
                     setBanners(newBanners);
+
+                    // Reset input so same file can be selected again
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                    }
                 }
             };
             reader.readAsDataURL(file);
+        }
+    };
+
+    const handleRemoveImage = (index: number) => {
+        const newBanners = [...banners];
+        newBanners[index] = { url: '', dimensions: { width: 0, height: 0 } };
+        setBanners(newBanners);
+
+        // Ajusta índice se imagem atual foi removida
+        if (index === selectedIndex) {
+            const next = newBanners.findIndex(b => b.url);
+            setSelectedIndex(next !== -1 ? next : 0);
         }
     };
 
@@ -76,80 +85,76 @@ const BannerUploadStep = ({ user, onNext, onBack, isLastStep }: BannerUploadStep
 
     return (
         <div>
-            <p className="text-sm text-[hsl(202,80%,82%)] mb-6">
+            <p className="text-sm text-muted-foreground mb-6">
                 Escolha como você quer destacar o seu blog
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {[0, 1, 2, 3].map((index) => (
-                        <div key={index} className="relative group">
-                            <label htmlFor={`banner-${index}`} className="block w-32 h-32 cursor-pointer rounded-md overflow-hidden relative">
-                                <Card
-                                    className="w-32 h-32 max-w-md backdrop-blur-sm border border-border shadow-xl z-[99] text-white flex items-center justify-center"
-                                    style={{
-                                        background: 'linear-gradient(180deg, #0A2A45 0%, #0D1522 100%)'
-                                    }}
+                {/* Banner principal com upload */}
+                <label className="w-full h-64 md:h-80 rounded-md overflow-hidden border border-border relative flex items-center justify-center cursor-pointer group">
+                    {banners[selectedIndex]?.url ? (
+                        <img
+                            src={banners[selectedIndex].url}
+                            alt={`Banner Principal`}
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <Upload className="text-[hsl(210,55%,65%)]" size={40} />
+                    )}
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <Upload className="text-white" size={40} />
+                    </div>
+                </label>
+
+                {/* Miniaturas com remoção */}
+                <div className="flex gap-4 mt-4">
+                    {[0, 1, 2].map((index) => (
+                        <div
+                            key={index}
+                            className={`relative w-20 h-20 rounded-md overflow-hidden border cursor-pointer ${selectedIndex === index ? 'ring-2 ring-primary' : ''}`}
+                        >
+                            {banners[index]?.url ? (
+                                <>
+                                    <img
+                                        src={banners[index].url}
+                                        alt={`Miniatura ${index + 1}`}
+                                        className="w-full h-full object-cover"
+                                        onClick={() => setSelectedIndex(index)}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveImage(index)}
+                                        className="absolute top-1 right-1 bg-black bg-opacity-60 rounded-full p-1 hover:bg-opacity-80 transition"
+                                    >
+                                        <X size={14} className="text-white" />
+                                    </button>
+                                </>
+                            ) : (
+                                <div
+                                    className={`group w-full h-full flex items-center justify-center bg-muted relative`}
+                                    onClick={() => setSelectedIndex(index)}
                                 >
-                                    {banners[index]?.url ? (
-                                        <img
-                                            src={banners[index].url}
-                                            alt={`Banner ${index + 1}`}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <Upload className="text-[hsl(210,55%,65%)]" size={32} />
-                                    )}
-                                </Card>
-                                <input
-                                    type="file"
-                                    id={`banner-${index}`}
-                                    accept="image/*"
-                                    onChange={(e) => handleFileChange(e, index)}
-                                    className="hidden"
-                                />
-                                <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
-                                    <Upload className="text-white" size={20} />
+                                    <Upload className="text-[hsl(210,55%,65%)] group-hover:text-white transition-colors" size={20} />
+                                    <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </div>
-                            </label>
+                            )}
                         </div>
                     ))}
                 </div>
 
-                <div className="space-y-4">
-                    <Label className="text-[hsl(202,80%,92%)]">
-                        Definir dimensões
-                    </Label>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="flex items-center">
-                            <Label htmlFor="width" className="text-[hsl(202,80%,92%)] mr-2 w-6">W</Label>
-                            <Input
-                                id="width"
-                                type="number"
-                                value={width || ''}
-                                onChange={(e) => setWidth(parseInt(e.target.value) || 0)}
-                                className="bg-[hsl(202,31%,18%)] border-[hsl(220,13%,40%)] text-[hsl(202,80%,92%)]"
-                            />
-                        </div>
-
-                        <div className="flex items-center">
-                            <Label htmlFor="height" className="text-[hsl(202,80%,92%)] mr-2 w-6">H</Label>
-                            <Input
-                                id="height"
-                                type="number"
-                                value={height || ''}
-                                onChange={(e) => setHeight(parseInt(e.target.value) || 0)}
-                                className="bg-[hsl(202,31%,18%)] border-[hsl(220,13%,40%)] text-[hsl(202,80%,92%)]"
-                            />
-                        </div>
-                    </div>
-                </div>
+                {/* Botões */}
                 <div className="flex justify-between pt-4">
-                    <div className="flex gap-3">
-                        <Button variant="ghost" className="text-primary-foreground hover:text-primary border" onClick={handleSkip}>Pular etapa</Button>
-                    </div>
-                    <Button className="bg-primary hover:brightness-110 w-[150px] text-primary-foreground" onClick={handleSubmit}>
+                    <Button variant="ghost" className="text-primary-foreground hover:text-primary border" onClick={handleSkip}>
+                        Pular etapa
+                    </Button>
+                    <Button className="bg-primary hover:brightness-110 w-[150px] text-primary-foreground" type="submit">
                         Concluir
                     </Button>
                 </div>
