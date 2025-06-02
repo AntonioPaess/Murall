@@ -16,6 +16,8 @@ public record BlogRegisterRequest(
         @Size(min = 10, message = "A descrição deve ter pelo menos 10 caracteres.")
         String blogDescription,
 
+        String blogAvatar,
+
         @NotNull(message = "A url do blog é obrigatória")
         @Size(min = 1, message = "A lista de imagens deve ter pelo menos uma imagem.")
         List<String> blogImagesUrl,

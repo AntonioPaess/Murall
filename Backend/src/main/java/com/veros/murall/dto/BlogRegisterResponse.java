@@ -10,6 +10,7 @@ public record BlogRegisterResponse(
         String blogName,
         String blogDomain,
         String blogDescription,
+        String blogAvatar,
         List<BlogImage> blogImagesUrl,
         List<CategoryResponse> categories,
         UserSimpleResponse user,

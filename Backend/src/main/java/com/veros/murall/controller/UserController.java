@@ -41,6 +41,7 @@ public class UserController {
                         blog.getBlogName(),
                         blog.getBlogDomain(),
                         blog.getBlogDescription(),
+                        blog.getBlogAvatar(),
                         blog.getBlogImagesUrl(),
                         blog.getCategories().stream()
                                 .map(category -> new CategoryResponse(category.getId(), category.getName()))
@@ -59,6 +60,7 @@ public class UserController {
                 user.getId(),
                 user.getUsername(),
                 user.getBiography(),
+                user.getAvatar(),
                 user.getEmail(),
                 user.getRole(),
                 user.getCreatedAt(),
@@ -159,6 +161,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao validar token.");
         }
     }
-
-
 }

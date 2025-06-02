@@ -9,6 +9,7 @@ public record UserResponse(
         Long id,
         String username,
         String biography,
+        String avatar,
         String email,
         UserRole role,
         Date createdAt,

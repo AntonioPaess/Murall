@@ -27,6 +27,8 @@ public class Blog {
     @Column(nullable = false)
     private String blogDescription;
 
+    private String blogAvatar;
+
     @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogImage> blogImagesUrl = new ArrayList<>();
 

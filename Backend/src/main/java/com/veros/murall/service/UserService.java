@@ -232,6 +232,10 @@ public class UserService implements UserDetailsService {
         if (request.biography() != null) {
             user.setBiography(request.biography());
         }
+
+        if (request.avatar() != null) {
+            user.setAvatar(request.avatar());
+        }
         
         userRepository.save(user);
     }

@@ -36,6 +36,7 @@ public class BlogService {
         blog.setBlogName(request.blogName());
         blog.setBlogDomain(normalizedDomain);
         blog.setBlogDescription(request.blogDescription());
+        blog.setBlogAvatar(request.blogAvatar());
         blog.setUser(user);
         blog.setBlogImagesUrl(mapUrlsToImages(request.blogImagesUrl(), blog));
         blog.setCategories(mapStringsToCategory(request.categoryNames(), blog));
