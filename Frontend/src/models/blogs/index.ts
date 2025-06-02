@@ -11,6 +11,7 @@ export interface Blogs {
     id?: number,
     blogName?: string,
     blogDescription?: string
+    blogAvatar?: string,
     blogDomain?: string
     user?: User
     blogImagesUrl?: BlogImage[];
