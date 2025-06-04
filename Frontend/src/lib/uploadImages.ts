@@ -66,3 +66,18 @@ export const uploadBlogImage = async (file: File): Promise<string | null> => {
         return null;
     }
 };
+
+export const deleteImage = async (url: string, bucket: 'user-avatars' | 'blogs') => {
+    try {
+      const path = new URL(url).pathname.split(`${bucket}/`)[1];
+      const { error } = await supabase.storage
+        .from(bucket)
+        .remove([path]);
+      
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Erro ao deletar imagem:', error);
+      return false;
+    }
+  };

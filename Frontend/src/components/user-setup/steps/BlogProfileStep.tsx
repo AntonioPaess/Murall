@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { uploadBlogImage } from '@/lib/uploadImages'; // importa a função
+import { deleteImage, uploadBlogImage } from '@/lib/uploadImages';
 
 interface BlogProfileStepProps {
     user: User;
@@ -36,6 +36,30 @@ const AVAILABLE_TAGS = [
     'Música',
     'Arte',
     'Cinema',
+    'Educação',            
+    'Negócios',       
+    'Entretenimento', 
+    'Moda',                
+    'Beleza',              
+    'Literatura',          
+    'História',            
+    'Design',              
+    'Fotografia',          
+    'Política',           
+    'Ciência',             
+    'Sustentabilidade',    
+    'Jogos',               
+    'Automóveis',          
+    'Finanças',            
+    'Direito',             
+    'Sociedade',           
+    'Espiritualidade',     
+    'Tecnologia de Vanguarda', 
+    'Arquitetura',         
+    'Natureza',            
+    'Comunicação',         
+    'Humor',               
+    'Psicologia',          
 ];
 
 const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
@@ -47,6 +71,7 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
         initialBlog.categories?.map((c) => c.name) || []
     );
     const [blogAvatar, setBlogAvatar] = useState<string | undefined>(initialBlog.blogAvatar);
+    const [tempBlogAvatarFile, setTempBlogAvatarFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
@@ -57,28 +82,52 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
         setBlogAvatar(blog.blogAvatar);
     }, [user]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
         if (blogName === '' || blogDescription === '') {
             toast.warning('Você deixou algum campo vazio');
             return;
         }
+        
         if (selectedCategories.length < 3) {
             toast.warning('Escolha pelo menos 3 categorias');
             return;
         }
 
-        onNext({
-            blogs: [
-                {
-                    ...initialBlog,
-                    blogName,
-                    blogDescription,
-                    blogAvatar,
-                    categories: selectedCategories.map((name) => ({ name })),
-                },
-            ],
-        });
+        setUploading(true);
+
+        try {
+            let finalBlogAvatar = initialBlog.blogAvatar;
+
+            if (tempBlogAvatarFile) {
+                if (initialBlog.blogAvatar) {
+                    await deleteImage(initialBlog.blogAvatar, 'blogs');
+                }
+
+                const uploadedUrl = await uploadBlogImage(tempBlogAvatarFile);
+                if (uploadedUrl) {
+                    finalBlogAvatar = uploadedUrl;
+                }
+            }
+
+            onNext({
+                blogs: [
+                    {
+                        ...initialBlog,
+                        blogName,
+                        blogDescription,
+                        blogAvatar: finalBlogAvatar,
+                        categories: selectedCategories.map((name) => ({ name })),
+                    },
+                ],
+            });
+
+        } catch (error) {
+            toast.error('Erro ao processar a imagem');
+        } finally {
+            setUploading(false);
+        }
     };
 
     const addCategory = (tag: string) => {
@@ -91,26 +140,31 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
         setSelectedCategories(selectedCategories.filter((t) => t !== tag));
     };
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        setUploading(true);
-
-        try {
-            const uploadedUrl = await uploadBlogImage(file);
-            if (uploadedUrl) {
-                setBlogAvatar(uploadedUrl);
-                toast.success('Imagem enviada com sucesso!');
-            } else {
-                toast.error('Falha ao enviar a imagem.');
-            }
-        } catch {
-            toast.error('Erro ao enviar a imagem.');
-        } finally {
-            setUploading(false);
+        if (!file.type.startsWith('image/')) {
+            toast.error('Por favor, selecione um arquivo de imagem');
+            return;
         }
+        if (file.size > 5 * 1024 * 1024) { // 5MB
+            toast.error('A imagem deve ter menos de 5MB');
+            return;
+        }
+
+        const tempUrl = URL.createObjectURL(file);
+        setBlogAvatar(tempUrl);
+        setTempBlogAvatarFile(file);
     };
+
+    useEffect(() => {
+        return () => {
+            if (blogAvatar && blogAvatar.startsWith('blob:')) {
+                URL.revokeObjectURL(blogAvatar);
+            }
+        };
+    }, [blogAvatar]);
 
     return (
         <div>

@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { uploadUserImage } from '@/lib/uploadImages'; // importa a função
+import { deleteImage, uploadUserImage } from '@/lib/uploadImages'; // importa a função
 
 interface ProfileStepProps {
   user: User;
@@ -18,6 +18,7 @@ interface ProfileStepProps {
 const ProfileStep = ({ user, onNext, onBack }: ProfileStepProps) => {
   const [biography, setBiography] = useState(user.biography || '');
   const [avatar, setAvatar] = useState<string | undefined>(user.avatar);
+  const [tempAvatarFile, setTempAvatarFile] = useState<File | null>(null); 
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -33,39 +34,55 @@ const ProfileStep = ({ user, onNext, onBack }: ProfileStepProps) => {
     return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateBiography()) {
-      return;
-    }
-
-    onNext({
-      biography,
-      avatar,
-    });
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const tempUrl = URL.createObjectURL(file);
+    setAvatar(tempUrl);
+    setTempAvatarFile(file);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateBiography()) return;
 
     setUploading(true);
 
     try {
-      const uploadedUrl = await uploadUserImage(file);
-      if (uploadedUrl) {
-        setAvatar(uploadedUrl);
-        toast.success('Imagem enviada com sucesso!');
-      } else {
-        toast.error('Falha ao enviar a imagem.');
+      let finalAvatarUrl = user.avatar;
+
+      if (tempAvatarFile) {
+        if (user.avatar) {
+          await deleteImage(user.avatar, 'user-avatars');
+        }
+
+        const uploadedUrl = await uploadUserImage(tempAvatarFile);
+        if (uploadedUrl) {
+          finalAvatarUrl = uploadedUrl;
+        }
       }
+
+      onNext({
+        biography,
+        avatar: finalAvatarUrl,
+      });
+
     } catch (error) {
-      toast.error('Erro ao enviar a imagem.');
+      toast.error('Erro ao processar a imagem');
     } finally {
       setUploading(false);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (avatar && avatar.startsWith('blob:')) {
+        URL.revokeObjectURL(avatar);
+      }
+    };
+  }, [avatar]);
 
   const isBiographyValid = biography.trim().length >= 10;
 

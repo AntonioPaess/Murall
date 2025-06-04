@@ -3,7 +3,7 @@ import { User } from '@/models/users';
 import { Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { uploadCarouselImages } from '@/lib/uploadImages'; // função de upload que já temos
+import { deleteImage, uploadCarouselImages } from '@/lib/uploadImages';
 
 interface BannerUploadStepProps {
   user: User;
@@ -14,101 +14,152 @@ interface BannerUploadStepProps {
 }
 
 const BannerUploadStep = ({ user, onNext, onBack, isLastStep }: BannerUploadStepProps) => {
-  const initialBanners =
-    user.blogs?.[0]?.blogImagesUrl?.map((img) => ({
+  const initialBanners = Array(3).fill({ 
+    url: '', 
+    tempFile: null, 
+    isNew: false, 
+    dimensions: { width: 0, height: 0 }
+  });
+
+  const [banners, setBanners] = useState(() => {
+    const userBanners = user.blogs?.[0]?.blogImagesUrl?.map(img => ({
       url: img.imageUrl || '',
-      dimensions: { width: 0, height: 0 },
+      tempFile: null,
+      isNew: false,
+      dimensions: { width: 0, height: 0 }
     })) || [];
+    return [...userBanners, ...initialBanners].slice(0, 3);
+  });
 
-  const [banners, setBanners] = useState<
-    { url: string; dimensions: { width: number; height: number } }[]
-  >(initialBanners);
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [uploading, setUploading] = useState(false);
-
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const newBanners =
-      user.blogs?.[0]?.blogImagesUrl?.map((img) => ({
-        url: img.imageUrl || '',
-        dimensions: { width: 0, height: 0 },
-      })) || [];
-    setBanners(newBanners);
+    const userBanners = user.blogs?.[0]?.blogImagesUrl?.map(img => ({
+      url: img.imageUrl || '',
+      tempFile: null,
+      isNew: false,
+      dimensions: { width: 0, height: 0 }
+    })) || [];
+    
+    setBanners(prev => {
+      const newBanners = [...userBanners, ...initialBanners].slice(0, 3);
+      return newBanners.map((banner, i) => 
+        prev[i]?.tempFile ? { ...banner, ...prev[i] } : banner
+      );
+    });
   }, [user]);
 
-  // Função para fazer o upload de uma imagem
-  const uploadSingleFile = async (file: File): Promise<string | null> => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Selecione um arquivo de imagem válido');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Imagem deve ser menor que 5MB');
+      return;
+    }
+
+    const newBanners = [...banners];
+    const tempUrl = URL.createObjectURL(file);
+
+    // Limpa URL anterior se existir
+    if (newBanners[selectedIndex]?.url?.startsWith('blob:')) {
+      URL.revokeObjectURL(newBanners[selectedIndex].url);
+    }
+
+    newBanners[selectedIndex] = {
+      url: tempUrl,
+      tempFile: file,
+      isNew: true,
+      dimensions: { width: 0, height: 0 }
+    };
+
+    setBanners(newBanners);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const newBanners = [...banners];
+    
+    // Limpa URL se for temporária
+    if (newBanners[index]?.url?.startsWith('blob:')) {
+      URL.revokeObjectURL(newBanners[index].url);
+    }
+
+    newBanners[index] = { 
+      url: '', 
+      tempFile: null, 
+      isNew: false, 
+      dimensions: { width: 0, height: 0 } 
+    };
+
+    setBanners(newBanners);
+    
+    // Atualiza índice selecionado se necessário
+    if (index === selectedIndex) {
+      const nextIndex = newBanners.findIndex(b => b.url);
+      setSelectedIndex(nextIndex !== -1 ? nextIndex : 0);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setUploading(true);
+
     try {
-      const urls = await uploadCarouselImages([file]);
-      if (urls.length > 0) {
-        toast.success('Imagem enviada com sucesso!');
-        return urls[0];
-      } else {
-        toast.error('Falha no upload da imagem.');
-        return null;
-      }
-    } catch {
-      toast.error('Erro ao enviar a imagem.');
-      return null;
+      const bannersToUpload = banners.filter(b => b.tempFile);
+
+      const deletePromises = banners
+        .filter(b => b.url && !b.isNew && b.url.startsWith('http'))
+        .map(b => deleteImage(b.url, 'blogs'));
+      
+      await Promise.all(deletePromises);
+
+      const uploadedUrls = bannersToUpload.length > 0
+        ? await uploadCarouselImages(bannersToUpload.map(b => b.tempFile!))
+        : [];
+
+      const updatedBanners = banners.map((banner, i) => {
+        const uploadedIndex = bannersToUpload.findIndex(b => b === banner);
+        return uploadedIndex >= 0
+          ? { ...banner, url: uploadedUrls[uploadedIndex], isNew: false, tempFile: null }
+          : banner;
+      });
+
+      onNext({
+        blogs: [{
+          ...user.blogs?.[0],
+          blogImagesUrl: updatedBanners
+            .filter(b => b.url)
+            .map(b => ({ imageUrl: b.url }))
+        }]
+      });
+
+    } catch (error) {
+      toast.error('Erro ao processar imagens');
+      console.error(error);
     } finally {
       setUploading(false);
     }
   };
 
-  // Lida com o envio de um arquivo e atualiza o banner
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleSkip = () => onNext({});
 
-    const uploadedUrl = await uploadSingleFile(file);
-
-    if (uploadedUrl) {
-      const newBanners = [...banners];
-      newBanners[selectedIndex] = {
-        url: uploadedUrl,
-        dimensions: { width: 0, height: 0 }, // Você pode calcular as dimensões se precisar
-      };
-      setBanners(newBanners);
-    }
-
-    // Reset input para permitir o upload do mesmo arquivo se necessário
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const handleRemoveImage = (index: number) => {
-    const newBanners = [...banners];
-    newBanners[index] = { url: '', dimensions: { width: 0, height: 0 } };
-    setBanners(newBanners);
-
-    if (index === selectedIndex) {
-      const next = newBanners.findIndex((b) => b.url);
-      setSelectedIndex(next !== -1 ? next : 0);
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onNext({
-      blogs: [
-        {
-          ...user.blogs?.[0],
-          blogImagesUrl: banners
-            .filter((b) => b.url)
-            .map((b) => ({
-              imageUrl: b.url,
-            })),
-        },
-      ],
-    });
-  };
-
-  const handleSkip = () => {
-    onNext({});
-  };
+  useEffect(() => {
+    return () => {
+      banners.forEach(banner => {
+        if (banner.url?.startsWith('blob:')) {
+          URL.revokeObjectURL(banner.url);
+        }
+      });
+    };
+  }, [banners]);
 
   return (
     <div>
