@@ -28,10 +28,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
+        if (user == null) return ResponseEntity.notFound().build();
 
         List<Blog> blogs = blogService.getBlogsByUser(user.getId());
 
@@ -42,9 +39,12 @@ public class UserController {
                         blog.getBlogDomain(),
                         blog.getBlogDescription(),
                         blog.getBlogAvatar(),
-                        blog.getBlogImagesUrl(),
+                        // Mapeia BlogImage para BlogImageResponse (quebra o loop)
+                        blog.getBlogImagesUrl().stream()
+                                .map(img -> new BlogImageResponse(img.getId(), img.getImageUrl()))
+                                .toList(),
                         blog.getCategories().stream()
-                                .map(category -> new CategoryResponse(category.getId(), category.getName()))
+                                .map(cat -> new CategoryResponse(cat.getId(), cat.getName()))
                                 .toList(),
                         new UserSimpleResponse(
                                 user.getId(),
@@ -54,7 +54,8 @@ public class UserController {
                                 user.getRole()
                         ),
                         blog.getCreatedAt()
-                )).toList();
+                ))
+                .toList();
 
         return ResponseEntity.ok(new UserResponse(
                 user.getId(),

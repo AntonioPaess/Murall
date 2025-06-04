@@ -1,7 +1,5 @@
 package com.veros.murall.dto;
 
-import com.veros.murall.model.BlogImage;
-
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +9,7 @@ public record BlogRegisterResponse(
         String blogDomain,
         String blogDescription,
         String blogAvatar,
-        List<BlogImage> blogImagesUrl,
+        List<BlogImageResponse> blogImagesUrl,
         List<CategoryResponse> categories,
         UserSimpleResponse user,
         Date createdAt
