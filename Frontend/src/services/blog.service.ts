@@ -5,8 +5,9 @@ interface BlogRegisterRequest {
     blogName: string,
     blogDomain: string,
     blogDescription: string,
-    categoryNames: string[],
-    blogImagesUrl: string[]
+    blogAvatar: string,
+    blogImagesUrl: string[],
+    categoryNames: string[]
 }
 
 interface BlogDomainRequest {

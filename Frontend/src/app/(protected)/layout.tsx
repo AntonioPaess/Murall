@@ -34,6 +34,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!user?.role) {
+    console.log(user)
     return (
       <UserSetupScreen
         user={user}

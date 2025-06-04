@@ -36,12 +36,12 @@ const ProtectedNav = (className: ProtectedNavProps) => {
       </Link>
       <div className="flex flex-row gap-5 items-center justify-center">
         <ThemeToggle />
-        <Bell size={23} className="cursor-pointer"/>
+        <Bell size={23} className="cursor-pointer" />
         <TooltipProvider delayDuration={300}>
           <Tooltip>
             <TooltipTrigger asChild>
               <Avatar className="h-10 w-10 border-2 cursor-pointer border-primary">
-                <AvatarImage src={user.avatar} alt={user.username} />
+                <AvatarImage src={user.avatar} alt={user.username} className="object-cover" />
                 <AvatarFallback className="bg-primary/60 text-white uppercase">
                   {user.username ? user.username.slice(0, 1) : "M"}
                 </AvatarFallback>
@@ -51,7 +51,7 @@ const ProtectedNav = (className: ProtectedNavProps) => {
               <div className="bg-primary mt-2 rounded-lg p-2 border border-primary">
                 <p className="font-medium text-white">{user.username}</p>
                 <p className="text-xs font-bold text-white">
-                  {user.role === "USER_ROLE" ? "Membro" : "Membro"}
+                  {user.role === "BLOG_USER" ? "Membro" : "Membro"}
                 </p>
               </div>
             </TooltipContent>

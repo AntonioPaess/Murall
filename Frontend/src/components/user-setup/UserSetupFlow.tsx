@@ -59,7 +59,7 @@ const UserSetupFlow = ({ user: initialUser, onComplete }: UserSetupFlowProps) =>
         if ((updatedUser.biography || updatedUser.avatar) && updatedUser.id) {
           await userService.editUser({
             biography: updatedUser.biography,
-            // avatar: updatedUser.avatar
+            avatar: updatedUser.avatar
           }, updatedUser.id);
         }
 
@@ -69,6 +69,7 @@ const UserSetupFlow = ({ user: initialUser, onComplete }: UserSetupFlowProps) =>
           await blogService.createBlog({
             blogName: blog.blogName,
             blogDomain: normalizedDomain,
+            blogAvatar: blog.blogAvatar || '',
             blogDescription: blog.blogDescription || '',
             categoryNames: blog.categories?.map(category => category.name || "") || [],
             blogImagesUrl: blog.blogImagesUrl?.map(img => img.imageUrl || '') || [],

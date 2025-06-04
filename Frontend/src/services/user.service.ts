@@ -3,8 +3,9 @@ import { User } from "@/models/users";
 
 interface UserUpdateRequest {
     username?: string,
-    biography?: string,
     email?: string,
+    avatar?: string,
+    biography?: string,
     password?: string
 }
 

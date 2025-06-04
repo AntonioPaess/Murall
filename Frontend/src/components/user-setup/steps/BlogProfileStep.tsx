@@ -5,9 +5,15 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Upload, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { uploadBlogImage } from '@/lib/uploadImages'; // importa a função
 
 interface BlogProfileStepProps {
     user: User;
@@ -18,9 +24,18 @@ interface BlogProfileStepProps {
 }
 
 const AVAILABLE_TAGS = [
-    'Atualidade', 'Agricultura', 'Alimentação', 'Aviação',
-    'Culinária', 'Saúde', 'Tecnologia', 'Viagem', 'Esportes',
-    'Música', 'Arte', 'Cinema'
+    'Atualidade',
+    'Agricultura',
+    'Alimentação',
+    'Aviação',
+    'Culinária',
+    'Saúde',
+    'Tecnologia',
+    'Viagem',
+    'Esportes',
+    'Música',
+    'Arte',
+    'Cinema',
 ];
 
 const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
@@ -28,31 +43,41 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
 
     const [blogName, setBlogName] = useState(initialBlog.blogName || '');
     const [blogDescription, setBlogDescription] = useState(initialBlog.blogDescription || '');
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [blogAvatar, setBlogAvatar] = useState<string | undefined>();
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(
+        initialBlog.categories?.map((c) => c.name) || []
+    );
+    const [blogAvatar, setBlogAvatar] = useState<string | undefined>(initialBlog.blogAvatar);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         const blog = user.blogs?.[0] || {};
         setBlogName(blog.blogName || '');
         setBlogDescription(blog.blogDescription || '');
-        setSelectedCategories(blog.categories?.map(c => c.name) || []);
+        setSelectedCategories(blog.categories?.map((c) => c.name) || []);
+        setBlogAvatar(blog.blogAvatar);
     }, [user]);
 
     const handleSubmit = (e: React.FormEvent) => {
-
         e.preventDefault();
-        if (blogName === "" || blogDescription === "") {
-            toast.warning("Você deixou algum campo vazio");
+        if (blogName === '' || blogDescription === '') {
+            toast.warning('Você deixou algum campo vazio');
+            return;
+        }
+        if (selectedCategories.length < 3) {
+            toast.warning('Escolha pelo menos 3 categorias');
             return;
         }
 
         onNext({
-            blogs: [{
-                ...initialBlog,
-                blogName,
-                blogDescription,
-                categories: selectedCategories.map(name => ({ name }))
-            }]
+            blogs: [
+                {
+                    ...initialBlog,
+                    blogName,
+                    blogDescription,
+                    blogAvatar,
+                    categories: selectedCategories.map((name) => ({ name })),
+                },
+            ],
         });
     };
 
@@ -62,21 +87,29 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                if (event.target?.result) {
-                    setBlogAvatar(event.target.result as string);
-                }
-            };
-            reader.readAsDataURL(file);
-        }
+    const removeCategory = (tag: string) => {
+        setSelectedCategories(selectedCategories.filter((t) => t !== tag));
     };
 
-    const removeCategory = (tag: string) => {
-        setSelectedCategories(selectedCategories.filter(t => t !== tag));
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+
+        try {
+            const uploadedUrl = await uploadBlogImage(file);
+            if (uploadedUrl) {
+                setBlogAvatar(uploadedUrl);
+                toast.success('Imagem enviada com sucesso!');
+            } else {
+                toast.error('Falha ao enviar a imagem.');
+            }
+        } catch {
+            toast.error('Erro ao enviar a imagem.');
+        } finally {
+            setUploading(false);
+        }
     };
 
     return (
@@ -89,9 +122,13 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
                 <div className="space-y-2">
                     <div className="flex flex-col items-start mb-6">
                         <Label htmlFor="avatar" className="text-muted-foreground mb-6">
-                            Foto de perfil
+                            Foto de perfil do blog
                         </Label>
-                        <label htmlFor="avatar" className="relative group w-32 h-32 cursor-pointer rounded-full overflow-hidden block">
+                        <label
+                            htmlFor="avatar"
+                            className={`relative group w-32 h-32 cursor-pointer rounded-full overflow-hidden block ${uploading ? 'opacity-50 pointer-events-none' : ''
+                                }`}
+                        >
                             <div className="w-32 h-32 rounded-full bg-background border-2 border-[hsl(220,13%,40%)] flex items-center justify-center overflow-hidden">
                                 {blogAvatar ? (
                                     <img src={blogAvatar} alt="Profile" className="w-full h-full object-cover" />
@@ -105,12 +142,14 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
                                 accept="image/*"
                                 onChange={handleFileChange}
                                 className="hidden"
+                                disabled={uploading}
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                 <Upload className="text-[#C5CCD6]" size={64} />
                             </div>
                         </label>
                     </div>
+
                     <Label htmlFor="blogName" className="text-sm font-medium text-muted-foreground">
                         Nome do blog
                     </Label>
@@ -143,7 +182,7 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
                     </p>
 
                     <div className="flex flex-wrap gap-2 mb-2">
-                        {selectedCategories.map(tag => (
+                        {selectedCategories.map((tag) => (
                             <Badge
                                 key={tag}
                                 className="bg-background hover:bg-[hsl(207,61%,25%)] text-white flex items-center gap-1"
@@ -175,7 +214,7 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
                             <DropdownMenuContent
                                 className="bg-[hsl(220,13%,15%)] border-[hsl(220,13%,40%)] text-[#C5CCD6]"
                             >
-                                {AVAILABLE_TAGS.filter(tag => !selectedCategories.includes(tag)).map(tag => (
+                                {AVAILABLE_TAGS.filter((tag) => !selectedCategories.includes(tag)).map((tag) => (
                                     <DropdownMenuItem
                                         key={tag}
                                         onClick={() => addCategory(tag)}
@@ -188,10 +227,7 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
                         </DropdownMenu>
 
                         {selectedCategories.length > 0 && (
-                            <Badge
-                                variant="outline"
-                                className="bg-[hsl(207,61%,48%)] text-white border-none"
-                            >
+                            <Badge variant="outline" className="bg-[hsl(207,61%,48%)] text-white border-none">
                                 {selectedCategories.length}
                             </Badge>
                         )}
@@ -199,7 +235,11 @@ const BlogProfileStep = ({ user, onNext, onBack }: BlogProfileStepProps) => {
                 </div>
 
                 <div className="flex justify-end pt-4">
-                    <Button className="bg-primary hover:brightness-110 w-[150px] text-primary-foreground">
+                    <Button
+                        type="submit"
+                        className="bg-primary hover:brightness-110 w-[150px] text-primary-foreground"
+                        disabled={uploading}
+                    >
                         Próximo
                     </Button>
                 </div>
