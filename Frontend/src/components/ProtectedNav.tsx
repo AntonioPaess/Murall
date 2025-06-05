@@ -12,7 +12,6 @@ import {
   TooltipContent,
 } from "@radix-ui/react-tooltip";
 import Link from "next/link";
-import { Bell } from "lucide-react";
 
 interface ProtectedNavProps {
   className?: string;
@@ -36,7 +35,6 @@ const ProtectedNav = (className: ProtectedNavProps) => {
       </Link>
       <div className="flex flex-row gap-5 items-center justify-center">
         <ThemeToggle />
-        <Bell size={23} className="cursor-pointer" />
         <TooltipProvider delayDuration={300}>
           <Tooltip>
             <TooltipTrigger asChild>
