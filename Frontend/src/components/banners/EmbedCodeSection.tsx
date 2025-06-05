@@ -7,9 +7,7 @@ import { motion } from "framer-motion";
 
 const EmbedCodeSection = () => {
 
-const embedCode =`<div class="murall-banner bg-gray-800 p-4 rounded-lg shadow-md min-h-[120px] 
-flex flex-wrap gap-4 items-center justify-center" data-murall-blog-domain="SEU_DOMINIO_DO_BLOG">
-</div>\n\n<script src="https://murall.com/embed.js" async defer></script>`;
+  const embedCode = `<div class="murall-banner" data-murall-blog-domain="MEU-DOMINIO"></div>\n\n<script src="https://murall-xi.vercel.app/embed.js" async defer></script>`;
 
   const copyEmbedCode = () => {
     navigator.clipboard.writeText(embedCode);
@@ -17,7 +15,7 @@ flex flex-wrap gap-4 items-center justify-center" data-murall-blog-domain="SEU_D
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="w-full mb-12"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -48,7 +46,7 @@ flex flex-wrap gap-4 items-center justify-center" data-murall-blog-domain="SEU_D
               Copiar
             </Button>
           </div>
-          
+
           <pre className="text-[#E2E8F0] text-sm overflow-x-auto p-4 font-mono">
             {embedCode}
           </pre>
