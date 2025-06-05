@@ -32,6 +32,7 @@ import {
 import authService from "@/services/auth.service";
 import { useSidebar } from "@/app/contexts/sidebar-context";
 import { toast } from "sonner";
+import userService from "@/services/user.service";
 
 interface AppSidebarProps {
   className?: string;
@@ -51,6 +52,7 @@ export function AppSidebar({
   const { collapsed, toggleCollapsed, isMobile } = useSidebar(); // Adiciona isMobile
   const router = useRouter();
   const pathname = usePathname();
+  const [user, setUser] = useState<{ id: string } | null>(null);
 
   const isLinkActive = (href: string) => {
     if (href === '/explore') {
@@ -71,6 +73,23 @@ export function AppSidebar({
     router.push("/");
     toast.success("Volte sempre!");
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await userService.getUser();
+  
+        if (!data.id) {
+          throw new Error("ID do usuário não encontrado.");
+        }
+  
+        setUser({ id: String(data.id) }); // força para string
+      } catch (error) {
+        toast.error("Erro ao carregar usuário.");
+      }
+    };
+    fetchUser();
+  }, []);
 
   const mainLinks: NavLink[] = [
     {
@@ -104,7 +123,7 @@ export function AppSidebar({
   const settingsLinks: NavLink[] = [
     {
       label: "Meu Perfil",
-      href: "/my-account",
+      href: `/my-account/${user?.id}`,
       icon: <UserRoundCog size={20} />,
     },
     {
