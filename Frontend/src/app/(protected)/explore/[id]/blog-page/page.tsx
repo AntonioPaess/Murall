@@ -57,6 +57,8 @@ const BlogPage = () => {
         }
     };
 
+    console.log(partners)
+
     return (
         <div className={`ml-2 min-h-screen bg-background flex flex-col mt-4 max-w-[1800px]`}>
             <div className={`flex-1 p-8 transition-all duration-300 ${isMobile ? "pl-[110px]" : collapsed ? "pl-[110px]" : "pl-[18rem]"} max-w-full`}>
@@ -126,22 +128,23 @@ const BlogPage = () => {
                             </div>
                             <h2 className="text-xl font-semibold mb-4 mt-6">Parceiros</h2>
                             <div className="flex flex-wrap justify-center gap-4 md-940:flex-nowrap md-940:justify-start lg:justify-start">
-                                {partners.length > 0 ? partners
-                                    .filter((partner) => partner.id !== undefined)
-                                    .map((partner) => (
-                                        <Link href={`/explore/${partner?.id}/blog-page`}>
-                                            <Avatar key={partner.id} className="h-24 w-24 border-2 cursor-pointer border-primary flex-shrink-0">
+                                {partners.length > 0 ? partners.map((partner) => {
+                                    console.log('Partner:', partner);  // Logando o parceiro antes de renderizar
+                                    return (
+                                        <Link key={partner.partnerBlog?.id} href={`/explore/${partner.partnerBlog?.id}/blog-page`}>
+                                            <Avatar className="h-24 w-24 border-2 cursor-pointer border-primary flex-shrink-0">
                                                 <AvatarImage
-                                                    src={partner.receiverBlog?.blogAvatar || ''}
-                                                    alt={partner.receiverBlog?.blogName || 'Parceiro sem nome'}
+                                                    src={partner.partnerBlog?.blogAvatar || '/path/to/default-avatar.jpg'}
+                                                    alt={partner.partnerBlog?.blogName || 'Parceiro sem nome'}
                                                     className="object-cover"
                                                 />
                                                 <AvatarFallback className="bg-primary/60 text-white text-4xl font-semibold uppercase">
-                                                    {partner.receiverBlog?.blogName ? partner.receiverBlog.blogName.slice(0, 1) : 'P'}
+                                                    {partner.partnerBlog?.blogName ? partner.partnerBlog.blogName.slice(0, 1) : 'P'}
                                                 </AvatarFallback>
                                             </Avatar>
                                         </Link>
-                                    )) : (
+                                    );
+                                }) : (
                                     <p className='text-sm italic'>Este blog não possui parceiros</p>
                                 )}
                             </div>

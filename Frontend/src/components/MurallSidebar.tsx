@@ -68,7 +68,7 @@ export function AppSidebar({
       router.push(path);
     }
   };
-
+  
   const handleLogout = async () => {
     authService.logout();
     router.push("/");

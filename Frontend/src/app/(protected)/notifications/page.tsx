@@ -3,86 +3,139 @@
 import { useSidebar } from '@/app/contexts/SidebarContext';
 import LoaderMurall from '@/components/Loader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Blogs } from '@/models/blogs';
-import { blogService } from '@/services/blog.service'
-import { Handshake, Send, User } from 'lucide-react';
-import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { blogPartnershipService } from '@/services/partnership.service';
+import { useUser } from '@/app/contexts/UserContext';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { BlogPartnership } from '@/models/blog-partnership';
 
-const Explore = () => {
-    const [blogs, setBlogs] = useState<Blogs[]>([]);
+const Notifications = () => {
+    const [pendingRequests, setPendingRequests] = useState<BlogPartnership[]>([]);
     const [loading, setLoading] = useState(true);
     const { collapsed, isMobile } = useSidebar();
+    const { user } = useUser();
 
-    async function listarBlogs() {
+    const fetchPendingRequests = async () => {
         try {
-            const blogs = await blogService.listAllBlogs();
-            setBlogs(blogs);
+            setLoading(true);
+            
+            if (!user?.blogs || user.blogs.length === 0) {
+                toast.error("Usuário sem blogs.");
+                return;
+            }
+
+            const requests = await Promise.all(
+                user.blogs.map(blog => 
+                    blogPartnershipService.getPendingRequests(blog.id ?? 0) // Usamos operador de coalescência nula
+                        .catch(error => {
+                            toast.error(`Erro ao buscar solicitações para o blog ${blog.id}: ${error.message}`);
+                            return [];
+                        })
+                ));
+            
+            setPendingRequests(requests.flat());
         } catch (error: any) {
-            toast.error("Erro ao listar os blogs:", error);
+            toast.error("Erro ao buscar solicitações: " + error.message);
         } finally {
             setLoading(false);
         }
-    }
+    };
+
+    const handleAccept = async (partnershipId: number) => {
+        try {
+            await blogPartnershipService.acceptPartnershipRequest(partnershipId);
+            toast.success("Parceria aceita com sucesso!");
+            setPendingRequests(prev => prev.filter(r => r.id !== partnershipId));
+        } catch (error: any) {
+            toast.error("Erro ao aceitar: " + error.message);
+        }
+    };
+
+    const handleReject = async (partnershipId: number) => {
+        try {
+            await blogPartnershipService.rejectPartnershipRequest(partnershipId);
+            toast.success("Parceria recusada com sucesso!");
+            setPendingRequests(prev => prev.filter(r => r.id !== partnershipId));
+        } catch (error: any) {
+            toast.error("Erro ao recusar: " + error.message);
+        }
+    };
 
     useEffect(() => {
-        listarBlogs();
-    }, []);
+        fetchPendingRequests();
+    }, [user?.blogs]);
 
     return (
         <div className="flex min-h-screen bg-background transition-all duration-300 overflow-x-hidden">
-            <div
-                className={`flex-1 p-8 transition-all duration-300 ${isMobile ? "pl-[110px]" : collapsed ? "pl-[110px]" : "pl-[18rem]"} max-w-full`}
-            >
-                <div className="flex gap-4 flex-col">
-                    {loading ? <div className=''> <LoaderMurall /> </div> : ''}
-
-                    {!loading && blogs.length === 0 && (
-                        <p>Nenhum blog encontrado.</p>
-                    )}
-
-                    {!loading && blogs.length > 0 && (
-                        <div className="w-full">
-                            {blogs.map((blog) => (
-                                <Link href={`/explore/${blog.id}/blog-page`} key={blog.id}>
-                                    <div className="bg-background/50 mb-[16px] border cursor-pointer border-border p-4 rounded-lg hover:bg-slate-800/70 transition-all duration-200 group">
-                                        <div className="flex items-start gap-4">
-                                            <div className="flex-shrink-0">
-                                                <Avatar className="sm:h-32 sm:w-32 h-20 w-20 border-2 cursor-pointer border-primary">
-                                                    <AvatarImage src={blog.blogAvatar} alt={blog.blogName} className="object-cover" />
-                                                    <AvatarFallback className="bg-primary/60 text-white text-4xl font-semibold uppercase">
-                                                        {blog.blogName ? blog.blogName.slice(0, 1) : "M"}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <h3 className="sm:text-[22px] text-md font-semibold text-[#C4C1C1] truncate">
-                                                        {blog.blogName}
-                                                    </h3>
-                                                </div>
-
-                                                <p className="text-slate-300 text-sm leading-relaxed mb-3 line-clamp-2">
-                                                    {blog.blogDescription}
-                                                </p>
-
-                                                <div className="text-xs text-slate-400">
-                                                    <span className="font-medium">Domínio:</span> {blog.blogDomain}
-                                                </div>
-                                            </div>
-
-                                            <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                                <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
-                                                    Aceitar
-                                                </button>
-                                                <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
-                                                    Recusar
-                                                </button>
-                                            </div>
+            <div className={`flex-1 p-8 transition-all duration-300 ${
+                isMobile ? "pl-[110px]" : 
+                collapsed ? "pl-[110px]" : 
+                "pl-[18rem]"
+            } max-w-full`}>
+                <div className="flex flex-col gap-6">
+                    <h1 className="text-2xl font-bold text-[#C4C1C1]">Solicitações de Parceria</h1>
+                    
+                    {loading ? (
+                        <div className="flex justify-center">
+                            <LoaderMurall />
+                        </div>
+                    ) : pendingRequests.length === 0 ? (
+                        <div className="text-center py-8">
+                            <p className="text-muted-foreground">Nenhuma solicitação pendente encontrada</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {pendingRequests.map((request) => (
+                                <div 
+                                    key={request.id} 
+                                    className="bg-background/50 border border-border p-4 rounded-lg hover:bg-slate-800/70 transition-all duration-200"
+                                >
+                                    <div className="flex flex-col sm:flex-row items-center gap-4">
+                                        <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-2 border-primary">
+                                            <AvatarImage 
+                                                src={request.senderBlog?.blogAvatar ?? ''} 
+                                                alt={request.senderBlog?.blogName ?? 'Blog parceiro'} 
+                                                className="object-cover" 
+                                            />
+                                            <AvatarFallback className="bg-primary/60 text-white text-xl font-semibold uppercase">
+                                                {request.senderBlog?.blogName?.charAt(0) || 'B'}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        
+                                        <div className="flex-1 min-w-0 text-center sm:text-left">
+                                            <h3 className="text-lg font-semibold text-[#C4C1C1] truncate">
+                                                {request.senderBlog?.blogName || 'Blog sem nome'}
+                                            </h3>
+                                            <p className="text-sm text-muted-foreground">
+                                                {request.senderBlog?.blogDomain || 'Sem domínio'}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                Solicitado em: {request.requestDate ? new Date(request.requestDate).toLocaleDateString() : 'Data não disponível'}
+                                            </p>
+                                        </div>
+                                        
+                                        <div className="flex flex-row sm:flex-col gap-2 w-full sm:w-auto">
+                                            <Button 
+                                                size="sm" 
+                                                className="w-full bg-primary hover:bg-primary/90"
+                                                onClick={() => request.id && handleAccept(request.id)}
+                                                disabled={!request.id}
+                                            >
+                                                Aceitar
+                                            </Button>
+                                            <Button 
+                                                size="sm" 
+                                                variant="outline" 
+                                                className="w-full text-red-500 border-red-500 hover:bg-red-500/60 hover:text-white"
+                                                onClick={() => request.id && handleReject(request.id)}
+                                                disabled={!request.id}
+                                            >
+                                                Recusar
+                                            </Button>
                                         </div>
                                     </div>
-                                </Link>
+                                </div>
                             ))}
                         </div>
                     )}
@@ -90,6 +143,6 @@ const Explore = () => {
             </div>
         </div>
     );
-}
+};
 
-export default Explore;
+export default Notifications;
