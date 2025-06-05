@@ -9,6 +9,7 @@ export enum BlogPartnersSituation {
 export interface BlogPartnership {
     id?: number,
     senderBlog?: BlogSimpleDTO,
+    partnerBlog?: BlogSimpleDTO,
     receiverBlog?: BlogSimpleDTO,
     situation?: BlogPartnersSituation,
     requestDate?: string,
