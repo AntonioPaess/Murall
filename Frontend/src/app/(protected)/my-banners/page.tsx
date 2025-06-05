@@ -143,7 +143,11 @@ const MyBanners = () => {
     };
 
     if (loading) {
-        return <LoaderMurall />;
+        return (
+            <div className='ml-12'>
+                <LoaderMurall />
+            </div>
+        );
     }
 
     const blogTabs = blogs.map((blog, idx) => ({
@@ -153,30 +157,32 @@ const MyBanners = () => {
     }));
 
     return (
-        <div className={`flex flex-col w-full h-full p-8 transition-all duration-300 max-w-[1600px] ${isMobile ? "" : "ml-[8rem]"} ${collapsed ? "-ml-[18px] max-w-[1800px]" : ""}`}>
+        <div className={`flex-1 p-8 transition-all duration-300 ${isMobile ? "pl-[100px]" : collapsed ? "pl-[100px]" : "pl-[18rem]"} max-w-[1800px]`}>
             <Tabs
                 defaultValue={blogTabs[0]?.value}
                 value={selectedTab}
                 onValueChange={setSelectedTab}
                 className="w-full"
             >
-                <TabsList className="bg-transparent gap-2 mb-8">
-                    {blogTabs.map(tab => (
-                        <TabsTrigger
-                            key={tab.value}
-                            value={tab.value}
-                            className={cn(
-                                "rounded-none px-8 py-2 text-lg font-medium",
-                                selectedTab === tab.value
-                                    ? "bg-[#12203A] text-white border-b-2 border-[#2196F3]"
-                                    : "bg-transparent text-white"
-                            )}
-                        >
-                            {tab.label}
-                        </TabsTrigger>
-                    ))}
-                </TabsList>
-                <div className='ml-8'>
+                <div className="w-full overflow-x-auto overflow-y-hidden whitespace-nowrap">
+                    <TabsList className="bg-transparent gap-2 mb-8 inline-flex">
+                        {blogTabs.map(tab => (
+                            <TabsTrigger
+                                key={tab.value}
+                                value={tab.value}
+                                className={cn(
+                                    "rounded-none px-8 py-2 text-lg font-medium",
+                                    selectedTab === tab.value
+                                        ? "bg-[#12203A] text-white border-b-2 border-[#2196F3]"
+                                        : "bg-transparent text-white"
+                                )}
+                            >
+                                {tab.label}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+                </div>
+                <div className='sm:ml-8 ml-0'>
 
                     {blogTabs.map(tab => {
                         const blogIndex = parseInt(tab.value.replace('blog', '')) - 1;

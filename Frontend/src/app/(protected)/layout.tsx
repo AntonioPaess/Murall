@@ -25,10 +25,7 @@ const AuthenticatedLayoutContent = ({ children }: { children: React.ReactNode })
       <div className="flex overflow-hidden">
         <AppSidebar />
         <main
-          className={`flex-1 overflow-auto transition-all duration-300 ease-in-out ${
-            collapsed ? "ml-[5rem]" : "ml-[8rem]"
-          }`}
-        >
+          className={`flex-1 overflow-auto transition-all duration-300 ease-in-out`}>
           {children}
         </main>
       </div>
