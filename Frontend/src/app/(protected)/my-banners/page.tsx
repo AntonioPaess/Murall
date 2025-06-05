@@ -10,8 +10,8 @@ import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { X, Upload } from "lucide-react";
-import { uploadCarouselImages } from '@/lib/uploadImages';
+import { X, Upload, PlusCircle } from "lucide-react";
+import { uploadCarouselImages, deleteImage } from '@/lib/uploadImages';
 import LoaderMurall from '@/components/Loader';
 import { useSidebar } from '@/app/contexts/sidebar-context';
 import EmbedCodeSection from '@/components/banners/EmbedCodeSection';
@@ -80,42 +80,77 @@ const MyBanners = () => {
         }
     }, [blogs, selectedTab]);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-        if (!file.type.startsWith('image/')) {
-            toast.error('Selecione um arquivo de imagem válido');
-            return;
-        }
+    if (!file.type.startsWith('image/')) {
+        toast.error('Selecione um arquivo de imagem válido');
+        return;
+    }
 
-        if (file.size > 5 * 1024 * 1024) {
-            toast.error('Imagem deve ser menor que 5MB');
-            return;
-        }
+    if (file.size > 5 * 1024 * 1024) {
+        toast.error('Imagem deve ser menor que 5MB');
+        return;
+    }
 
+    setUploading(true);
+    try {
+        // 1. Upload da imagem
+        const urls = await uploadCarouselImages([file]);
+        const uploadedUrl = urls[0];
+
+        // 2. Atualiza banners localmente
         const newBanners = [...banners];
-        const tempUrl = URL.createObjectURL(file);
-
-        if (newBanners[selectedIndex]?.url?.startsWith('blob:')) {
-            URL.revokeObjectURL(newBanners[selectedIndex].url);
-        }
-
         newBanners[selectedIndex] = {
-            url: tempUrl,
-            tempFile: file,
+            url: uploadedUrl,
+            tempFile: null,
             isNew: true,
             dimensions: { width: 0, height: 0 },
         };
-
         setBanners(newBanners);
-        if (fileInputRef.current) fileInputRef.current.value = '';
-    };
 
-    const handleRemoveImage = (index: number) => {
+        // 3. Atualiza blog no backend
+        const blogIndex = parseInt(selectedTab.replace('blog', '')) - 1;
+        const currentBlog = blogs[blogIndex];
+
+        if (currentBlog) {
+            // Atualiza o array de imagens do blog
+            const updatedImages = newBanners.map(b => ({ imageUrl: b.url })).filter(b => b.url);
+
+            await blogService.updateBlog(
+                {
+                    blogName: currentBlog.blogName,
+                    blogDomain: currentBlog.blogDomain,
+                    blogDescription: currentBlog.blogDescription,
+                    blogAvatar: currentBlog.blogAvatar,
+                    blogImagesUrl: updatedImages.map(img => img.imageUrl),
+                    categoryNames: currentBlog.categoryNames || [],
+                },
+                currentBlog.id
+            );
+        }
+
+        toast.success('Imagem enviada e blog atualizado com sucesso!');
+    } catch (error) {
+        toast.error('Erro ao enviar imagem ou atualizar blog');
+    } finally {
+        setUploading(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+};
+
+    const handleRemoveImage = async (index: number) => {
         const newBanners = [...banners];
 
-        if (newBanners[index]?.url?.startsWith('blob:')) {
+        // Se for imagem do Supabase, deleta do storage
+        if (newBanners[index]?.url && !newBanners[index].url.startsWith('blob:')) {
+            try {
+                await deleteImage(newBanners[index].url, 'blogs');
+            } catch (error) {
+                toast.error('Erro ao deletar imagem do Supabase');
+            }
+        } else if (newBanners[index]?.url?.startsWith('blob:')) {
             URL.revokeObjectURL(newBanners[index].url);
         }
 
@@ -259,6 +294,17 @@ const MyBanners = () => {
                                                 )}
                                             </div>
                                         ))}
+                                    </div>
+                                    <div>
+                                        <Button
+                                            variant="ghost"
+                                            className="text-primary-foreground hover:text-primary border w-full mb-12"
+                                            onClick={() => fileInputRef.current?.click()}
+                                            disabled={uploading}
+                                        >
+                                            <PlusCircle size={16} />
+                                            Adicionar Imagem
+                                        </Button>
                                     </div>
                                 </div>
 

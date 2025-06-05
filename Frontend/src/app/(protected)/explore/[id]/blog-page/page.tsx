@@ -5,29 +5,41 @@ import LoaderMurall from '@/components/Loader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Blogs } from '@/models/blogs';
+import { BlogPartnership } from '@/models/blog-partnership';
+import { User } from '@/models/users';
+import { blogPartnershipService } from '@/services/partnership.service';
 import { blogService } from '@/services/blog.service';
+import userService from '@/services/user.service';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Image from 'next/image';
+import { BlogSelect } from './_components/blog-select';
 
 const BlogPage = () => {
     const [loading, setLoading] = useState(true);
     const [blog, setBlog] = useState<Blogs | null>(null);
+    const [user, setUser] = useState<User | null>(null);
+    const [partners, setPartners] = useState<BlogPartnership[]>([]);
     const { collapsed, isMobile } = useSidebar();
-
     const { id } = useParams<{ id: string }>();
-    const idAsNumber = parseInt(id, 10);
+    const currentBlogId = parseInt(id, 10);
 
     useEffect(() => {
-        const blogInfo = async () => {
+        const loadBlogData = async () => {
             try {
-                if (isNaN(idAsNumber)) {
+                if (isNaN(currentBlogId)) {
                     throw new Error("ID inválido");
                 }
 
-                const loadedBlog = await blogService.getBlog(idAsNumber);
+                const userResponse = await userService.getUser();
+                setUser(userResponse);
+
+                const loadedBlog = await blogService.getBlog(currentBlogId);
                 setBlog(loadedBlog);
+
+                const partnersData = await blogPartnershipService.getActivePartnerships(currentBlogId);
+                setPartners(partnersData);
             } catch (error: any) {
                 toast.error("Erro ao pegar informações do blog: " + error.message);
             } finally {
@@ -35,8 +47,17 @@ const BlogPage = () => {
             }
         };
 
-        blogInfo();
-    }, [idAsNumber]);
+        loadBlogData();
+    }, [currentBlogId]);
+
+    const handleSendRequest = async (senderBlogId: number) => {
+        try {
+            await blogPartnershipService.sendPartnershipRequest(senderBlogId, currentBlogId);
+            toast.success("Solicitação de parceria enviada com sucesso");
+        } catch (error: any) {
+            toast.error("Erro ao enviar solicitação de parceria: " + error.message);
+        }
+    };
 
     return (
         <div className={`ml-2 min-h-screen bg-background flex flex-col mt-4 max-w-[1800px]`}>
@@ -70,9 +91,11 @@ const BlogPage = () => {
                                     <Button variant="default" className="flex-1 min-w-[200px] bg-primary hover:bg-primary/90">
                                         Visitar blog
                                     </Button>
-                                    <Button variant="default" className="flex-1 min-w-[200px] bg-primary hover:bg-primary/90">
-                                        Solicitar parceria
-                                    </Button>
+                                    <div className="flex-1 min-w-[200px]">
+                                        {user && user.id !== undefined && (
+                                            <BlogSelect userId={user.id} onConfirm={handleSendRequest} />
+                                        )}
+                                    </div>
                                     <Button variant="default" className="flex-1 min-w-[200px] bg-primary hover:bg-primary/90">
                                         Enviar mensagem
                                     </Button>
@@ -80,8 +103,7 @@ const BlogPage = () => {
                             </div>
                         </div>
 
-
-                        {/* Conteúdo adicional (pode ser expandido para ocupar o espaço restante) */}
+                        {/* Conteúdo adicional */}
                         <div className="flex-1">
                             <h2 className="text-xl font-semibold mb-4">Banners</h2>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -90,31 +112,38 @@ const BlogPage = () => {
                                         <Image
                                             src={blogImage.imageUrl || ""}
                                             alt={blog.blogName || "Imagem blog"}
-                                            fill // Preenche o container pai
-                                            className="object-cover" // Mantém proporção sem distorcer
-                                            sizes="(max-width: 768px) 100vw, 33vw" // Otimização de performance
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 768px) 100vw, 33vw"
                                         />
                                     </div>
                                 ))}
                             </div>
                             <h2 className="text-xl font-semibold mb-4 mt-6">Parceiros</h2>
                             <div className="flex flex-wrap justify-center gap-4 md-940:flex-nowrap md-940:justify-start lg:justify-start">
-                                {[1, 2, 3, 4, 5, 6].map((item) => (
-                                    <Avatar key={item} className="h-24 w-24 border-2 cursor-pointer border-primary flex-shrink-0">
-                                        <AvatarImage src={blog.blogAvatar || ''} alt={blog.blogName || ''} className="object-cover" />
-                                        <AvatarFallback className="bg-primary/60 text-white text-4xl font-semibold uppercase">
-                                            {blog.blogName ? blog.blogName.slice(0, 1) : "M"}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                ))}
+                                {partners.length > 0 ? partners
+                                    .filter((partner) => partner.id !== undefined)
+                                    .map((partner) => (
+                                        <Avatar key={partner.id} className="h-24 w-24 border-2 cursor-pointer border-primary flex-shrink-0">
+                                            <AvatarImage
+                                                src={partner.receiverBlog?.blogAvatar || ''}
+                                                alt={partner.receiverBlog?.blogName || 'Parceiro sem nome'}
+                                                className="object-cover"
+                                            />
+                                            <AvatarFallback className="bg-primary/60 text-white text-4xl font-semibold uppercase">
+                                                {partner.receiverBlog?.blogName ? partner.receiverBlog.blogName.slice(0, 1) : 'P'}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                    )) : (
+                                    <p className='text-sm italic'>Este blog não possui parceiros</p>
+                                )}
                             </div>
-
                         </div>
                     </div>
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default BlogPage;

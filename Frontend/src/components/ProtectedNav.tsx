@@ -24,7 +24,7 @@ const ProtectedNav = (className: ProtectedNavProps) => {
 
   return (
     <nav
-      className={`${className} sticky top-0 z-[99] flex items-center justify-between px-6 py-4 border-b border-border bg-background/90 backdrop-blur-sm`}>
+      className={`${className} sticky top-0 z-[49] flex items-center justify-between px-6 py-4 border-b border-border bg-background/90 backdrop-blur-sm`}>
       <Link className="cursor-pointer" href={"/explore"}>
         <Image
           src={theme === "dark" ? "/LogoGrandeDark.png" : "/LogoGrandeLigth.png"}
