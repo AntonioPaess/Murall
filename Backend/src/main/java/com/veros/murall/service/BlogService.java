@@ -11,6 +11,7 @@ import com.veros.murall.repository.CategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,18 +83,34 @@ public class BlogService {
     }
 
     public void updateBlog(BlogRegisterRequest blogRequest, Long id) {
-        if (blogRepository.existsById(id)) {
-            Blog existingBlog = blogRepository.findById(id).orElseThrow(() ->
-                    new EntityNotFoundException("Blog não encontrado com ID: " + id));
-            existingBlog.setBlogName(blogRequest.blogName());
-            existingBlog.setBlogDomain(blogRequest.blogDomain());
-            existingBlog.setBlogDescription(blogRequest.blogDescription());
-            existingBlog.setBlogImagesUrl(mapUrlsToImages(blogRequest.blogImagesUrl(), existingBlog));
-            existingBlog.setCategories(mapStringsToCategory(blogRequest.categoryNames(), existingBlog));
+        Blog existingBlog = blogRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Blog não encontrado com ID: " + id));
 
-            blogRepository.save(existingBlog);
-        } else {
-            throw new EntityNotFoundException("Blog não encontrado com ID: " + id);
+        existingBlog.setBlogName(blogRequest.blogName());
+        existingBlog.setBlogDomain(blogRequest.blogDomain());
+        existingBlog.setBlogDescription(blogRequest.blogDescription());
+
+        updateBlogImages(existingBlog, blogRequest.blogImagesUrl());
+
+        blogRepository.save(existingBlog);
+    }
+
+    private void updateBlogImages(Blog blog, List<String> newImageUrls) {
+        List<BlogImage> imagesToRemove = new ArrayList<>();
+        for (BlogImage existingImage : blog.getBlogImagesUrl()) {
+            if (!newImageUrls.contains(existingImage.getImageUrl())) {
+                imagesToRemove.add(existingImage);
+            }
+        }
+        blog.getBlogImagesUrl().removeAll(imagesToRemove);
+
+        for (String url : newImageUrls) {
+            if (blog.getBlogImagesUrl().stream().noneMatch(img -> img.getImageUrl().equals(url))) {
+                BlogImage newImage = new BlogImage();
+                newImage.setImageUrl(url);
+                newImage.setBlog(blog);
+                blog.getBlogImagesUrl().add(newImage);
+            }
         }
     }
 
