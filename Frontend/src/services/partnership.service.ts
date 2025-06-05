@@ -42,25 +42,37 @@ export const blogPartnershipService = {
         }
     },
 
-    // Aceitar solicitação de parceria
-    async acceptPartnershipRequest(partnershipId: number): Promise<PartnershipResponse> {
+    async acceptPartnershipRequest(partnershipId: number) {
         try {
-            const response = await httpClient.patch(`/api/partnerships/${partnershipId}/accept`);
-            const dataResponse = response.data;
-            return dataResponse;
+            const response = await httpClient.patch(
+                `/api/partnerships/${partnershipId}/accept`,
+                {},
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }
+            );
+            return response.data;
         } catch (error: any) {
-            throw new Error("Erro ao Aceitar solicitação de parceria: " + (error?.response?.data || error.message));
+            throw new Error(error.response?.data?.message || "Erro ao aceitar parceria");
         }
     },
 
-    // Recusar solicitação de parceria
-    async rejectPartnershipRequest(partnershipId: number): Promise<PartnershipResponse> {
+    async rejectPartnershipRequest(partnershipId: number) {
         try {
-            const response = await httpClient.patch(`/api/partnerships/${partnershipId}/reject`);
-            const dataResponse = response.data;
-            return dataResponse;
+            const response = await httpClient.patch(
+                `/api/partnerships/${partnershipId}/reject`,
+                {}, // Corpo vazio
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }
+            );
+            return response.data;
         } catch (error: any) {
-            throw new Error("Erro ao Recusar solicitação de parceria: " + (error?.response?.data || error.message));
+            throw new Error(error.response?.data?.message || "Erro ao recusar parceria");
         }
     },
 
