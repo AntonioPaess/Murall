@@ -95,7 +95,7 @@ export default function NotFound() {
                                         transition={{ duration: 0.4 }}
                                     />
                                     <ArrowLeft className="mr-2 h-4 w-4" />
-                                    Voltar para o inicial
+                                    Voltar para página inicial
                                 </Button>
                             </Link>
                         </motion.div>

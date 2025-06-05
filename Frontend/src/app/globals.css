@@ -217,3 +217,13 @@
 .sidebar-hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome/Safari/Webkit */
 }
+
+.children-hide-scrollbar {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.children-hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

@@ -8,9 +8,35 @@ import { User } from "@/models/users";
 import userService from "@/services/user.service";
 import LoaderMurall from "@/components/Loader";
 import UserSetupScreen from "@/components/user-setup/UserSetupFlow";
+import { SidebarProvider, useSidebar } from "../contexts/sidebar-context";
+
+const AuthenticatedLayoutContent = ({ children }: { children: React.ReactNode }) => {
+  const { collapsed, isMobile, setCollapsed  } = useSidebar();
+
+  useEffect(() => {
+    if (isMobile) {
+      setCollapsed(true); 
+    }
+  }, [isMobile, setCollapsed]);
+  
+  return (
+    <>
+      <ProtectedNav />
+      <div className="flex h-screen overflow-hidden">
+        <AppSidebar />
+        <main
+          className={`flex-1 overflow-auto transition-all duration-300 ease-in-out ${
+            collapsed ? "ml-[5rem]" : "ml-[8rem]"
+          }`}
+        >
+          {children}
+        </main>
+      </div>
+    </>
+  );
+};
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const [collapsed, setCollapsed] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -34,7 +60,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!user?.role) {
-    console.log(user)
     return (
       <UserSetupScreen
         user={user}
@@ -45,19 +70,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthChecker>
-      <ProtectedNav />
-      <div className="flex h-screen overflow-hidden">
-        <AppSidebar
-          defaultCollapsed={collapsed}
-          onCollapsedChange={setCollapsed}
-        />
-        <main
-          className={`flex-1 overflow-auto transition-all duration-300 ease-in-out ${collapsed ? "ml-[5rem]" : "ml-[8rem]"
-            }`}
-        >
+      <SidebarProvider>
+        <AuthenticatedLayoutContent>
           {children}
-        </main>
-      </div>
+        </AuthenticatedLayoutContent>
+      </SidebarProvider>
     </AuthChecker>
   );
 };

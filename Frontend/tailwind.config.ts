@@ -78,7 +78,8 @@ export default {
   		},
 		screens: {
 			midlg: '1000px',
-			midlg2: '1200px'
+			midlg2: '1200px',
+			md940: '940px'
 		},
   	}
   },

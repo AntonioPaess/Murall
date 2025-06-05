@@ -29,14 +29,11 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import authService from "@/services/auth.service";
-import userService from "@/services/user.service";
+import { useSidebar } from "@/app/contexts/sidebar-context";
 import { toast } from "sonner";
 
 interface AppSidebarProps {
   className?: string;
-  isVisible?: boolean;
-  defaultCollapsed?: boolean;
-  onCollapsedChange?: (collapsed: boolean) => void;
 }
 
 interface NavLink {
@@ -46,25 +43,20 @@ interface NavLink {
   badge?: number | string;
   isExternal?: boolean;
 }
-const user = await userService.getUser();
 
 export function AppSidebar({
   className = "",
-  defaultCollapsed = false,
-  onCollapsedChange,
 }: AppSidebarProps) {
-  const [collapsed, setCollapsed] = useState(defaultCollapsed);
+  const { collapsed, toggleCollapsed, isMobile } = useSidebar(); // Adiciona isMobile
   const router = useRouter();
   const pathname = usePathname();
 
-  // Notificar componentes pais quando o estado collapsed mudar
-  useEffect(() => {
-    if (onCollapsedChange) {
-      onCollapsedChange(collapsed);
+  const isLinkActive = (href: string) => {
+    if (href === '/explore') {
+      return pathname.startsWith('/explore');
     }
-  }, [collapsed, onCollapsedChange]);
-
-  const isLinkActive = (href: string) => pathname === href;
+    return pathname === href;
+  };
 
   const handleNavigation = (path: string) => {
     if (pathname !== path) {
@@ -77,10 +69,6 @@ export function AppSidebar({
     authService.logout();
     router.push("/");
     toast.success("Volte sempre!");
-  };
-
-  const toggleCollapsed = () => {
-    setCollapsed((prev) => !prev);
   };
 
   const mainLinks: NavLink[] = [
@@ -104,7 +92,6 @@ export function AppSidebar({
       label: "Bate-papo",
       href: "/chat",
       icon: <MessageCircle size={20} />,
-      badge: "Novo",
     },
   ];
 
@@ -125,16 +112,16 @@ export function AppSidebar({
     <TooltipProvider delayDuration={300}>
       <Sidebar
         className={`fixed top-0 left-0 h-full z-10 overflow-x-hidden transition-all duration-300
-      ${collapsed ? "w-20" : "w-64"}
-      bg-gradient-to-b from-background/90 via-background/85 to-background/80
-      border-r backdrop-blur-md ${className}`}>
+          ${collapsed ? "w-20" : "w-64"}
+          bg-gradient-to-b from-background/90 via-background/85 to-background/80
+          border-r backdrop-blur-md ${className}`}
+      >
         {/* CONTEÚDO */}
-        <SidebarContent className={`mt-[105px] py-4 px-${collapsed ? "2" : "3"}`}>
+        <SidebarContent className={`mt-[105px] py-4 px-${collapsed ? "px-2" : "px-3"}`}>
           <SidebarGroup>
             <h3
-              className={`text-xs uppercase text-primary font-semibold mb-3 ${
-                collapsed ? "text-center" : "px-3"
-              }`}>
+              className={`text-xs uppercase text-primary font-semibold mb-3 ${collapsed ? "text-center" : "px-3"
+                }`}>
               {!collapsed ? "Navegação" : "•••"}
             </h3>
             <SidebarMenu className="space-y-1">
@@ -149,15 +136,9 @@ export function AppSidebar({
                         isActive={isLinkActive(item.href)}
                         onClick={() => handleNavigation(item.href)}>
                         <div
-                          className={`
-                          relative font-medium text-base flex items-center gap-3
+                          className={`relative font-medium text-base flex items-center gap-3
                           ${collapsed ? "justify-center px-2" : "px-4"}
-                          ${
-                            isLinkActive(item.href)
-                              ? "text-primary"
-                              : "text-white"
-                          }
-                        `}>
+                          ${isLinkActive(item.href) ? "text-primary" : "text-white"}`}>
                           {item.icon}
                           {!collapsed && item.label}
                           {!collapsed && item.badge && (
@@ -168,14 +149,9 @@ export function AppSidebar({
                           {collapsed && item.badge && (
                             <Badge
                               className={`absolute -top-1 -right-1 h-5 w-5 p-0 rounded-full flex justify-center items-center
-                              ${
-                                typeof item.badge === "string"
-                                  ? "bg-primary"
-                                  : "bg-primary"
-                              } text-white`}>
-                              {typeof item.badge === "string"
-                                ? "•"
-                                : item.badge}
+                              ${typeof item.badge === "string" ? "bg-primary" : "bg-primary"}
+                              text-white`}>
+                              {typeof item.badge === "string" ? "•" : item.badge}
                             </Badge>
                           )}
                         </div>
@@ -193,9 +169,8 @@ export function AppSidebar({
           {/* SETTINGS */}
           <SidebarGroup className="mt-8">
             <h3
-              className={`text-xs uppercase text-primary font-semibold mb-3 ${
-                collapsed ? "text-center" : "px-3"
-              }`}>
+              className={`text-xs uppercase text-primary font-semibold mb-3 ${collapsed ? "text-center" : "px-3"
+                }`}>
               {!collapsed ? "Configurações" : "•••"}
             </h3>
             <SidebarMenu className="space-y-1">
@@ -210,15 +185,9 @@ export function AppSidebar({
                         isActive={isLinkActive(item.href)}
                         onClick={() => handleNavigation(item.href)}>
                         <div
-                          className={`
-                          relative font-medium text-base flex items-center gap-3
+                          className={`relative font-medium text-base flex items-center gap-3
                           ${collapsed ? "justify-center px-2" : "px-4"}
-                          ${
-                            isLinkActive(item.href)
-                              ? "text-primary"
-                              : "text-white"
-                          }
-                        `}>
+                          ${isLinkActive(item.href) ? "text-primary" : "text-white"}`}>
                           {item.icon}
                           {!collapsed && item.label}
                           {!collapsed && item.badge && (
@@ -255,11 +224,9 @@ export function AppSidebar({
                     variant="destructive"
                     onClick={handleLogout}>
                     <div
-                      className={`
-                      font-medium text-base flex items-center gap-3 
+                      className={`font-medium text-base flex items-center gap-3 
                       ${collapsed ? "justify-center px-2" : "px-4"}
-                      text-red-500 hover:text-red-400
-                    `}>
+                      text-red-500 hover:text-red-400`}>
                       <LogOut size={20} />
                       {!collapsed && "Sair"}
                     </div>
@@ -277,9 +244,7 @@ export function AppSidebar({
             className="mt-4 mx-auto h-8 w-8 rounded-full flex items-center justify-center bg-primary/15 hover:bg-primary/60 text-primary transition-all">
             <ChevronRight
               size={18}
-              className={`transition-transform ${
-                collapsed ? "rotate-180" : ""
-              }`}
+              className={`transition-transform ${collapsed ? "rotate-180" : ""}`}
             />
           </button>
         </SidebarFooter>

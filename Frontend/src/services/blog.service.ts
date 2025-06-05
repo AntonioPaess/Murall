@@ -26,6 +26,26 @@ export const blogService = {
         }
     },
 
+    async getBlog(id : number): Promise<Blogs> {
+        try {
+            const response = await httpClient.get(`/api/blog/${id}`);
+            const dataResponse = response.data;
+            return dataResponse;
+        } catch (error: any) {
+            throw new Error("Erro ao pegar informações do blog: " + (error?.response?.data || error.message));
+        }
+    },
+
+    async getBlogsByUser(userId : number): Promise<Blogs> {
+        try {
+            const response = await httpClient.get(`/api/blog/user/${userId}`);
+            const dataResponse = response.data;
+            return dataResponse;
+        } catch (error: any) {
+            throw new Error("Erro ao pegar informações do blog: " + (error?.response?.data || error.message));
+        }
+    },
+
     async listAllBlogs(): Promise<Array<Blogs>> {
         try {
             const response = await httpClient.get("/api/blog");
