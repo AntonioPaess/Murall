@@ -87,6 +87,27 @@ export const blogPartnershipService = {
         }
     },
 
+    // Para contar SOLICITAÇÕES PENDENTES do usuário (todos os blogs)
+    async countPendingRequestsByUser(userId: number): Promise<number> {
+        try {
+            const response = await httpClient.get(`/api/partnerships/user/${userId}/pending/count`);
+            return response.data.count;
+        } catch (error: any) {
+            throw new Error("Erro ao contar notificações pendentes: " +
+                (error?.response?.data?.message || error.message));
+        }
+    },
+
+    // Para contar solicitações PENDENTES de um blog específico
+    async countPendingRequests(blogId: number): Promise<number> {
+        try {
+            const response = await httpClient.get(`/api/partnerships/blog/${blogId}/pending/count`);
+            return response.data.count;
+        } catch (error: any) {
+            throw new Error("Erro ao contar solicitações pendentes: " + (error?.response?.data?.message || error.message));
+        }
+    },
+
     // Listar solicitações enviadas por um blog
     async getSentRequests(blogId: number): Promise<PartnershipResponse[]> {
         try {
