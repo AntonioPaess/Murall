@@ -10,6 +10,7 @@ import {
   MessageCircle,
   ChevronRight,
   Settings,
+  Bell,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -81,6 +82,11 @@ export function AppSidebar({
       label: "Meus Parceiros",
       href: "/my-partners",
       icon: <Handshake size={20} />,
+    },
+    {
+      label: "Notificações",
+      href: "/notifications",
+      icon: <Bell size={20} />,
       badge: 2,
     },
     {
