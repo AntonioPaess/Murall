@@ -1,9 +1,11 @@
 package com.veros.murall.controller;
 
-import com.veros.murall.dto.BlogDomainRequest;
-import com.veros.murall.dto.BlogRegisterRequest;
+import com.veros.murall.dto.*;
+import com.veros.murall.enums.UserRole;
 import com.veros.murall.exception.DomainAlreadyExistsException;
 import com.veros.murall.model.Blog;
+import com.veros.murall.model.BlogImage;
+import com.veros.murall.model.Category;
 import com.veros.murall.model.User;
 import com.veros.murall.service.BlogService;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,6 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/blog")
@@ -46,9 +50,115 @@ public class BlogController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Blog>> readAllBlogs() {
+    public ResponseEntity<List<BlogRegisterResponse>> readAllBlogs() {
         List<Blog> blogList = blogService.readBlogs();
-        return ResponseEntity.ok(blogList);
+
+        List<BlogRegisterResponse> blogResponseList = blogList.stream()
+                .map(blog -> new BlogRegisterResponse(
+                        blog.getId(),
+                        blog.getBlogName(),
+                        blog.getBlogDomain(),
+                        blog.getBlogDescription(),
+                        blog.getBlogAvatar(),
+                        blog.getBlogImagesUrl().stream()
+                                .map(blogImage -> new BlogImageResponse(blogImage.getId(), blogImage.getImageUrl()))
+                                .collect(Collectors.toList()),
+                        blog.getCategories().stream()
+                                .map(category -> new CategoryResponse(category.getId(), category.getName()))
+                                .collect(Collectors.toList()),
+                        new UserSimpleResponse(
+                                blog.getUser().getId(),
+                                blog.getUser().getUsername(),
+                                blog.getUser().getBiography(),
+                                blog.getUser().getEmail(),
+                                blog.getUser().getRole()
+                        ),
+                        blog.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(blogResponseList);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BlogRegisterResponse> listBlogById(@PathVariable Long id) {
+        try {
+            Optional<Blog> optionalBlog = blogService.getBlogById(id);
+            if (optionalBlog.isPresent()) {
+                Blog blog = optionalBlog.get();
+
+                BlogRegisterResponse blogRegisterResponse = blogService.mapToBlogRegisterResponse(blog);
+
+                return ResponseEntity.ok(blogRegisterResponse);
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new BlogRegisterResponse(
+                            null,
+                            "Blog não encontrado",
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new BlogRegisterResponse(
+                            null,
+                            "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                    ));
+        }
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<BlogRegisterResponse>> listBlogByUserId(@PathVariable Long userId) {
+        try {
+            List<Blog> blogs = blogService.getBlogsByUser(userId);
+
+            if (blogs != null && !blogs.isEmpty()) {
+                List<BlogRegisterResponse> blogRegisterResponses = blogs.stream()
+                        .map(blogService::mapToBlogRegisterResponse)
+                        .collect(Collectors.toList());
+
+                return ResponseEntity.ok(blogRegisterResponses);
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(List.of(new BlogRegisterResponse(
+                            null,
+                            "Blog não encontrado",
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                    )));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(List.of(new BlogRegisterResponse(
+                            null,
+                            "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                    )));
+        }
     }
 
     @PostMapping("/check-unique")

@@ -1,0 +1,120 @@
+package com.veros.murall.service;
+
+import com.veros.murall.enums.BlogPartnersSituation;
+import com.veros.murall.exception.BlogNotFoundException;
+import com.veros.murall.exception.BlogPartnershipException;
+import com.veros.murall.model.Blog;
+import com.veros.murall.model.BlogPartnership;
+import com.veros.murall.repository.BlogPartnershipRepository;
+import com.veros.murall.repository.BlogRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class BlogPartnershipService {
+
+    private final BlogRepository blogRepository;
+    private final BlogPartnershipRepository blogPartnershipRepository;
+
+    // Enviar solicitação de parceria
+    @Transactional
+    public BlogPartnership sendPartnershipRequest(Long senderBlogId, Long receiverBlogId) {
+        // Validar blogs
+        Blog senderBlog = getBlogOrThrow(senderBlogId);
+        Blog receiverBlog = getBlogOrThrow(receiverBlogId);
+
+        // Validar se não é o mesmo blog
+        if (senderBlogId.equals(receiverBlogId)) {
+            throw new BlogPartnershipException("Você não pode solicitar parceria com o próprio blog");
+        }
+
+        // Verificar se já existe solicitação pendente
+        if (blogPartnershipRepository.existsBySenderBlogAndReceiverBlogAndSituation(
+                senderBlog, receiverBlog, BlogPartnersSituation.PENDENTE)) {
+            throw new BlogPartnershipException("Já existe uma solicitação pendente para este blog");
+        }
+
+        // Criar nova solicitação
+        BlogPartnership partnership = new BlogPartnership();
+        partnership.setSenderBlog(senderBlog);
+        partnership.setReceiverBlog(receiverBlog);
+        partnership.setSituation(BlogPartnersSituation.PENDENTE);
+
+        return blogPartnershipRepository.save(partnership);
+    }
+
+    // Aceitar solicitação de parceria
+    @Transactional
+    public BlogPartnership acceptPartnershipRequest(Long partnershipId) {
+        BlogPartnership partnership = getPartnershipOrThrow(partnershipId);
+
+        // Validar se está pendente
+        if (!partnership.getSituation().equals(BlogPartnersSituation.PENDENTE)) {
+            throw new BlogPartnershipException("Esta solicitação já foi respondida");
+        }
+
+        // Atualizar status
+        partnership.setSituation(BlogPartnersSituation.ACEITO);
+        partnership.setUpdateDate(LocalDateTime.now());
+
+        return blogPartnershipRepository.save(partnership);
+    }
+
+    // Recusar solicitação de parceria
+    @Transactional
+    public BlogPartnership rejectPartnershipRequest(Long partnershipId) {
+        BlogPartnership partnership = getPartnershipOrThrow(partnershipId);
+
+        // Validar se está pendente
+        if (!partnership.getSituation().equals(BlogPartnersSituation.PENDENTE)) {
+            throw new BlogPartnershipException("Esta solicitação já foi respondida");
+        }
+
+        // Atualizar status
+        partnership.setSituation(BlogPartnersSituation.RECUSADO);
+        partnership.setUpdateDate(LocalDateTime.now());
+
+        return blogPartnershipRepository.save(partnership);
+    }
+
+    // Listar solicitações recebidas pendentes
+    public List<BlogPartnership> getPendingRequests(Long blogId) {
+        Blog blog = getBlogOrThrow(blogId);
+        return blogPartnershipRepository.findByReceiverBlogAndSituation(blog, BlogPartnersSituation.PENDENTE);
+    }
+
+    // Listar solicitações enviadas
+    public List<BlogPartnership> getSentRequests(Long blogId) {
+        Blog blog = getBlogOrThrow(blogId);
+        return blogPartnershipRepository.findBySenderBlog(blog);
+    }
+
+    // Listar parcerias ativas de um blog
+    public List<BlogPartnership> getActivePartnerships(Long blogId) {
+        Blog blog = getBlogOrThrow(blogId);
+        return blogPartnershipRepository.findBySenderBlogOrReceiverBlogAndSituation(
+                blog, blog, BlogPartnersSituation.ACEITO);
+    }
+
+    // Listar blogs parceiros
+    public List<Blog> getPartnerBlogs(Long blogId) {
+        return blogPartnershipRepository.findPartnerBlogsByBlogId(blogId);
+    }
+
+
+    // Métodos auxiliares
+    private Blog getBlogOrThrow(Long blogId) {
+        return blogRepository.findById(blogId)
+                .orElseThrow(() -> new BlogNotFoundException("Blog não encontrado com ID: " + blogId));
+    }
+
+    private BlogPartnership getPartnershipOrThrow(Long partnershipId) {
+        return blogPartnershipRepository.findById(partnershipId)
+                .orElseThrow(() -> new BlogPartnershipException("Solicitação de parceria não encontrada"));
+    }
+}

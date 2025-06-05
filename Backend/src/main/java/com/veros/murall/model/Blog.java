@@ -29,6 +29,12 @@ public class Blog {
 
     private String blogAvatar;
 
+    @OneToMany(mappedBy = "senderBlog", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlogPartnership> sentPartnerships = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiverBlog", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlogPartnership> receivedPartnerships = new ArrayList<>();
+
     @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogImage> blogImagesUrl = new ArrayList<>();
 

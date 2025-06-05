@@ -1,6 +1,6 @@
 package com.veros.murall.service;
 
-import com.veros.murall.dto.BlogRegisterRequest;
+import com.veros.murall.dto.*;
 import com.veros.murall.exception.DomainAlreadyExistsException;
 import com.veros.murall.model.Blog;
 import com.veros.murall.model.BlogImage;
@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,6 +73,10 @@ public class BlogService {
         return blogRepository.existsByBlogDomain(domain);
     }
 
+    public Optional<Blog> getBlogById(Long id) {
+        return blogRepository.findById(id);
+    }
+
     public List<Blog> readBlogs() {
         return blogRepository.findAll();
     }
@@ -86,20 +91,58 @@ public class BlogService {
             existingBlog.setBlogImagesUrl(mapUrlsToImages(blogRequest.blogImagesUrl(), existingBlog));
             existingBlog.setCategories(mapStringsToCategory(blogRequest.categoryNames(), existingBlog));
 
-             blogRepository.save(existingBlog);
+            blogRepository.save(existingBlog);
         } else {
             throw new EntityNotFoundException("Blog não encontrado com ID: " + id);
         }
     }
 
     public void deleteBlog(Long id) {
-       Blog blogToBeDeleted = blogRepository.findById(id).orElseThrow(()
-               -> new EntityNotFoundException("Blog não encontrado com ID: " + id));
+        Blog blogToBeDeleted = blogRepository.findById(id).orElseThrow(()
+                -> new EntityNotFoundException("Blog não encontrado com ID: " + id));
 
-       blogRepository.delete(blogToBeDeleted);
+        blogRepository.delete(blogToBeDeleted);
     }
 
     public List<Blog> getBlogsByUser(Long userId) {
         return blogRepository.findByUserId(userId);
+    }
+
+    // Mapeamento do Blog para BlogRegisterResponse
+    public BlogRegisterResponse mapToBlogRegisterResponse(Blog blog) {
+        return new BlogRegisterResponse(
+                blog.getId(),
+                blog.getBlogName(),
+                blog.getBlogDomain(),
+                blog.getBlogDescription(),
+                blog.getBlogAvatar(),
+                mapBlogImages(blog.getBlogImagesUrl()),
+                mapCategories(blog.getCategories()),
+                mapUser(blog.getUser()),
+                blog.getCreatedAt()
+        );
+    }
+
+    // Mapeamento das BlogImages
+    private List<BlogImageResponse> mapBlogImages(List<BlogImage> blogImages) {
+        return blogImages.stream()
+                .map(image -> new BlogImageResponse(image.getId(), image.getImageUrl()))
+                .collect(Collectors.toList());
+    }
+
+    private List<CategoryResponse> mapCategories(List<Category> categories) {
+        return categories.stream()
+                .map(category -> new CategoryResponse(category.getId(), category.getName()))
+                .collect(Collectors.toList());
+    }
+
+    private UserSimpleResponse mapUser(User user) {
+        return new UserSimpleResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getBiography(),
+                user.getEmail(),
+                user.getRole()
+        );
     }
 }
