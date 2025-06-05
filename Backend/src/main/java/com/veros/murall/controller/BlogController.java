@@ -45,7 +45,6 @@ public class BlogController {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ocorreu um erro inesperado. Tente novamente mais tarde.");
-
         }
     }
 

@@ -14,34 +14,29 @@ import java.util.Optional;
 @Repository
 public interface BlogPartnershipRepository extends JpaRepository<BlogPartnership, Long> {
 
-    //  veriricar se ja existe uma solicitacao
     boolean existsBySenderBlogAndReceiverBlogAndSituation(
             Blog senderBlog,
             Blog receiverBlog,
             BlogPartnersSituation situation
     );
 
-    // buscar por blog receptor e situação
     List<BlogPartnership> findByReceiverBlogAndSituation(Blog receiverBlog, BlogPartnersSituation situation);
 
-    // buscar por blog remetente
     List<BlogPartnership> findBySenderBlog(Blog senderBlog);
 
-    // buscar parcerias por blog e situação
     List<BlogPartnership> findBySenderBlogOrReceiverBlogAndSituation(
             Blog senderBlog,
             Blog receiverBlog,
             BlogPartnersSituation situation);
 
-    // listagem de blogs parceiros
-    @Query("SELECT DISTINCT " +
-            "CASE WHEN p.senderBlog.id = :blogId THEN p.receiverBlog " +
-            "ELSE p.senderBlog END " +
+    @Query("SELECT DISTINCT sb " +
             "FROM BlogPartnership p " +
-            "WHERE (p.senderBlog.id = :blogId OR p.receiverBlog.id = :blogId) " +
+            "JOIN p.senderBlog sb " +
+            "JOIN p.receiverBlog rb " +
+            "WHERE ((p.senderBlog.id = :blogId AND rb = p.receiverBlog) " +
+            "OR (p.receiverBlog.id = :blogId AND sb = p.senderBlog)) " +
             "AND p.situation = 'ACEITO'")
     List<Blog> findPartnerBlogsByBlogId(@Param("blogId") Long blogId);
 
-    // buscar por ID da parceria
     Optional<BlogPartnership> findById(Long id);
 }

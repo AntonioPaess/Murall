@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 public class BlogPartnershipController {
 
     private final BlogPartnershipService partnershipService;
-    private final BlogMapper blogMapper; // Você precisará criar este mapper
-
+    private final BlogMapper blogMapper;
+    
     // Enviar solicitação de parceria
     @PostMapping
     public ResponseEntity<PartnershipResponse> sendPartnershipRequest(
