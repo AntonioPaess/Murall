@@ -3,6 +3,7 @@ package com.veros.murall.repository;
 import com.veros.murall.model.Blog;
 import com.veros.murall.model.BlogPartnership;
 import com.veros.murall.enums.BlogPartnersSituation;
+import com.veros.murall.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,6 +46,13 @@ public interface BlogPartnershipRepository extends JpaRepository<BlogPartnership
            "WHERE (p.senderBlog.id = :blogId OR p.receiverBlog.id = :blogId) " +
            "AND p.situation = com.veros.murall.enums.BlogPartnersSituation.ACEITO")
     List<BlogPartnership> findAcceptedPartnershipsForBlog(@Param("blogId") Long blogId);
+
+    @Query("SELECT COUNT(p) FROM BlogPartnership p WHERE " +
+            "(p.senderBlog.user.id = :userId OR p.receiverBlog.user.id = :userId) " +
+            "AND p.situation = :situation")
+    Long countByReceiverBlogUserAndSituation(@Param("userId") Long userId, @Param("situation") BlogPartnersSituation situation);
+
+    Long countByReceiverBlogIdAndSituation(Long receiverBlogId, BlogPartnersSituation situation);
 
     Optional<BlogPartnership> findById(Long id);
 }

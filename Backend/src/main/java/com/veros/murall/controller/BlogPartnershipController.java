@@ -60,13 +60,25 @@ public class BlogPartnershipController {
     @GetMapping("/blog/{blogId}/pending")
     public ResponseEntity<List<PartnershipResponse>> getPendingRequests(
             @PathVariable Long blogId) {
-                System.out.println("Entrei nessa xereca");
         var requests = partnershipService.getPendingRequests(blogId);
         return ResponseEntity.ok(
                 requests.stream()
                         .map(this::toPartnershipResponseDTO)
                         .collect(Collectors.toList())
         );
+    }
+
+    @GetMapping("/user/{userId}/pending/count")
+    public ResponseEntity<CountResponse> countPendingRequestsByUser(@PathVariable Long userId) {
+        Long count = partnershipService.countPendingRequestsByUser(userId);
+        return ResponseEntity.ok(new CountResponse(count));
+    }
+
+    @GetMapping("/blog/{blogId}/pending/count")
+    public ResponseEntity<CountResponse> countPendingRequests(
+            @PathVariable Long blogId) {
+        Long count = partnershipService.countPendingRequests(blogId);
+        return ResponseEntity.ok(new CountResponse(count));
     }
 
     // Listar solicitações enviadas por um blog

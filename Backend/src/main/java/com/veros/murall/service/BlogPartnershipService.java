@@ -7,6 +7,8 @@ import com.veros.murall.model.Blog;
 import com.veros.murall.model.BlogPartnership;
 import com.veros.murall.repository.BlogPartnershipRepository;
 import com.veros.murall.repository.BlogRepository;
+import com.veros.murall.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ public class BlogPartnershipService {
 
     private final BlogRepository blogRepository;
     private final BlogPartnershipRepository blogPartnershipRepository;
+    private final UserRepository userRepository;
 
     // Enviar solicitação de parceria
     @Transactional
@@ -47,6 +50,19 @@ public class BlogPartnershipService {
         partnership.setSituation(BlogPartnersSituation.PENDENTE);
 
         return blogPartnershipRepository.save(partnership);
+    }
+
+    public Long countPendingRequestsByUser(Long userId) {
+        return blogPartnershipRepository.countByReceiverBlogUserAndSituation(
+                userRepository.findById(userId).orElseThrow(() ->
+                        new EntityNotFoundException("Usuário não encontrado")
+                ).getId(),
+                BlogPartnersSituation.PENDENTE
+        );
+    }
+
+    public Long countPendingRequests(Long blogId) {
+        return blogPartnershipRepository.countByReceiverBlogIdAndSituation(blogId, BlogPartnersSituation.PENDENTE);
     }
 
     // Aceitar solicitação de parceria
