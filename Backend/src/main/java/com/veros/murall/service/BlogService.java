@@ -162,4 +162,9 @@ public class BlogService {
                 user.getRole()
         );
     }
+        public Blog findByDomain(String domain) {
+    // Normaliza o domínio da mesma forma que é feito no método createBlog
+    String normalizedDomain = domain.toLowerCase().replaceAll("^https?://", "").split("/")[0];
+    return blogRepository.findByBlogDomain(normalizedDomain);
+}
 }

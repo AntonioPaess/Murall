@@ -31,7 +31,8 @@ public class SecurityConfig {
                                 "/api/user/forgot-password",
                                 "api/user/reset-password",
                                 "/api/user/reset-password/validate",
-                                "/api/user/resend-verification").permitAll()
+                                "/api/user/resend-verification",
+                                "/api/partnerships/blog/domain/*/partners").permitAll() // Adicionando o endpoint de parceiros
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

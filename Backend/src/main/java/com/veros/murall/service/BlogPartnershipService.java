@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -103,7 +104,18 @@ public class BlogPartnershipService {
 
     // Listar blogs parceiros
     public List<Blog> getPartnerBlogs(Long blogId) {
-        return blogPartnershipRepository.findPartnerBlogsByBlogId(blogId);
+        List<BlogPartnership> acceptedPartnerships = blogPartnershipRepository.findAcceptedPartnershipsForBlog(blogId);
+
+        return acceptedPartnerships.stream()
+                .map(partnership -> {
+                    if (partnership.getSenderBlog().getId().equals(blogId)) {
+                        return partnership.getReceiverBlog();
+                    } else {
+                        return partnership.getSenderBlog();
+                    }
+                })
+                .distinct() // Garante que cada blog parceiro apareça apenas uma vez
+                .collect(Collectors.toList());
     }
 
 

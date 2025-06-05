@@ -5,6 +5,7 @@ import com.veros.murall.mapper.BlogMapper;
 import com.veros.murall.model.Blog;
 import com.veros.murall.model.BlogPartnership;
 import com.veros.murall.service.BlogPartnershipService;
+import com.veros.murall.service.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,9 @@ public class BlogPartnershipController {
 
     private final BlogPartnershipService partnershipService;
     private final BlogMapper blogMapper;
-    
+    private final BlogService blogService;
+
+
     // Enviar solicitação de parceria
     @PostMapping
     public ResponseEntity<PartnershipResponse> sendPartnershipRequest(
@@ -57,7 +60,7 @@ public class BlogPartnershipController {
     @GetMapping("/blog/{blogId}/pending")
     public ResponseEntity<List<PartnershipResponse>> getPendingRequests(
             @PathVariable Long blogId) {
-
+                System.out.println("Entrei nessa xereca");
         var requests = partnershipService.getPendingRequests(blogId);
         return ResponseEntity.ok(
                 requests.stream()
@@ -105,6 +108,54 @@ public class BlogPartnershipController {
         );
     }
 
+    
+    @GetMapping("/blog/domain/{blogDomain}/partners")
+    public ResponseEntity<List<MurallDTO>> getPartnerBlogsByDomain(
+            @PathVariable String blogDomain) {
+                System.out.println("teste, entrando");
+        try {
+            Blog blog = blogService.findByDomain(blogDomain);
+            if (blog == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            List<Blog> partners = partnershipService.getPartnerBlogs(blog.getId());
+            if (partners == null) {
+                // Idealmente, o serviço não deveria retornar null, mas uma lista vazia.
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); 
+            }
+
+            if (blogMapper == null) {
+                // Isso indica um problema de configuração/injeção de dependência.
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+
+            return ResponseEntity.ok(
+                    partners.stream()
+                            .map(partner -> {
+                                if (partner == null) {
+                                    return null; 
+                                }
+                                try {
+                                    // Assumindo que você adicionará toMurallDTO ao seu BlogMapper
+                                    return blogMapper.toMurallDTO(partner); 
+                                } catch (Exception mapEx) {
+                                    // Logar a exceção de mapeamento para análise.
+                                    // Considerar se é melhor relançar ou retornar um DTO de erro específico.
+                                    // Por enquanto, relançando para ser pego pelo catch geral.
+                                    throw mapEx; 
+                                }
+                            })
+                            .filter(dto -> dto != null) 
+                            .collect(Collectors.toList())
+            );
+        } catch (Exception e) {
+            // Logar a exceção 'e' usando um logger apropriado (ex: SLF4J)
+            // logger.error("Erro ao processar getPartnerBlogsByDomain para o domínio '{}'", blogDomain, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     // Métodos auxiliares de conversão
     private PartnershipResponse toPartnershipResponseDTO(BlogPartnership partnership) {
         return new PartnershipResponse(
@@ -129,4 +180,5 @@ public class BlogPartnershipController {
                 partnership.getUpdateDate()
         );
     }
+    
 }
