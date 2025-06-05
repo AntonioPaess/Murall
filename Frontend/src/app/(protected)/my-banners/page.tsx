@@ -16,6 +16,7 @@ import LoaderMurall from '@/components/Loader';
 import { useSidebar } from '@/app/contexts/SidebarContext';
 import EmbedCodeSection from '@/components/banners/EmbedCodeSection';
 import { useUser } from '@/app/contexts/UserContext';
+import { ConfirmDeleteDialog } from './_components/ConfirmDeleteDialog';
 
 const MyBanners = () => {
     const [loading, setLoading] = useState(true);
@@ -27,6 +28,8 @@ const MyBanners = () => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [uploading, setUploading] = useState(false);
     const { collapsed, isMobile } = useSidebar();
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [indexToDelete, setIndexToDelete] = useState<number | null>(null);
 
     const initialBanners = Array(3).fill({
         url: '',
@@ -108,12 +111,10 @@ const MyBanners = () => {
             };
             setBanners(newBanners);
 
-
             const blogIndex = parseInt(selectedTab.replace('blog', '')) - 1;
             const currentBlog = blogs[blogIndex];
 
             if (currentBlog && typeof currentBlog.id === "number") {
-
                 const updatedImages = newBanners.filter(b => b.url).map(b => ({ imageUrl: b.url }));
 
                 await blogService.updateBlog(
@@ -141,20 +142,53 @@ const MyBanners = () => {
     };
 
     const handleRemoveImage = async (index: number) => {
+        setIndexToDelete(index);
+        setIsDialogOpen(true);
+    };
+
+    const confirmDeleteImage = async () => {
+        if (indexToDelete === null) return;
+
         const newBanners = [...banners];
 
         // Se for imagem do Supabase, deleta do storage
-        if (newBanners[index]?.url && !newBanners[index].url.startsWith('blob:')) {
+        if (newBanners[indexToDelete]?.url && !newBanners[indexToDelete].url.startsWith('blob:')) {
             try {
-                await deleteImage(newBanners[index].url, 'blogs');
+                await deleteImage(newBanners[indexToDelete].url, 'blogs');
+
+                // Atualiza o blog no Supabase
+                const blogIndex = parseInt(selectedTab.replace('blog', '')) - 1;
+                const currentBlog = blogs[blogIndex];
+
+                if (currentBlog && typeof currentBlog.id === "number") {
+                    const updatedImages = newBanners
+                        .filter((b, i) => i !== indexToDelete && b.url)
+                        .map(b => ({ imageUrl: b.url }));
+
+                    await blogService.updateBlog(
+                        {
+                            blogName: currentBlog.blogName || "",
+                            blogDomain: currentBlog.blogDomain || "",
+                            blogDescription: currentBlog.blogDescription || "",
+                            blogAvatar: currentBlog.blogAvatar || "",
+                            blogImagesUrl: updatedImages.map(img => img.imageUrl),
+                            categoryNames: Array.isArray(currentBlog.categories)
+                                ? currentBlog.categories.map(String)
+                                : [],
+                        },
+                        currentBlog.id
+                    );
+                }
+
+                toast.success('Imagem removida com sucesso!');
             } catch (error) {
                 toast.error('Erro ao deletar imagem do Supabase');
             }
-        } else if (newBanners[index]?.url?.startsWith('blob:')) {
-            URL.revokeObjectURL(newBanners[index].url);
+        } else if (newBanners[indexToDelete]?.url?.startsWith('blob:')) {
+            URL.revokeObjectURL(newBanners[indexToDelete].url);
         }
 
-        newBanners[index] = {
+        newBanners[indexToDelete] = {
             url: '',
             tempFile: null,
             isNew: false,
@@ -163,10 +197,13 @@ const MyBanners = () => {
 
         setBanners(newBanners);
 
-        if (index === selectedIndex) {
+        if (indexToDelete === selectedIndex) {
             const nextIndex = newBanners.findIndex(b => b.url);
             setSelectedIndex(nextIndex !== -1 ? nextIndex : 0);
         }
+
+        setIsDialogOpen(false);
+        setIndexToDelete(null);
     };
 
     const handleImageUpload = (blogId: string, file: File) => {
@@ -218,7 +255,6 @@ const MyBanners = () => {
                     </TabsList>
                 </div>
                 <div className='sm:ml-8 ml-0'>
-
                     {blogTabs.map(tab => {
                         const blogIndex = parseInt(tab.value.replace('blog', '')) - 1;
                         const currentBlog = blogs[blogIndex];
@@ -295,25 +331,22 @@ const MyBanners = () => {
                                             </div>
                                         ))}
                                     </div>
-                                    <div>
-                                        <Button
-                                            variant="ghost"
-                                            className="text-primary-foreground hover:text-primary border w-full mb-12"
-                                            onClick={() => fileInputRef.current?.click()}
-                                            disabled={uploading}
-                                        >
-                                            <PlusCircle size={16} />
-                                            Adicionar Imagem
-                                        </Button>
-                                    </div>
                                 </div>
 
                                 <EmbedCodeSection />
                             </TabsContent>
                         );
                     })}
-                </div >
+                </div>
             </Tabs>
+            <ConfirmDeleteDialog
+                isOpen={isDialogOpen}
+                onClose={() => {
+                    setIsDialogOpen(false);
+                    setIndexToDelete(null);
+                }}
+                onConfirm={confirmDeleteImage}
+            />
         </div>
     );
 };

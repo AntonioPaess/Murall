@@ -10,6 +10,15 @@ interface BlogRegisterRequest {
     categoryNames: string[]
 }
 
+interface BlogUpdateRequest {
+    blogName: string;
+    blogDomain: string;
+    blogDescription: string;
+    blogAvatar: string;
+    blogImagesUrl: string[]; 
+    categoryNames: string[];
+}
+
 interface BlogDomainRequest {
     blogDomain: string
 }
@@ -56,7 +65,7 @@ export const blogService = {
         }
     },
 
-    async updateBlog(data: BlogRegisterRequest, id: number): Promise<string> {
+    async updateBlog(data: BlogUpdateRequest, id: number): Promise<string> {
         try {
             const response = await httpClient.put(`/api/blog/${id}`, data);
             const dataResponse = response.data;

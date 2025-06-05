@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import Image from 'next/image';
 import { BlogSelect } from './_components/blog-select';
 import { useUser } from '@/app/contexts/UserContext';
+import Link from 'next/link';
 
 const BlogPage = () => {
     const [loading, setLoading] = useState(true);
@@ -82,18 +83,25 @@ const BlogPage = () => {
                                     {blog.blogDescription}
                                 </div>
                                 <div className='flex flex-wrap gap-3 justify-center md:justify-start'>
-                                    <Button variant="default" className="flex-1 min-w-[200px] bg-primary hover:bg-primary/90">
+                                    <Button variant="default" disabled className="flex-1 min-w-[200px] bg-primary hover:bg-primary/90">
                                         Perfil do dono
                                     </Button>
-                                    <Button variant="default" className="flex-1 min-w-[200px] bg-primary hover:bg-primary/90">
-                                        Visitar blog
+                                    <Button asChild variant="default" className="flex-1 min-w-[200px] bg-primary hover:bg-primary/90">
+                                        <a
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            href={blog.blogDomain?.startsWith('http') ? blog.blogDomain : `https://${blog.blogDomain}`}
+                                            className="w-full h-full flex items-center justify-center"
+                                        >
+                                            Visitar blog
+                                        </a>
                                     </Button>
                                     <div className="flex-1 min-w-[200px]">
                                         {user && user.id !== undefined && (
                                             <BlogSelect userId={user.id} onConfirm={handleSendRequest} />
                                         )}
                                     </div>
-                                    <Button variant="default" className="flex-1 min-w-[200px] bg-primary hover:bg-primary/90">
+                                    <Button variant="default" disabled className="flex-1 min-w-[200px] bg-primary hover:bg-primary/90">
                                         Enviar mensagem
                                     </Button>
                                 </div>
@@ -121,16 +129,18 @@ const BlogPage = () => {
                                 {partners.length > 0 ? partners
                                     .filter((partner) => partner.id !== undefined)
                                     .map((partner) => (
-                                        <Avatar key={partner.id} className="h-24 w-24 border-2 cursor-pointer border-primary flex-shrink-0">
-                                            <AvatarImage
-                                                src={partner.receiverBlog?.blogAvatar || ''}
-                                                alt={partner.receiverBlog?.blogName || 'Parceiro sem nome'}
-                                                className="object-cover"
-                                            />
-                                            <AvatarFallback className="bg-primary/60 text-white text-4xl font-semibold uppercase">
-                                                {partner.receiverBlog?.blogName ? partner.receiverBlog.blogName.slice(0, 1) : 'P'}
-                                            </AvatarFallback>
-                                        </Avatar>
+                                        <Link href={`/explore/${partner?.id}/blog-page`}>
+                                            <Avatar key={partner.id} className="h-24 w-24 border-2 cursor-pointer border-primary flex-shrink-0">
+                                                <AvatarImage
+                                                    src={partner.receiverBlog?.blogAvatar || ''}
+                                                    alt={partner.receiverBlog?.blogName || 'Parceiro sem nome'}
+                                                    className="object-cover"
+                                                />
+                                                <AvatarFallback className="bg-primary/60 text-white text-4xl font-semibold uppercase">
+                                                    {partner.receiverBlog?.blogName ? partner.receiverBlog.blogName.slice(0, 1) : 'P'}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        </Link>
                                     )) : (
                                     <p className='text-sm italic'>Este blog não possui parceiros</p>
                                 )}
