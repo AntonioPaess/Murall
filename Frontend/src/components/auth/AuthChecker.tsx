@@ -35,7 +35,7 @@ export default function AuthChecker({
 
       if (decoded.exp < currentTime) {
         localStorage.removeItem("token");
-        router.push("/login");
+        router.push("/signin");
         toast.warning("Sessão expirada, faça login novamente.");
       } else {
         setIsLoading(false);
@@ -43,7 +43,7 @@ export default function AuthChecker({
     } catch (error) {
       console.error("Erro ao decodificar token ", error);
       localStorage.removeItem("token");
-      router.push("/login");
+      router.push("/signin");
     }
   }, [router]);
 

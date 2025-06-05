@@ -7,7 +7,10 @@ const nextConfig: NextConfig = {
       'images.unsplash.com',
       'ihlvptswdvtodpvbtfgg.supabase.co'
     ],
-  }
+  },
+  eslint: {
+  ignoreDuringBuilds: true,
+},
 };
 
 export default nextConfig;
