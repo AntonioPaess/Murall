@@ -39,8 +39,8 @@ const BlogPage = () => {
     }, [idAsNumber]);
 
     return (
-        <div className="ml-2 min-h-screen bg-background flex flex-col mt-4 max-w-[1800px]">
-            <div className={`flex-1 transition-all duration-300 p-6 ${isMobile ? "" : "ml-[8rem]"} ${collapsed ? "-ml-[12px]" : ""}`}>
+        <div className={`ml-2 min-h-screen bg-background flex flex-col mt-4 max-w-[1800px] transition-all duration-300 ${collapsed ? "-ml-[8rem]" : ""}`}>
+            <div className={`flex-1 transition-all duration-300 p-6 ${isMobile ? "" : "ml-[8rem]"}`}>
                 {loading ? (
                     <div className="flex items-center justify-center h-full">
                         <LoaderMurall />

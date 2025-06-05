@@ -152,11 +152,8 @@ const MyBanners = () => {
         blog,
     }));
 
-    const currentBlogIndex = parseInt(selectedTab.replace('blog', '')) - 1;
-    const currentBlog = blogs[currentBlogIndex];
-
     return (
-        <div className={`flex flex-col w-full h-full p-8 transition-all duration-300 max-w-[1600px] ${isMobile ? "" : "ml-[8rem]"} ${collapsed ? "-ml-[1rem] max-w-[1800px]" : ""}`}>
+        <div className={`flex flex-col w-full h-full p-8 transition-all duration-300 max-w-[1600px] ${isMobile ? "" : "ml-[8rem]"} ${collapsed ? "-ml-[18px] max-w-[1800px]" : ""}`}>
             <Tabs
                 defaultValue={blogTabs[0]?.value}
                 value={selectedTab}

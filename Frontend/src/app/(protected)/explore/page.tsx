@@ -31,9 +31,9 @@ const Explore = () => {
     }, []);
 
     return (
-        <div className="flex min-h-screen bg-background">
+        <div className={`flex min-h-screen bg-background transition-all duration-300 ${collapsed ? "-ml-[8rem]" : ""}`}>
             <div
-                className={`flex-1 p-8 transition-all duration-300 ${isMobile ? "" : "ml-[8rem]"} ${collapsed ? "-ml-[1rem]" : ""}`}
+                className={`flex-1 p-8 transition-all duration-300 ${isMobile ? "" : "ml-[8rem]"} ${collapsed ? "ml-[8rem]" : ""}`}
             >
                 <div className="flex gap-4 flex-col">
                     {loading ? <LoaderMurall /> : ''}
