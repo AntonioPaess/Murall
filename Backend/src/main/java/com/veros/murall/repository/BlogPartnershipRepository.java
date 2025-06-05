@@ -33,14 +33,19 @@ public interface BlogPartnershipRepository extends JpaRepository<BlogPartnership
             Blog receiverBlog,
             BlogPartnersSituation situation);
 
-    // listagem de blogs parceiros
-    @Query("SELECT DISTINCT " +
+     @Query("SELECT DISTINCT " +
             "CASE WHEN p.senderBlog.id = :blogId THEN p.receiverBlog " +
             "ELSE p.senderBlog END " +
             "FROM BlogPartnership p " +
             "WHERE (p.senderBlog.id = :blogId OR p.receiverBlog.id = :blogId) " +
             "AND p.situation = 'ACEITO'")
     List<Blog> findPartnerBlogsByBlogId(@Param("blogId") Long blogId);
+    
+        // Query para buscar as parcerias aceitas de um determinado blog
+    @Query("SELECT p FROM BlogPartnership p " +
+           "WHERE (p.senderBlog.id = :blogId OR p.receiverBlog.id = :blogId) " +
+           "AND p.situation = com.veros.murall.enums.BlogPartnersSituation.ACEITO")
+    List<BlogPartnership> findAcceptedPartnershipsForBlog(@Param("blogId") Long blogId);
 
     // buscar por ID da parceria
     Optional<BlogPartnership> findById(Long id);

@@ -1,11 +1,9 @@
 package com.veros.murall.controller;
 
 import com.veros.murall.dto.*;
-import com.veros.murall.enums.UserRole;
-import com.veros.murall.exception.DomainAlreadyExistsException;
+
 import com.veros.murall.model.Blog;
-import com.veros.murall.model.BlogImage;
-import com.veros.murall.model.Category;
+
 import com.veros.murall.model.User;
 import com.veros.murall.service.BlogService;
 import jakarta.persistence.EntityNotFoundException;

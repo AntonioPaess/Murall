@@ -7,7 +7,9 @@ import { motion } from "framer-motion";
 
 const EmbedCodeSection = () => {
 
-  const embedCode =`<div class="murall-banner" data-blog=""></div>\n<script src="https://seusite.com/embed.js?blog="></script>`;
+const embedCode =`<div class="murall-banner bg-gray-800 p-4 rounded-lg shadow-md min-h-[120px] 
+flex flex-wrap gap-4 items-center justify-center" data-murall-blog-domain="SEU_DOMINIO_DO_BLOG">
+</div>\n\n<script src="https://murall.com/embed.js" async defer></script>`;
 
   const copyEmbedCode = () => {
     navigator.clipboard.writeText(embedCode);
@@ -35,7 +37,7 @@ const EmbedCodeSection = () => {
 
         <div className="bg-[#070F1C] rounded-md w-full border border-[#1E293B] overflow-hidden">
           <div className="flex items-center justify-between bg-[#0A1525] px-4 py-2 border-b border-[#1E293B]">
-            <span className="text-[#94A3B8] text-sm font-medium">Código de Incorporação</span>
+            <span className="text-[#94A3B8] text-sm font-medium">Código de Incorporação HTML</span>
             <Button
               variant="ghost"
               size="sm"
@@ -56,8 +58,9 @@ const EmbedCodeSection = () => {
           <h3 className="text-white font-medium mb-2">Como usar</h3>
           <ol className="text-[#94A3B8] space-y-2 list-decimal pl-5">
             <li>Copie o código acima</li>
+            <li>Substitua "SEU_DOMINIO_DO_BLOG" pelo domínio do seu blog (ex: "meublog.com.br")</li>
             <li>Cole no HTML do seu site onde deseja exibir o banner</li>
-            <li>O banner será carregado automaticamente</li>
+            <li>O banner carregará automaticamente as imagens dos blogs parceiros</li>
           </ol>
         </div>
 
