@@ -13,13 +13,14 @@ import { cn } from "@/lib/utils";
 import { X, Upload, PlusCircle } from "lucide-react";
 import { uploadCarouselImages, deleteImage } from '@/lib/uploadImages';
 import LoaderMurall from '@/components/Loader';
-import { useSidebar } from '@/app/contexts/sidebar-context';
+import { useSidebar } from '@/app/contexts/SidebarContext';
 import EmbedCodeSection from '@/components/banners/EmbedCodeSection';
+import { useUser } from '@/app/contexts/UserContext';
 
 const MyBanners = () => {
     const [loading, setLoading] = useState(true);
     const [blogs, setBlogs] = useState<Blogs[]>([]);
-    const [user, setUser] = useState<User | null>(null);
+    const { user } = useUser();
     const [banners, setBanners] = useState<any[]>([]);
     const [selectedTab, setSelectedTab] = useState<string>("blog1");
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
@@ -37,15 +38,12 @@ const MyBanners = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const userData = await userService.getUser();
-                setUser(userData);
-
-                if (!userData.id) {
+                if (!user?.id) {
                     toast.error("Usuário não encontrado.");
                     throw new Error("ID do usuário não encontrado.");
                 }
 
-                const userBlogs = await blogService.getBlogsByUser(userData.id);
+                const userBlogs = await blogService.getBlogsByUser(user?.id);
                 setBlogs(Array.isArray(userBlogs) ? userBlogs : [userBlogs]);
             } catch (error: any) {
                 toast.error(error.message || 'Erro ao carregar dados');
@@ -81,64 +79,66 @@ const MyBanners = () => {
     }, [blogs, selectedTab]);
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+        const file = e.target.files?.[0];
+        if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-        toast.error('Selecione um arquivo de imagem válido');
-        return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-        toast.error('Imagem deve ser menor que 5MB');
-        return;
-    }
-
-    setUploading(true);
-    try {
-        // 1. Upload da imagem
-        const urls = await uploadCarouselImages([file]);
-        const uploadedUrl = urls[0];
-
-        // 2. Atualiza banners localmente
-        const newBanners = [...banners];
-        newBanners[selectedIndex] = {
-            url: uploadedUrl,
-            tempFile: null,
-            isNew: true,
-            dimensions: { width: 0, height: 0 },
-        };
-        setBanners(newBanners);
-
-        // 3. Atualiza blog no backend
-        const blogIndex = parseInt(selectedTab.replace('blog', '')) - 1;
-        const currentBlog = blogs[blogIndex];
-
-        if (currentBlog) {
-            // Atualiza o array de imagens do blog
-            const updatedImages = newBanners.map(b => ({ imageUrl: b.url })).filter(b => b.url);
-
-            await blogService.updateBlog(
-                {
-                    blogName: currentBlog.blogName,
-                    blogDomain: currentBlog.blogDomain,
-                    blogDescription: currentBlog.blogDescription,
-                    blogAvatar: currentBlog.blogAvatar,
-                    blogImagesUrl: updatedImages.map(img => img.imageUrl),
-                    categoryNames: currentBlog.categoryNames || [],
-                },
-                currentBlog.id
-            );
+        if (!file.type.startsWith('image/')) {
+            toast.error('Selecione um arquivo de imagem válido');
+            return;
         }
 
-        toast.success('Imagem enviada e blog atualizado com sucesso!');
-    } catch (error) {
-        toast.error('Erro ao enviar imagem ou atualizar blog');
-    } finally {
-        setUploading(false);
-        if (fileInputRef.current) fileInputRef.current.value = '';
-    }
-};
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('Imagem deve ser menor que 5MB');
+            return;
+        }
+
+        setUploading(true);
+        try {
+            // 1. Upload da imagem
+            const urls = await uploadCarouselImages([file]);
+            const uploadedUrl = urls[0];
+
+            // 2. Atualiza banners localmente
+            const newBanners = [...banners];
+            newBanners[selectedIndex] = {
+                url: uploadedUrl,
+                tempFile: null,
+                isNew: true,
+                dimensions: { width: 0, height: 0 },
+            };
+            setBanners(newBanners);
+
+
+            const blogIndex = parseInt(selectedTab.replace('blog', '')) - 1;
+            const currentBlog = blogs[blogIndex];
+
+            if (currentBlog && typeof currentBlog.id === "number") {
+
+                const updatedImages = newBanners.filter(b => b.url).map(b => ({ imageUrl: b.url }));
+
+                await blogService.updateBlog(
+                    {
+                        blogName: currentBlog.blogName || "",
+                        blogDomain: currentBlog.blogDomain || "",
+                        blogDescription: currentBlog.blogDescription || "",
+                        blogAvatar: currentBlog.blogAvatar || "",
+                        blogImagesUrl: updatedImages.map(img => img.imageUrl),
+                        categoryNames: Array.isArray(currentBlog.categories)
+                            ? currentBlog.categories.map(String)
+                            : [],
+                    },
+                    currentBlog.id
+                );
+            }
+
+            toast.success('Imagem enviada e blog atualizado com sucesso!');
+        } catch (error) {
+            toast.error('Erro ao enviar imagem ou atualizar blog');
+        } finally {
+            setUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
 
     const handleRemoveImage = async (index: number) => {
         const newBanners = [...banners];

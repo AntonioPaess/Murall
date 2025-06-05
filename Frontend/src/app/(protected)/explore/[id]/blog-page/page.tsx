@@ -1,6 +1,6 @@
 "use client";
 
-import { useSidebar } from '@/app/contexts/sidebar-context';
+import { useSidebar } from '@/app/contexts/SidebarContext';
 import LoaderMurall from '@/components/Loader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,12 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import { BlogSelect } from './_components/blog-select';
+import { useUser } from '@/app/contexts/UserContext';
 
 const BlogPage = () => {
     const [loading, setLoading] = useState(true);
     const [blog, setBlog] = useState<Blogs | null>(null);
-    const [user, setUser] = useState<User | null>(null);
+    const { user } = useUser();
     const [partners, setPartners] = useState<BlogPartnership[]>([]);
     const { collapsed, isMobile } = useSidebar();
     const { id } = useParams<{ id: string }>();
@@ -31,10 +32,6 @@ const BlogPage = () => {
                 if (isNaN(currentBlogId)) {
                     throw new Error("ID inválido");
                 }
-
-                const userResponse = await userService.getUser();
-                setUser(userResponse);
-
                 const loadedBlog = await blogService.getBlog(currentBlogId);
                 setBlog(loadedBlog);
 

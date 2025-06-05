@@ -9,7 +9,6 @@ export interface BlogImage {
 }
 
 export interface Blogs {
-    [x: string]: number;
     id?: number,
     blogName?: string,
     blogDescription?: string
@@ -17,7 +16,7 @@ export interface Blogs {
     blogDomain?: string
     user?: User
     sentPartnerships?: BlogPartnership
-    receivedPartnerships?: BlogPartnership
+    receivedPartnerships?:BlogPartnership
     blogImagesUrl?: BlogImage[];
     categories?: Category[];
     createdAt?: string;

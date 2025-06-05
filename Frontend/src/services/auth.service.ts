@@ -27,20 +27,9 @@ export const authService = {
     async login(data: LoginRequest): Promise<string> {
         try {
             const response = await httpClient.post("/api/auth/login", data);
-            const token = response.data;
+            const token = response.data
 
             localStorage.setItem('token', token);
-            
-           
-            try {
-                const userResponse = await httpClient.get('/api/user/me', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                localStorage.setItem('user', JSON.stringify(userResponse.data));
-            } catch (userError) {
-                console.error('Erro ao buscar dados do usuário após login:', userError);
-            }
-            
             return token;
         } catch (error: any) {
             throw new Error('Erro ao fazer login: ' + (error?.response?.data || error.message));

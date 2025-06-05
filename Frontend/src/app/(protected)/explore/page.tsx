@@ -1,6 +1,6 @@
 "use client";
 
-import { useSidebar } from '@/app/contexts/sidebar-context';
+import { useSidebar } from '@/app/contexts/SidebarContext';
 import LoaderMurall from '@/components/Loader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Blogs } from '@/models/blogs';

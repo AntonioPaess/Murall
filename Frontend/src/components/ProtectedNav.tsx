@@ -12,15 +12,15 @@ import {
   TooltipContent,
 } from "@radix-ui/react-tooltip";
 import Link from "next/link";
+import { useUser } from "@/app/contexts/UserContext";
 
 interface ProtectedNavProps {
   className?: string;
 }
 
-const user = await userService.getUser();
-
 const ProtectedNav = (className: ProtectedNavProps) => {
   const { theme } = useTheme();
+  const { user } = useUser();
 
   return (
     <nav
@@ -39,17 +39,17 @@ const ProtectedNav = (className: ProtectedNavProps) => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Avatar className="h-10 w-10 border-2 cursor-pointer border-primary">
-                <AvatarImage src={user.avatar} alt={user.username} className="object-cover" />
+                <AvatarImage src={user?.avatar} alt={user?.username} className="object-cover" />
                 <AvatarFallback className="bg-primary/60 text-white uppercase">
-                  {user.username ? user.username.slice(0, 1) : "M"}
+                  {user?.username ? user?.username.slice(0, 1) : "M"}
                 </AvatarFallback>
               </Avatar>
             </TooltipTrigger>
             <TooltipContent side="bottom">
               <div className="bg-primary mt-2 rounded-lg p-2 border border-primary">
-                <p className="font-medium text-white">{user.username}</p>
+                <p className="font-medium text-white">{user?.username}</p>
                 <p className="text-xs font-bold text-white">
-                  {user.role === "BLOG_USER" ? "Membro" : "Membro"}
+                  {user?.role === "BLOG_USER" ? "Membro" : "Membro"}
                 </p>
               </div>
             </TooltipContent>

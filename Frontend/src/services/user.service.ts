@@ -32,34 +32,12 @@ export const userService = {
     async getUser(): Promise<User> {
         try {
             const response = await httpClient.get('/api/user/me');
-            const user = response.data;
-            
-            
-            if (typeof window !== 'undefined') {
-                localStorage.setItem('user', JSON.stringify(user));
-            }
-            
-            return user;
+            return response.data;
         } catch (error: any) {
-            
-            if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-                
-                if (typeof window !== 'undefined') {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                }
-                
-                throw new Error("Sessão expirada ou não autorizada. Faça login novamente.");
+            if (error.response?.status === 403 && error.response?.data) {
+                return error.response.data;
             }
-            
-           
-            if (error.response) {
-                throw new Error(`Erro do servidor: ${error.response.data || 'Erro desconhecido'}`);
-            } else if (error.request) {
-                throw new Error("O servidor não respondeu à requisição");
-            } else {
-                throw new Error(`Erro na requisição: ${error.message}`);
-            }
+            throw new Error(error.response?.data?.message || error.message);
         }
     },
 

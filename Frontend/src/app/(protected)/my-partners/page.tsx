@@ -1,10 +1,9 @@
 "use client";
 
-import { useSidebar } from '@/app/contexts/sidebar-context';
+import { useSidebar } from '@/app/contexts/SidebarContext';
 import LoaderMurall from '@/components/Loader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Blogs } from '@/models/blogs';
-import { User } from '@/models/users';
 import { blogService } from '@/services/blog.service';
 import { blogPartnershipService } from '@/services/partnership.service';
 import { Handshake, Send, User as LucideUser } from 'lucide-react';
@@ -13,7 +12,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import userService from '@/services/user.service';
+import { useUser } from '@/app/contexts/UserContext';
 
 interface BlogSimpleDTO {
     id: number;
@@ -24,7 +23,7 @@ interface BlogSimpleDTO {
 
 const MyPartners = () => {
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<User | null>(null);
+    const { user } = useUser();
     const [blogs, setBlogs] = useState<Blogs[]>([]);
     const [partners, setPartners] = useState<BlogSimpleDTO[]>([]);
     const [selectedTab, setSelectedTab] = useState<string>("blog1");
@@ -33,18 +32,15 @@ const MyPartners = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const userData = await userService.getUser();
-                setUser(userData);
-
-                if (!userData.id) {
+                if (!user?.id) {
                     toast.error("Usuário não encontrado.");
                     throw new Error("ID do usuário não encontrado.");
                 }
 
-                const userBlogs = await blogService.getBlogsByUser(userData.id);
+                const userBlogs = await blogService.getBlogsByUser(user?.id);
                 setBlogs(Array.isArray(userBlogs) ? userBlogs : [userBlogs]);
 
-                if (userBlogs.length > 0) {
+                if (Array.isArray(userBlogs) && userBlogs.length > 0) {
                     const initialBlog = Array.isArray(userBlogs) ? userBlogs[0] : userBlogs;
                     if (initialBlog.id !== undefined) {
                         const partnersData = await blogPartnershipService.getPartnerBlogs(initialBlog.id);

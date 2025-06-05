@@ -1,24 +1,23 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { AppSidebar } from "@/components/MurallSidebar";
 import AuthChecker from "@/components/auth/AuthChecker";
 import ProtectedNav from "@/components/ProtectedNav";
-import { User } from "@/models/users";
-import userService from "@/services/user.service";
 import LoaderMurall from "@/components/Loader";
 import UserSetupScreen from "@/components/user-setup/UserSetupFlow";
-import { SidebarProvider, useSidebar } from "../contexts/sidebar-context";
+import { SidebarProvider, useSidebar } from "../contexts/SidebarContext";
+import { UserProvider, useUser } from "../contexts/UserContext";
 
 const AuthenticatedLayoutContent = ({ children }: { children: React.ReactNode }) => {
-  const { collapsed, isMobile, setCollapsed  } = useSidebar();
+  const { collapsed, isMobile, setCollapsed } = useSidebar();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isMobile) {
-      setCollapsed(true); 
+      setCollapsed(true);
     }
   }, [isMobile, setCollapsed]);
-  
+
   return (
     <>
       <ProtectedNav />
@@ -33,34 +32,22 @@ const AuthenticatedLayoutContent = ({ children }: { children: React.ReactNode })
   );
 };
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await userService.getUser();
-        setUser(userData);
-      } catch (error) {
-        console.error("Erro ao buscar usuário:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
+const LayoutContent = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading, error, refreshUser } = useUser();
 
   if (loading) {
     return <LoaderMurall />;
+  }
+
+  if (error) {
+    console.error("Erro ao buscar usuário:", error);
   }
 
   if (!user?.role) {
     return (
       <UserSetupScreen
         user={user}
-        onComplete={(updatedUser) => setUser(updatedUser)}
+        onComplete={refreshUser}
       />
     );
   }
@@ -73,6 +60,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </AuthenticatedLayoutContent>
       </SidebarProvider>
     </AuthChecker>
+  );
+};
+
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <UserProvider>
+      <LayoutContent>{children}</LayoutContent>
+    </UserProvider>
   );
 };
 

@@ -30,9 +30,10 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import authService from "@/services/auth.service";
-import { useSidebar } from "@/app/contexts/sidebar-context";
+import { useSidebar } from "@/app/contexts/SidebarContext";
 import { toast } from "sonner";
 import userService from "@/services/user.service";
+import { useUser } from "@/app/contexts/UserContext";
 
 interface AppSidebarProps {
   className?: string;
@@ -52,7 +53,7 @@ export function AppSidebar({
   const { collapsed, toggleCollapsed, isMobile } = useSidebar(); // Adiciona isMobile
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = useState<{ id: string } | null>(null);
+  const { user } = useUser();
 
   const isLinkActive = (href: string) => {
     if (href === '/explore') {
@@ -77,13 +78,9 @@ export function AppSidebar({
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const data = await userService.getUser();
-  
-        if (!data.id) {
+        if (!user?.id) {
           throw new Error("ID do usuário não encontrado.");
         }
-  
-        setUser({ id: String(data.id) }); // força para string
       } catch (error) {
         toast.error("Erro ao carregar usuário.");
       }

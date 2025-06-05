@@ -8,7 +8,7 @@ import LoaderMurall from "@/components/Loader";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useSidebar } from "@/app/contexts/sidebar-context";
+import { useSidebar } from "@/app/contexts/SidebarContext";
 import { User } from "@/models/users";
 import { PlusCircle, Upload, X } from "lucide-react";
 import { uploadUserImage } from '@/lib/uploadImages';
@@ -28,13 +28,6 @@ export default function ProfilePage() {
   const { isMobile, collapsed } = useSidebar();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("Sessão expirada. Faça login novamente.");
-      router.push("/signin");
-      return;
-    }
-
     const fetchUserData = async () => {
       try {
         const userData = await userService.getUser();
