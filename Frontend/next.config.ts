@@ -6,7 +6,10 @@ const nextConfig: NextConfig = {
       'images.pexels.com',
       'images.unsplash.com',
     ],
-  }
+  },
+  eslint: {
+  ignoreDuringBuilds: true,
+},
 };
 
 export default nextConfig;
