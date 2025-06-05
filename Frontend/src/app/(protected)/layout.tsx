@@ -22,7 +22,7 @@ const AuthenticatedLayoutContent = ({ children }: { children: React.ReactNode })
   return (
     <>
       <ProtectedNav />
-      <div className="flex h-screen overflow-hidden">
+      <div className="flex overflow-hidden">
         <AppSidebar />
         <main
           className={`flex-1 overflow-auto transition-all duration-300 ease-in-out ${

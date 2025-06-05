@@ -35,7 +35,7 @@ const Explore = () => {
             <div
                 className={`flex-1 p-8 transition-all duration-300 ${isMobile ? "" : "ml-[8rem]"} ${collapsed ? "-ml-[1rem]" : ""}`}
             >
-                <div className="flex h-[80vh] gap-4 flex-col">
+                <div className="flex gap-4 flex-col">
                     {loading ? <LoaderMurall /> : ''}
 
                     {!loading && blogs.length === 0 && (
