@@ -11,13 +11,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Table(name = "NPL_VERIFIED_USER")
@@ -37,4 +33,36 @@ public class UserVerified {
     @JoinColumn(name  = "ID_USUARIO", referencedColumnName = "id", unique = true)
     private User entity;
 
+    public void setEntity(User user) {
+        this.entity = user;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setExpInstant(Instant expInstant) {
+        this.expInstant = expInstant;
+    }
+
+    public UUID getUuid() {
+        return this.uuid;
+    }
+
+    public Instant getExpInstant() {
+        return this.expInstant;
+    }
+
+    public User getEntity() {
+        return this.entity;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
 }

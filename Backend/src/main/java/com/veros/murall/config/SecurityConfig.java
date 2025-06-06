@@ -26,7 +26,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/images/**").permitAll()
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/user/forgot-password",
+                                "api/user/reset-password",
+                                "/api/user/reset-password/validate",
+                                "/api/user/resend-verification",
+                                "/api/partnerships/blog/domain/*/partners").permitAll() // Adicionando o endpoint de parceiros
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

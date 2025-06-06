@@ -37,4 +37,23 @@ public class MailService {
             e.printStackTrace();
         }
     }
+
+    public void sendPasswordResetEmail(String recipientEmail, String subject, String htmlContent) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(senderEmail);
+            helper.setTo(recipientEmail);
+            helper.setSubject(subject);
+            helper.setText(htmlContent, true);
+
+            System.out.println("Attempting to send password reset email to: " + recipientEmail);
+            mailSender.send(message);
+            System.out.println("Password reset email sent to: " + recipientEmail);
+        } catch (MessagingException e) {
+            System.err.println("ERROR SENDING PASSWORD RESET EMAIL: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

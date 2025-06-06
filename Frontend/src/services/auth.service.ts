@@ -5,7 +5,6 @@ interface RegisterRequest {
     username: string;
     password: string;
     email: string;
-    role: "ROLE_USER" | "ROLE_ADMIN";
 }
 
 interface LoginRequest {
@@ -13,23 +12,19 @@ interface LoginRequest {
     password: string;
 }
 
-interface LoginResponse {
-    token: string;
-}
-
 export const authService = {
 
-    async register(data: RegisterRequest): Promise<String> {
+    async register(data: RegisterRequest): Promise<string> {
         try {
             const response = await httpClient.post("/api/auth/register", data);
             const dataR = response.data;
             return dataR;
         } catch (error: any) {
-            throw new Error("Erro ao fazer cadastro: " + (error.response?.data || error.message));
+            throw new Error("Erro ao fazer cadastro: " + (error?.response?.data || error.message));
         }
     },
-    
-    async login(data: LoginRequest): Promise<String> {
+
+    async login(data: LoginRequest): Promise<string> {
         try {
             const response = await httpClient.post("/api/auth/login", data);
             const token = response.data
@@ -37,17 +32,17 @@ export const authService = {
             localStorage.setItem('token', token);
             return token;
         } catch (error: any) {
-            throw new Error('Erro ao fazer login: ' + (error.response?.data || error.message));
+            throw new Error('Erro ao fazer login: ' + (error?.response?.data || error.message));
         }
     },
 
     getToken(): string | null {
         return localStorage.getItem('token');
-      },
+    },
 
-      logout(): void {
+    logout(): void {
         localStorage.removeItem('token');
-      },
+    },
 }
 
 export default authService;

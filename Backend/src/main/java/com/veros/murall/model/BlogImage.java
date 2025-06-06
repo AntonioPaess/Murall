@@ -1,11 +1,7 @@
 package com.veros.murall.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 @Entity
 public class BlogImage {
 
@@ -19,4 +15,33 @@ public class BlogImage {
     @ManyToOne
     @JoinColumn(name = "blog_id", nullable = false)
     private Blog blog;
+
+
+    public String getImageUrl(){
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setBlog(Blog blog) {
+        this.blog = blog;
+    }
+
+    public Blog blog(){
+        return blog;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Blog getBlog() {
+        return blog;
+    }
 }

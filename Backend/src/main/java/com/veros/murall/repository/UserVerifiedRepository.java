@@ -11,5 +11,5 @@ import com.veros.murall.model.UserVerified;
 public interface UserVerifiedRepository extends JpaRepository<UserVerified, Long> {
 
     Optional<UserVerified> findByUuid(UUID uuid);
-
+    Optional<UserVerified> findByEntityId(Long id);
 }
