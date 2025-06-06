@@ -16,13 +16,17 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/partnerships")
-@RequiredArgsConstructor
 public class BlogPartnershipController {
 
     private final BlogPartnershipService partnershipService;
     private final BlogMapper blogMapper;
     private final BlogService blogService;
 
+    public BlogPartnershipController(BlogPartnershipService partnershipService, BlogMapper blogMapper, BlogService blogService) {
+        this.partnershipService = partnershipService;
+        this.blogMapper = blogMapper;
+        this.blogService = blogService;
+    }
 
     // Enviar solicitação de parceria
     @PostMapping

@@ -18,12 +18,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class BlogPartnershipService {
 
     private final BlogRepository blogRepository;
     private final BlogPartnershipRepository blogPartnershipRepository;
     private final UserRepository userRepository;
+
+    public BlogPartnershipService(BlogRepository blogRepository, BlogPartnershipRepository blogPartnershipRepository, UserRepository userRepository) {
+        this.blogRepository = blogRepository;
+        this.blogPartnershipRepository = blogPartnershipRepository;
+        this.userRepository = userRepository;
+    }
 
     // Enviar solicitação de parceria
     @Transactional
