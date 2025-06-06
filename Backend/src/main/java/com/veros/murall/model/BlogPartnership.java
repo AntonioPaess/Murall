@@ -21,7 +21,7 @@ public class BlogPartnership {
     private Blog receiverBlog;
 
     @Enumerated(EnumType.STRING)
-    private BlogPartnesSituation situation;
+    private BlogPartnersSituation situation;
 
     private LocalDateTime requestDate;
     private LocalDateTime updateDate;
