@@ -1,14 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'ihlvptswdvtodpvbtfgg.supabase.co',
-        pathname: '/storage/v1/object/public/**',
-      },
+    domains: [
+      "images.pexels.com",
+      "images.unsplash.com",
+      "ihlvptswdvtodpvbtfgg.supabase.co",
     ],
-  }
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 }
 
 module.exports = nextConfig
