@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
 const httpClient: AxiosInstance = axios.create({
-  baseURL: 'https://teste-murall-veros.onrender.com', 
+  baseURL: 'https://teste-murall-veros.onrender.com',
   headers: {
     'Content-Type': 'application/json',
   },
