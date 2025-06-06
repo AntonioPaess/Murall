@@ -81,7 +81,7 @@ public class UserService implements UserDetailsService {
             Obrigado por se registrar no <strong>Murall</strong>.<br/>
             Para confirmar sua conta e começar a usar a plataforma, clique no botão abaixo:
             <br/><br/>
-            <a href="http://localhost:3000/verify/%s"
+            <a href="https://murall-xi.vercel.app/verify/%s"
                style="display:inline-block;margin-top:25px;padding:12px 24px;background-color:#2f86c8;color:#ffffff;text-decoration:none;border-radius:5px;font-weight:bold;font-family:Arial,sans-serif;">
                Verificar Conta
             </a>
@@ -148,7 +148,7 @@ public class UserService implements UserDetailsService {
             Obrigado por se registrar no <strong>Murall</strong>.<br/>
             Para confirmar sua conta e começar a usar a plataforma, clique no botão abaixo:
             <br/><br/>
-            <a href="http://localhost:3000/verify/%s"
+            <a href="https://murall-xi.vercel.app/verify/%s"
                style="display:inline-block;margin-top:25px;padding:12px 24px;background-color:#2f86c8;color:#ffffff;text-decoration:none;border-radius:5px;font-weight:bold;font-family:Arial,sans-serif;">
                Verificar Conta
             </a>
@@ -261,7 +261,7 @@ public class UserService implements UserDetailsService {
         token.setExpiration(Instant.now().plusSeconds(900)); // 15 minutos
         passwordResetTokenRepository.save(token);
 
-        String link = "http://localhost:3000/reset-password/" + token.getToken();
+        String link = "https://murall-xi.vercel.app/reset-password/" + token.getToken();
 
         String html = """
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
