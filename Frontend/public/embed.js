@@ -1,33 +1,34 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Encontrar o contêiner do banner
-    const bannerContainer = document.querySelector('.murall-banner');
-    if (!bannerContainer) {
-        console.warn('Murall: Container .murall-banner não encontrado na página.');
-        return;
-    }
-
-    // Obter o domínio do blog a partir do atributo data-murall-blog-domain
-    const blogDomain = bannerContainer.getAttribute('data-murall-blog-domain');
-    if (!blogDomain || blogDomain === 'SEU_DOMINIO_DO_BLOG') {
-        bannerContainer.innerHTML = '<p style="color:#94A3B8;text-align:center;">Configure o domínio do seu blog para ver os banners dos parceiros.</p>';
-        console.warn('Murall: Domínio do blog não configurado corretamente no atributo data-murall-blog-domain.');
-        return;
-    }
-
-    // URL da API (ajuste para a URL real do seu backend em produção)
-    const API_BASE_URL = 'https://teste-murall-veros.onrender.com/api';
-
-    // Mostrar estado de carregamento
-    bannerContainer.innerHTML = '<p style="color:#94A3B8;text-align:center;">Carregando banners de parceiros...</p>';
-
-    // Fazer a requisição para o endpoint que retorna os parceiros por domínio
-    fetch(`${API_BASE_URL}/partnerships/blog/domain/${encodeURIComponent(blogDomain)}/partners`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+(function () {
+    function initMurallBanners() {
+        // Encontrar o contêiner do banner
+        const bannerContainer = document.querySelector('.murall-banner');
+        if (!bannerContainer) {
+            console.warn('Murall: Container .murall-banner não encontrado na página.');
+            return;
         }
-    })
+
+        // Obter o domínio do blog a partir do atributo data-murall-blog-domain
+        const blogDomain = bannerContainer.getAttribute('data-murall-blog-domain');
+        if (!blogDomain || blogDomain === 'SEU_DOMINIO_DO_BLOG') {
+            bannerContainer.innerHTML = '<p style="color:#94A3B8;text-align:center;">Configure o domínio do seu blog para ver os banners dos parceiros.</p>';
+            console.warn('Murall: Domínio do blog não configurado corretamente no atributo data-murall-blog-domain.');
+            return;
+        }
+
+        // URL da API (ajuste para a URL real do seu backend em produção)
+        const API_BASE_URL = 'https://teste-murall-veros.onrender.com/api';
+        
+        // Mostrar estado de carregamento
+        bannerContainer.innerHTML = '<p style="color:#94A3B8;text-align:center;">Carregando banners de parceiros...</p>';
+
+        // Fazer a requisição para o endpoint que retorna os parceiros por domínio
+        fetch(`${API_BASE_URL}/partnerships/blog/domain/${encodeURIComponent(blogDomain)}/partners`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Erro na requisição: ${response.status}`);
@@ -35,6 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(partners => {
+            console.log('Murall: Parceiros recebidos:', partners);
+
             if (!partners || partners.length === 0) {
                 bannerContainer.innerHTML = '<p style="color:#94A3B8;text-align:center;">Este blog ainda não tem parceiros.</p>';
                 return;
@@ -55,6 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
+            console.log('Murall: Banners processados:', allBanners);
+
             if (allBanners.length === 0) {
                 bannerContainer.innerHTML = '<p style="color:#94A3B8;text-align:center;">Os blogs parceiros não têm banners para mostrar.</p>';
                 return;
@@ -68,12 +73,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Configurações do carrossel
             let currentIndex = 0;
-            const rotationInterval = 3000;
-
+            const rotationInterval = 3000; // 3 segundos por banner
+            
             // Criar o container do card principal
             const cardContainer = document.createElement('div');
             cardContainer.style.width = '490px';
-            cardContainer.style.backgroundColor = 'transparent'; // Mudado para transparente
+            cardContainer.style.backgroundColor = 'transparent'; // Fundo transparente
             cardContainer.style.borderRadius = '8px';
             cardContainer.style.overflow = 'hidden';
             cardContainer.style.fontFamily = 'system-ui, -apple-system, sans-serif';
@@ -98,20 +103,20 @@ document.addEventListener('DOMContentLoaded', function () {
             function createBannerContent(banner) {
                 // Criar elemento de link
                 const link = document.createElement('a');
-                link.href = banner.blogDomain.startsWith('http')
-                    ? banner.blogDomain
+                link.href = banner.blogDomain.startsWith('http') 
+                    ? banner.blogDomain 
                     : `https://${banner.blogDomain}`;
                 link.target = '_blank';
                 link.rel = 'noopener noreferrer';
                 link.style.display = 'block';
                 link.style.textDecoration = 'none';
-
+                
                 // Criar contêiner para a imagem
                 const imageContainer = document.createElement('div');
-                imageContainer.style.padding = '10px';
+                imageContainer.style.padding = '10px'; 
                 imageContainer.style.textAlign = 'center';
                 imageContainer.style.position = 'relative';
-
+                
                 // Criar elemento de imagem
                 const img = document.createElement('img');
                 img.src = banner.imageUrl;
@@ -123,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 img.style.objectPosition = 'center';
                 img.style.display = 'block';
                 img.style.margin = '0 auto';
-
+                
                 // Adicionar marca "Powered by Murall" na imagem
                 const poweredBy = document.createElement('div');
                 poweredBy.textContent = 'Powered by Murall';
@@ -136,26 +141,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 poweredBy.style.fontSize = '10px';
                 poweredBy.style.fontWeight = '500';
                 poweredBy.style.color = '#333';
-
+                
                 // Adicionar imagem e marca ao contêiner
                 imageContainer.appendChild(img);
                 imageContainer.appendChild(poweredBy);
                 link.appendChild(imageContainer);
-
+                
                 return link;
             }
 
             function updateBanner() {
                 const banner = allBanners[currentIndex];
-
+                
                 // Fade out do banner atual
                 bannerSlot.style.opacity = '0';
-
+                
                 setTimeout(() => {
                     // Atualizar conteúdo
                     bannerSlot.innerHTML = '';
                     bannerSlot.appendChild(createBannerContent(banner));
-
+                    
                     // Fade in do novo banner
                     bannerSlot.style.opacity = '1';
                 }, 400);
@@ -168,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Exibir o primeiro banner imediatamente
             updateBanner();
-
+            
             // Iniciar rotação
             let intervalId = setInterval(nextBanner, rotationInterval);
 
@@ -177,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
             navPrev.innerHTML = '&#10094;';
             navPrev.style.position = 'absolute';
             navPrev.style.top = '50%';
-            navPrev.style.left = '30px'; // Alterado de 10px para 30px - mais para dentro
+            navPrev.style.left = '30px'; // Mais para dentro
             navPrev.style.transform = 'translateY(-50%)';
             navPrev.style.zIndex = '10';
             navPrev.style.backgroundColor = 'rgba(255,255,255,0.7)';
@@ -200,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
             navNext.innerHTML = '&#10095;';
             navNext.style.position = 'absolute';
             navNext.style.top = '50%';
-            navNext.style.right = '30px'; // Alterado de 10px para 30px - mais para dentro
+            navNext.style.right = '30px'; // Mais para dentro
             navNext.style.transform = 'translateY(-50%)';
             navNext.style.zIndex = '10';
             navNext.style.backgroundColor = 'rgba(255,255,255,0.7)';
@@ -221,15 +226,16 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => {
             console.error('Murall Banner Error:', error);
             bannerContainer.innerHTML = `
-            <div style="text-align:center; padding:15px; color:#94a3b8; font-family:system-ui,-apple-system,sans-serif;">
-                <p>Não foi possível carregar os banners dos parceiros.</p>
-                <p style="margin-top:8px; font-size:0.8em;">
-                    <a href="https://murall.com" target="_blank" rel="noopener noreferrer" 
-                       style="color:#2196F3; text-decoration:none;">Murall</a>
-                </p>
-            </div>
-        `;
+                <div style="text-align:center; padding:15px; color:#94a3b8; font-family:system-ui,-apple-system,sans-serif;">
+                    <p>Não foi possível carregar os banners dos parceiros.</p>
+                    <p style="margin-top:8px; font-size:0.8em;">
+                        <a href="https://murall-xi.vercel.app" target="_blank" rel="noopener noreferrer" 
+                           style="color:#2196F3; text-decoration:none;">Murall</a>
+                    </p>
+                </div>
+            `;
         });
+    }
 
     // Função para embaralhar array (algoritmo Fisher-Yates)
     function shuffleArray(array) {
@@ -239,4 +245,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return array;
     }
-});
+
+    // Executa assim que possível, mas também se inscreve no evento DOMContentLoaded
+    // para garantir que funcione em qualquer cenário de carregamento
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMurallBanners);
+    } else {
+        initMurallBanners();
+    }
+})();
