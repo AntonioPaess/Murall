@@ -5,8 +5,8 @@ import { BarChart, Globe, Share2, UserPlus, CheckCircle } from "lucide-react"
 import { useRef, useState } from "react"
 
 const StepsSection = () => {
-  const stepsRef = useRef<HTMLElement>(null)
-  const stepsInView = useInView(stepsRef, { once: true, amount: 0.2 })
+  const paragraphRef = useRef<HTMLParagraphElement>(null)
+  const paragraphInView = useInView(paragraphRef, { once: true, amount: 0.5 })
   const [activeStep, setActiveStep] = useState<number | null>(null)
 
   const steps = [
@@ -46,7 +46,7 @@ const StepsSection = () => {
       borderColor: "border-[#2f86c8]/30",
       shadowColor: "rgba(47, 134, 200, 0.3)",
     },
-  ];  
+  ]
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -86,22 +86,32 @@ const StepsSection = () => {
   }
 
   return (
-    <section
-      ref={stepsRef}
-      className="py-16 md:py-24 lg:py-28 relative overflow-hidden bg-gradient-to-b from-background to-background/80"
-    >
+    <section className="py-16 md:py-24 lg:py-28 relative overflow-hidden bg-gradient-to-b from-background to-background/80">
       <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background z-0 pointer-events-none" />
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          animate={paragraphInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-primary-foreground tracking-tight">
-            Quatro <span className="text-primary">Passos Simples</span>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={paragraphInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.5 }}
+            className="inline-block mb-3 px-4 py-1.5 bg-[#2f86c8]/10 rounded-full"
+          >
+            <span className="text-[#2f86c8] font-medium text-sm">Processo Simplificado</span>
+          </motion.div>
+
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-white tracking-tight">
+            Quatro <span className="text-[#2f86c8]">Passos Simples</span>
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+
+          <p
+            ref={paragraphRef}
+            className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed"
+          >
             Comece a expandir seu alcance em minutos com nosso processo simplificado e intuitivo.
           </p>
         </motion.div>
@@ -110,7 +120,7 @@ const StepsSection = () => {
           <motion.div
             variants={containerVariants}
             initial="hidden"
-            animate={stepsInView ? "visible" : "hidden"}
+            animate={paragraphInView ? "visible" : "hidden"}
             className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6 lg:gap-10"
           >
             {steps.map((step, index) => (
@@ -132,7 +142,6 @@ const StepsSection = () => {
                         : undefined,
                   }}
                 >
-                  {/* Step number */}
                   <motion.div
                     variants={numberVariants}
                     custom={index}
@@ -142,7 +151,6 @@ const StepsSection = () => {
                   </motion.div>
 
                   <div className="flex flex-col items-center text-center">
-                    {/* Icon */}
                     <div
                       className={`bg-gradient-to-br ${step.color} rounded-full p-5 w-20 h-20 flex items-center justify-center mb-6 z-10 relative shadow-lg transition-transform duration-300 transform ${
                         activeStep === index ? "scale-110" : "scale-100"
@@ -150,7 +158,7 @@ const StepsSection = () => {
                     >
                       <motion.div
                         initial={{ rotate: -10, scale: 0.9 }}
-                        animate={stepsInView ? { rotate: 0, scale: 1 } : { rotate: -10, scale: 0.9 }}
+                        animate={paragraphInView ? { rotate: 0, scale: 1 } : { rotate: -10, scale: 0.9 }}
                         transition={{ duration: 0.5, delay: 0.4 + index * 0.1, type: "spring" }}
                         className={step.textColor}
                       >
@@ -158,10 +166,9 @@ const StepsSection = () => {
                       </motion.div>
                     </div>
 
-                    {/* Title */}
                     <motion.h3
                       initial={{ opacity: 0 }}
-                      animate={stepsInView ? { opacity: 1 } : { opacity: 0 }}
+                      animate={paragraphInView ? { opacity: 1 } : { opacity: 0 }}
                       transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
                       className={`text-xl font-bold mb-3 ${
                         activeStep === index ? step.textColor : "text-primary-foreground"
@@ -170,17 +177,15 @@ const StepsSection = () => {
                       {step.title}
                     </motion.h3>
 
-                    {/* Description */}
                     <motion.p
                       initial={{ opacity: 0 }}
-                      animate={stepsInView ? { opacity: 1 } : { opacity: 0 }}
+                      animate={paragraphInView ? { opacity: 1 } : { opacity: 0 }}
                       transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
                       className="text-muted-foreground"
                     >
                       {step.description}
                     </motion.p>
 
-                    {/* Completed check indicator - keeps space reserved */}
                     <div className="min-h-6 mt-4 flex items-center justify-center">
                       {activeStep === index && (
                         <motion.div

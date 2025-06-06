@@ -42,7 +42,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
-        userService.createUser(request);
+        RegisterRequest lowerCaseRequest = new RegisterRequest(
+                request.username(),
+                request.email().toLowerCase(),
+                request.password()
+        );
+
+        userService.createUser(lowerCaseRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Um e-mail de verificação foi enviado para seu e-mail. Por favor, verifique sua caixa de entrada para ativar sua conta.");
     }

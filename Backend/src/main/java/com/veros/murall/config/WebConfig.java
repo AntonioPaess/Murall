@@ -13,12 +13,24 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins(
-                                "http://localhost:3000",
-                                "https://murall-xi.vercel.app"
-                        )
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                registry.addMapping("/api/partnerships/blog/domain/*/partners")
+                        .allowedOrigins("*") 
+                        .allowedMethods("GET", "OPTIONS") 
+                        .allowedHeaders("*")
+                        .allowCredentials(false) 
+                        .maxAge(3600);
+                
+                registry.addMapping("/api/blog/domain/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("GET", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(false)
+                        .maxAge(3600);
+
+  
+                registry.addMapping("/api/**") 
+                        .allowedOrigins("http://localhost:3000", "https://murall-xi.vercel.app")
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true)
                         .maxAge(3600);

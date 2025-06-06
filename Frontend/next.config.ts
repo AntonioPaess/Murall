@@ -5,11 +5,12 @@ const nextConfig: NextConfig = {
     domains: [
       'images.pexels.com',
       'images.unsplash.com',
+      'ihlvptswdvtodpvbtfgg.supabase.co'
     ],
   },
   eslint: {
-    ignoreDuringBuilds: true,
-  },
+  ignoreDuringBuilds: true,
+},
 };
 
 export default nextConfig;

@@ -10,4 +10,5 @@ import java.util.List;
 public interface BlogRepository extends JpaRepository<Blog, Long> {
     boolean existsByBlogDomain(String domain);
     List<Blog> findByUserId(Long ind);
+    Blog findByBlogDomain(String blogDomain);
 }

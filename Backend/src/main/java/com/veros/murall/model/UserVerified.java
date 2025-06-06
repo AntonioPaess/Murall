@@ -56,4 +56,13 @@ public class UserVerified {
     public User getEntity() {
         return this.entity;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
 }

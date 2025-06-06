@@ -28,6 +28,9 @@ public class User implements UserDetails {
     @Size(min = 3, max = 20, message = "O nome de usuário deve ter entre 3 e 20 caracteres.")
     private String username;
 
+    @Size(min = 10, message = "A biografia deve ter no mínimo 10 caracteres.")
+    private String biography;
+
     @Column(nullable = false)
     @Size(min = 6, message = "A senha deve ter pelo menos 6 caracteres.")
     private String password;
@@ -35,8 +38,9 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
+    private String avatar;
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private UserRole role;
 
     @Temporal(TemporalType.DATE)
@@ -57,6 +61,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role == null) {
+            return Collections.emptyList();
+        }
         return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
 
@@ -92,6 +99,22 @@ public class User implements UserDetails {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getBiography() {
+        return biography;
+    }
+
+    public void setBiography(String biography) {
+        this.biography = biography;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public void setUsername(String username) {

@@ -22,8 +22,24 @@ public class Blog {
     @Column(nullable = false)
     private String blogDescription;
 
+    private String blogAvatar;
+
+    @OneToMany(mappedBy = "senderBlog", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlogPartnership> sentPartnerships = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiverBlog", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlogPartnership> receivedPartnerships = new ArrayList<>();
+
     @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogImage> blogImagesUrl = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "blog_category",
+            joinColumns = @JoinColumn(name = "blog_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -93,5 +109,37 @@ public class Blog {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getBlogAvatar() {
+        return blogAvatar;
+    }
+
+    public void setBlogAvatar(String blogAvatar) {
+        this.blogAvatar = blogAvatar;
+    }
+
+    public List<BlogPartnership> getSentPartnerships() {
+        return sentPartnerships;
+    }
+
+    public void setSentPartnerships(List<BlogPartnership> sentPartnerships) {
+        this.sentPartnerships = sentPartnerships;
+    }
+
+    public List<BlogPartnership> getReceivedPartnerships() {
+        return receivedPartnerships;
+    }
+
+    public void setReceivedPartnerships(List<BlogPartnership> receivedPartnerships) {
+        this.receivedPartnerships = receivedPartnerships;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

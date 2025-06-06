@@ -33,4 +33,15 @@ public class BlogImage {
         return blog;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Blog getBlog() {
+        return blog;
+    }
 }

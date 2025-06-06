@@ -4,14 +4,13 @@ import React, { useState, useEffect } from "react";
 import {
   UserRoundCog,
   LogOut,
-  LayoutDashboard,
   Compass,
   Handshake,
   Presentation,
   MessageCircle,
   ChevronRight,
-  Bell,
   Settings,
+  Bell,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -22,100 +21,79 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "./ui/sidebar"; // Assuming this path is correct
-import Image from "next/image"; // Assuming this path is correct
-import { Badge } from "./ui/badge"; // Assuming this path is correct
+} from "./ui/sidebar";
+import { Badge } from "./ui/badge";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./ui/tooltip"; // Assuming this path is correct
-import authService from "@/services/auth.service"; // Assuming this path is correct
-import userService from "@/services/user.service"; // Assuming this path is correct
-import { toast } from "sonner"; // Assuming this path is correct
+} from "./ui/tooltip";
+import authService from "@/services/auth.service";
+import { useSidebar } from "@/app/contexts/SidebarContext";
+import { toast } from "sonner";
+import { useUser } from "@/app/contexts/UserContext";
+import { blogPartnershipService } from "@/services/partnership.service";
 
 interface AppSidebarProps {
   className?: string;
-  isVisible?: boolean;
-  defaultCollapsed?: boolean;
-  onCollapsedChange?: (collapsed: boolean) => void;
 }
 
 interface NavLink {
   label: string;
   href: string;
   icon: React.ReactNode;
-  badge?: number | string;
+  badge?: number;
   isExternal?: boolean;
 }
 
-// Define a type for the user state, similar to ProtectedNav
-interface User {
-  notifications?: number | string; // Added based on usage
-  // Add other user properties if they are used from the user object
-  username?: string;
-  avatar?: string;
-  role?: string;
-}
-
-export function AppSidebar({
-  className = "",
-  defaultCollapsed = false,
-  onCollapsedChange,
-}: AppSidebarProps) {
-  const [collapsed, setCollapsed] = useState(defaultCollapsed);
-  const [user, setUser] = useState<User | null>(null);
-  const [loadingUser, setLoadingUser] = useState(true);
+export function AppSidebar({ className = "" }: AppSidebarProps) {
+  const { collapsed, toggleCollapsed } = useSidebar();
   const router = useRouter();
   const pathname = usePathname();
+  const { user } = useUser();
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
 
+  // Busca o número de notificações pendentes para o usuário
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchPendingRequests = async () => {
+      if (!user?.id) return;
+      
       try {
-        const userData = await userService.getUser();
-        setUser(userData);
+        const count = await blogPartnershipService.countPendingRequestsByUser(user.id);
+        setPendingRequestsCount(count);
       } catch (error) {
-        console.error("Failed to fetch user in AppSidebar:", error);
-        // Optionally, handle the error, e.g., by setting user to null or showing a toast
-      } finally {
-        setLoadingUser(false);
+        console.error("Erro ao buscar notificações pendentes:", error);
       }
     };
 
-    fetchUser();
-  }, []);
+    fetchPendingRequests();
+    
+    // Atualiza a cada 30 segundos
+    const interval = setInterval(fetchPendingRequests, 30000);
+    return () => clearInterval(interval);
+  }, [user?.id]);
 
-  useEffect(() => {
-    if (onCollapsedChange) {
-      onCollapsedChange(collapsed);
+  const isLinkActive = (href: string) => {
+    if (href === '/explore') {
+      return pathname.startsWith('/explore');
     }
-  }, [collapsed, onCollapsedChange]);
-
-  const isLinkActive = (href: string) => pathname === href;
+    return pathname === href;
+  };
 
   const handleNavigation = (path: string) => {
     if (pathname !== path) {
       router.push(path);
     }
   };
-
+  
   const handleLogout = async () => {
     authService.logout();
     router.push("/");
     toast.success("Volte sempre!");
   };
 
-  const toggleCollapsed = () => {
-    setCollapsed((prev) => !prev);
-  };
-
   const mainLinks: NavLink[] = [
-    {
-      label: "Dashboard",
-      href: "/dashboard",
-      icon: <LayoutDashboard size={20} />,
-    },
     {
       label: "Explorar",
       href: "/explore",
@@ -125,7 +103,12 @@ export function AppSidebar({
       label: "Meus Parceiros",
       href: "/my-partners",
       icon: <Handshake size={20} />,
-      badge: 2, // This seems static, so no change needed
+    },
+    {
+      label: "Notificações",
+      href: "/notifications",
+      icon: <Bell size={20} />,
+      badge: pendingRequestsCount > 0 ? pendingRequestsCount : undefined,
     },
     {
       label: "Meus Banners",
@@ -136,21 +119,13 @@ export function AppSidebar({
       label: "Bate-papo",
       href: "/chat",
       icon: <MessageCircle size={20} />,
-      badge: "Novo", // This seems static, so no change needed
     },
   ];
 
-  // Update settingsLinks to use user state and handle loading/null user
-  const settingsLinks: NavLink[] = loadingUser || !user ? [] : [
-    {
-      label: "Notificações",
-      href: "/notifications",
-      icon: <Bell size={20} />,
-      badge: user.notifications, // Access safely after loading and user check
-    },
+  const settingsLinks: NavLink[] = [
     {
       label: "Meu Perfil",
-      href: "/account",
+      href: `/my-account/${user?.id}`,
       icon: <UserRoundCog size={20} />,
     },
     {
@@ -160,133 +135,86 @@ export function AppSidebar({
     },
   ];
 
-  // You might want to show a loading indicator for the sidebar content or parts of it
-  // if (loadingUser) {
-  //   return <Sidebar className={`fixed top-0 left-0 h-full z-10 ...`}>Loading user...</Sidebar>;
-  // }
-
   return (
     <TooltipProvider delayDuration={300}>
       <Sidebar
         className={`fixed top-0 left-0 h-full z-10 overflow-x-hidden transition-all duration-300
-      ${collapsed ? "w-20" : "w-64"}
-      bg-gradient-to-b from-background/90 via-background/85 to-background/80
-      border-r backdrop-blur-md ${className}`}>
-        <SidebarContent className={`mt-[105px] py-4 px-${collapsed ? "2" : "3"}`}>
+          ${collapsed ? "w-20" : "w-64"}
+          bg-gradient-to-b from-background/90 via-background/85 to-background/80
+          border-r backdrop-blur-md ${className}`}
+      >
+        <SidebarContent className={`mt-[105px] py-4 ${collapsed ? "px-2" : "px-3"}`}>
           <SidebarGroup>
-            <h3
-              className={`text-xs uppercase text-primary font-semibold mb-3 ${
-                collapsed ? "text-center" : "px-3"
-              }`}>
+            <h3 className={`text-xs uppercase text-primary font-semibold mb-3 ${collapsed ? "text-center" : "px-3"}`}>
               {!collapsed ? "Navegação" : "•••"}
             </h3>
             <SidebarMenu className="space-y-1">
               {mainLinks.map((item) => (
-                <SidebarMenuItem
-                  key={item.label}
-                  className="text-white cursor-pointer">
+                <SidebarMenuItem key={item.label} className="text-white cursor-pointer">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <SidebarMenuButton
                         asChild
                         isActive={isLinkActive(item.href)}
-                        onClick={() => handleNavigation(item.href)}>
+                        onClick={() => handleNavigation(item.href)}
+                      >
                         <div
-                          className={`
-                          relative font-medium text-base flex items-center gap-3
+                          className={`relative font-medium text-base flex items-center gap-3
                           ${collapsed ? "justify-center px-2" : "px-4"}
-                          ${
-                            isLinkActive(item.href)
-                              ? "text-primary"
-                              : "text-white"
-                          }
-                        `}>
+                          ${isLinkActive(item.href) ? "text-primary" : "text-white"}`}
+                        >
                           {item.icon}
                           {!collapsed && item.label}
-                          {!collapsed && item.badge && (
-                            <Badge className="ml-auto py-1 px-2 bg-primary text-white">
-                              {item.badge}
-                            </Badge>
-                          )}
-                          {collapsed && item.badge && (
-                            <Badge
-                              className={`absolute -top-1 -right-1 h-5 w-5 p-0 rounded-full flex justify-center items-center
-                              ${
-                                typeof item.badge === "string"
-                                  ? "bg-primary"
-                                  : "bg-primary"
-                              } text-white`}>
-                              {typeof item.badge === "string"
-                                ? "•"
-                                : item.badge}
+                          {item.badge !== undefined && (
+                            <Badge 
+                              className={`ml-auto ${collapsed ? 
+                                "absolute -top-1 -right-1 h-5 w-5 p-0 rounded-full flex justify-center items-center" : 
+                                "py-1 px-2"}`}
+                              variant={item.badge > 0 ? "default" : "secondary"}
+                            >
+                              {item.badge > 0 ? item.badge : ''}
                             </Badge>
                           )}
                         </div>
                       </SidebarMenuButton>
                     </TooltipTrigger>
-                    {collapsed && (
-                      <TooltipContent side="right">{item.label}</TooltipContent>
-                    )}
+                    {collapsed && <TooltipContent side="right">{item.label}</TooltipContent>}
                   </Tooltip>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroup>
 
-          {/* SETTINGS - Render only if not loading and user exists, or handle appropriately */}
-          {(!loadingUser && user && settingsLinks.length > 0) && (
-            <SidebarGroup className="mt-8">
-              <h3
-                className={`text-xs uppercase text-primary font-semibold mb-3 ${
-                  collapsed ? "text-center" : "px-3"
-                }`}>
-                {!collapsed ? "Configurações" : "•••"}
-              </h3>
-              <SidebarMenu className="space-y-1">
-                {settingsLinks.map((item) => (
-                  <SidebarMenuItem
-                    key={item.label}
-                    className="text-white cursor-pointer">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={isLinkActive(item.href)}
-                          onClick={() => handleNavigation(item.href)}>
-                          <div
-                            className={`
-                            relative font-medium text-base flex items-center gap-3
-                            ${collapsed ? "justify-center px-2" : "px-4"}
-                            ${
-                              isLinkActive(item.href)
-                                ? "text-primary"
-                                : "text-white"
-                            }
-                          `}>
-                            {item.icon}
-                            {!collapsed && item.label}
-                            {!collapsed && item.badge && (
-                              <Badge className="ml-auto bg-primary/80 text-white">
-                                {item.badge}
-                              </Badge>
-                            )}
-                            {collapsed && item.badge && (
-                              <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 rounded-full flex justify-center items-center bg-secondary/90 text-white">
-                                {item.badge}
-                              </Badge>
-                            )}
-                          </div>
-                        </SidebarMenuButton>
-                      </TooltipTrigger>
-                      {collapsed && (
-                        <TooltipContent side="right">{item.label}</TooltipContent>
-                      )}
-                    </Tooltip>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroup>
-          )}
+          <SidebarGroup className="mt-8">
+            <h3 className={`text-xs uppercase text-primary font-semibold mb-3 ${collapsed ? "text-center" : "px-3"}`}>
+              {!collapsed ? "Configurações" : "•••"}
+            </h3>
+            <SidebarMenu className="space-y-1">
+              {settingsLinks.map((item) => (
+                <SidebarMenuItem key={item.label} className="text-white cursor-pointer">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isLinkActive(item.href)}
+                        onClick={() => handleNavigation(item.href)}
+                      >
+                        <div
+                          className={`font-medium text-base flex items-center gap-3
+                          ${collapsed ? "justify-center px-2" : "px-4"}
+                          ${isLinkActive(item.href) ? "text-primary" : "text-white"}`}
+                        >
+                          {item.icon}
+                          {!collapsed && item.label}
+                        </div>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    {collapsed && <TooltipContent side="right">{item.label}</TooltipContent>}
+                  </Tooltip>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
         </SidebarContent>
 
         <SidebarFooter className="pb-6">
@@ -294,36 +222,29 @@ export function AppSidebar({
             <SidebarMenuItem className="cursor-pointer">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <SidebarMenuButton
-                    asChild
-                    variant="destructive"
-                    onClick={handleLogout}>
+                  <SidebarMenuButton asChild variant="destructive" onClick={handleLogout}>
                     <div
-                      className={`
-                      font-medium text-base flex items-center gap-3 
+                      className={`font-medium text-base flex items-center gap-3 
                       ${collapsed ? "justify-center px-2" : "px-4"}
-                      text-red-500 hover:text-red-400
-                    `}>
+                      text-red-500 hover:text-red-400`}
+                    >
                       <LogOut size={20} />
                       {!collapsed && "Sair"}
                     </div>
                   </SidebarMenuButton>
                 </TooltipTrigger>
-                {collapsed && (
-                  <TooltipContent side="right">Sair</TooltipContent>
-                )}
+                {collapsed && <TooltipContent side="right">Sair</TooltipContent>}
               </Tooltip>
             </SidebarMenuItem>
           </SidebarMenu>
 
           <button
             onClick={toggleCollapsed}
-            className="mt-4 mx-auto h-8 w-8 rounded-full flex items-center justify-center bg-primary/15 hover:bg-primary/60 text-primary transition-all">
+            className="mt-4 mx-auto h-8 w-8 rounded-full flex items-center justify-center bg-primary/15 hover:bg-primary/60 text-primary transition-all"
+          >
             <ChevronRight
               size={18}
-              className={`transition-transform ${
-                collapsed ? "rotate-180" : ""
-              }`}
+              className={`transition-transform ${collapsed ? "rotate-180" : ""}`}
             />
           </button>
         </SidebarFooter>
@@ -331,4 +252,3 @@ export function AppSidebar({
     </TooltipProvider>
   );
 }
-
